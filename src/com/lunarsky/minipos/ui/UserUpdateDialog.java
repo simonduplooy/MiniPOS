@@ -154,6 +154,9 @@ public class UserUpdateDialog extends BorderPane {
 		
 		clearErrorMessages();
 		
+		nameErrorLabel.managedProperty().bind(nameErrorLabel.visibleProperty());
+		passwordErrorLabel.managedProperty().bind(passwordErrorLabel.visibleProperty());
+		
 		nameValidator = new StringTextFieldValidator(nameTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
 		passwordValidator = new IntegerTextFieldValidator(passwordPasswordField,Const.PASSWORD_LENGTH,Const.PASSWORD_LENGTH);
 
@@ -224,8 +227,11 @@ public class UserUpdateDialog extends BorderPane {
 				
 				if(t instanceof NameInUseException) {
 					nameErrorLabel.setVisible(true);
+					stage.sizeToScene();
+					
 				} else if(t instanceof PasswordInUseException) {
 					passwordErrorLabel.setVisible(true);
+					stage.sizeToScene();
 				} else {
 					log.catching(Level.ERROR,t);
 					throw new RuntimeException(t);
