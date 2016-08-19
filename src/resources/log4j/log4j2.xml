@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+
+    <Appenders>
+        <Console name="Console">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level [%t] %class.%M:%L %msg%xEx%n"/>
+        </Console>
+        <!--
+        <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz" ignoreExceptions="false">
+            <PatternLayout>
+                <Pattern>%d{HH:mm:ss.SSS} %-5level [%t] %class.%M %L %message%xEx%n</Pattern>
+            </PatternLayout>
+            <TimeBasedTriggeringPolicy />
+        </RollingFile>
+        -->
+    </Appenders>
+
+    <Loggers>
+        <Root level="WARN">
+            <AppenderRef ref="Console"/>
+            <!-- <AppenderRef ref="RollingFile"/> -->
+        </Root>
+    
+        <!--
+        <logger name ="com" level="TRACE">
+            <AppenderRef ref="Console"/>
+        </logger>
+        -->    
+    </Loggers>
+  
+</Configuration>

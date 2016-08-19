@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+   <top>
+      <GridPane hgap="5.0" vgap="5.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" />
+          <ColumnConstraints hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints vgrow="NEVER" />
+          <RowConstraints vgrow="NEVER" />
+          <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Label text="Server" />
+            <Label text="Port" GridPane.rowIndex="1" />
+            <Label text="Database" GridPane.rowIndex="2" />
+            <Label text="Username" GridPane.rowIndex="3" />
+            <Label text="Password" GridPane.rowIndex="4" />
+            <TextField fx:id="serverTextField" GridPane.columnIndex="1" />
+            <TextField fx:id="portTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="databaseTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="usernameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
+   </top>
+   <center>
+      <HBox alignment="BOTTOM_RIGHT" spacing="5.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="testButton" mnemonicParsing="false" onAction="#handleTest" styleClass="database-test-button" text="Test" />
+            <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" onAction="#handleSave" text="Save" />
+            <Button mnemonicParsing="false" onAction="#handleBack" text="Back" />
+         </children>
+         <padding>
+            <Insets top="5.0" />
+         </padding>
+      </HBox>
+   </center>
+</fx:root>
