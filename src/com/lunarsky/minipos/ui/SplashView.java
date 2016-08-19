@@ -2,18 +2,16 @@ package com.lunarsky.minipos.ui;
 
 import java.io.IOException;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.model.AppData;
 
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 
 public class SplashView extends StackPane {
@@ -24,7 +22,7 @@ public class SplashView extends StackPane {
 	@FXML
 	private ProgressIndicator progressIndicator;
 	@FXML
-	private HBox itemHBox;
+	private FlowPane itemFlowPane;
 	
 	public SplashView(final AppData appData) {
 		assert(null != appData);
@@ -46,57 +44,56 @@ public class SplashView extends StackPane {
 	
 	private void initialize() {
 
-		
 		//TODO
 		Button button = new Button("Database Config");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
 		button.setOnAction((event) -> appData.getViewManager().showDatabaseConfigDialog());
-		itemHBox.getChildren().add(button);
+		itemFlowPane.getChildren().add(button);
 
 		button = new Button("Login");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
 		button.setOnAction((event) -> appData.getViewManager().showLoginDialog());
-		itemHBox.getChildren().add(button);
+		itemFlowPane.getChildren().add(button);
 
 		button = new Button("Accounts");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
 		button.setOnAction((event) -> appData.getViewManager().showAccountOverviewView());
-		itemHBox.getChildren().add(button);
+		itemFlowPane.getChildren().add(button);
 		
 		button = new Button("Users");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
 		button.setOnAction((event) -> appData.getViewManager().showUserOverviewDialog());
-		itemHBox.getChildren().add(button);
+		itemFlowPane.getChildren().add(button);
 
 		button = new Button("Roles");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
 		button.setOnAction((event) -> appData.getViewManager().showRoleOverviewDialog());
-		itemHBox.getChildren().add(button);
+		itemFlowPane.getChildren().add(button);
 
 		button = new Button("Stock");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
 		button.setOnAction((event) -> appData.getViewManager().showStockOverviewDialog());
-		itemHBox.getChildren().add(button);
+		itemFlowPane.getChildren().add(button);
 
 		button = new Button("Products");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
 		button.setOnAction((event) -> appData.getViewManager().showProductOverviewDialog());
-		itemHBox.getChildren().add(button);
+		itemFlowPane.getChildren().add(button);
 		
 		button = new Button("Product Configure");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
 		button.setOnAction((event) -> appData.getViewManager().showProductConfigureView());
-		itemHBox.getChildren().add(button);
+		itemFlowPane.getChildren().add(button);
 		
-		progressIndicator.visibleProperty().bind(itemHBox.disabledProperty());
+		progressIndicator.visibleProperty().bind(itemFlowPane.disabledProperty());
 		setInitializing(false);
 		
 		initializeAsync();
@@ -108,7 +105,7 @@ public class SplashView extends StackPane {
 	}
 	
 	public void setInitializing(final boolean initializing) {
-		itemHBox.setDisable(initializing);
+		itemFlowPane.setDisable(initializing);
 	}
 	
 	private void handleShowPersistenceConfig() {

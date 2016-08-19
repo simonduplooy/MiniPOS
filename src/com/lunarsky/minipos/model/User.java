@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
 
-//Almost Immutable
 public class User extends PersistenceObject implements Comparable<User> {
 	private static final Logger log = LogManager.getLogger();
 	

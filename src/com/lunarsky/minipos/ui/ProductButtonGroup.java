@@ -17,14 +17,14 @@ public class ProductButtonGroup extends Button {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final ProductButtonObserver observer;
-	private final String name;
+	private final ProductButtonGroupConfig config;
 	
 	public ProductButtonGroup(final ProductButtonObserver observer, final ProductButtonGroupConfig config) {
 		assert(null != observer);
 		assert(null != config);
 		
 		this.observer = observer;
-		this.name = config.getName();
+		this.config = config;
 		
 	    FXMLLoader loader = new FXMLLoader();
 	    loader.setLocation(getClass().getResource("ProductButton.fxml"));
@@ -43,12 +43,13 @@ public class ProductButtonGroup extends Button {
 	
 	@FXML
 	private void initialize() {
-		setText(name);
+		setText(config.getName());
 	}
 	
 	@FXML
 	private void handleButton(ActionEvent event) {
-		log.debug("Product Group Selected: {}",name);
+		log.debug("handleButton() {}",config);
+		observer.productButtonGroupSelected(config.getId());
 	}
 
 	@FXML

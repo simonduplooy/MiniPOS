@@ -72,9 +72,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		return new HibernateTransaction(getEntityManagerFactory());
 	}
 	
-	/******************************************
+	/*****************************************************************************
 	 * Users
-	 ******************************************/
+	 *****************************************************************************/
 	public List<User> getUsers(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		final List<User> users = UserManager.getUsers(entityManager);
@@ -104,9 +104,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		UserManager.deleteUser(entityManager,(HibernatePersistenceId)id);
 	}
 
-	/******************************************
+	/*****************************************************************************
 	 * Roles
-	 ******************************************/	
+	 *****************************************************************************/
 	public List<Role> getRoles(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		final List<Role>roles = RoleManager.getRoles(entityManager);
@@ -124,9 +124,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		RoleManager.deleteRole(entityManager,(HibernatePersistenceId)id);
 	}
 	
-	/******************************************
+	/*****************************************************************************
 	 * Stock
-	 ******************************************/
+	 *****************************************************************************/
 	public List<StockItem> getStock(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		final List<StockItem> stockList = StockManager.getStock(entityManager);
@@ -145,12 +145,18 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	}
 	
 	
-	/******************************************
+	/*****************************************************************************
 	 * Accounts
-	 ******************************************/
+	 *****************************************************************************/
 	public List<Account> getAccounts(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		final List<Account> accounts = AccountManager.getAccounts(entityManager);
+		return accounts;		
+	}
+	
+	public List<Account> getAccounts(final Transaction transaction, final PersistenceId userId) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		final List<Account> accounts = AccountManager.getAccounts(entityManager,(HibernatePersistenceId)userId);
 		return accounts;		
 	}
 	
@@ -170,9 +176,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		AccountManager.delete(entityManager,(HibernatePersistenceId)id);		
 	}
 
-	/******************************************
+	/*****************************************************************************
 	 * Products
-	 ******************************************/
+	 *****************************************************************************/
 	public List<Product> getProducts(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		final List<Product> products = ProductManager.getProducts(entityManager);
@@ -190,9 +196,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		ProductManager.delete(entityManager,(HibernatePersistenceId)id);
 	}
 	
-	/******************************************
-	 * Product Button Config
-	 ******************************************/
+	/*****************************************************************************
+	 * Product Buttons
+	 *****************************************************************************/
 	public List<ProductButtonConfig> getProductButtons(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		final List<ProductButtonConfig> productButtonConfigs = ProductButtonManager.getConfigs(entityManager);
@@ -205,9 +211,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		return updatedConfig;
 	}
 	
-	/******************************************
+	/*****************************************************************************
 	 * Utils
-	 ******************************************/
+	 *****************************************************************************/
 	public void close() {
 		if(entityManagerFactory != null) {
 			entityManagerFactory.close();

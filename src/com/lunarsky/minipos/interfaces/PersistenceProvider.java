@@ -20,29 +20,48 @@ public interface PersistenceProvider {
 	
 	public Transaction startTransaction();
 	
+	/*****************************************************************************
+	 * Users
+	 *****************************************************************************/
 	public List<User> getUsers(final Transaction transaction);
 	public User getUser(final Transaction transaction, final PersistenceId id);
 	public User getUserWithPassword(final Transaction transaction, final String password);	
 	public User saveUser(final Transaction transaction, final User user);
 	public void deleteUser(final Transaction transaction, final PersistenceId id);
 	
+	/*****************************************************************************
+	 * Roles
+	 *****************************************************************************/
 	public List<Role> getRoles(final Transaction transaction);
 	public Role saveRole(final Transaction transaction, final Role role);
 	public void deleteRole(final Transaction transaction, final PersistenceId id);
 	
+	/*****************************************************************************
+	 * Stock
+	 *****************************************************************************/
 	public List<StockItem> getStock(final Transaction transaction);
 	public StockItem saveStockItem(final Transaction transaction, final StockItem stockItem);
 	public void deleteStockItem(final Transaction transaction, final PersistenceId id);
 	
+	/*****************************************************************************
+	 * Accounts
+	 *****************************************************************************/
 	public List<Account> getAccounts(final Transaction transaction);
+	public List<Account> getAccounts(final Transaction transaction, final PersistenceId userId);
 	public Account createAccount(final Transaction transaction, final PersistenceId userId, final Account account);
 	public void updateAccount(final Transaction transaction, final Account account);
 	public void deleteAccount(final Transaction transaction, final PersistenceId id);
 	
+	/*****************************************************************************
+	 * Products
+	 *****************************************************************************/
 	public List<Product> getProducts(final Transaction transaction);
 	public Product saveProduct(final Transaction transaction, final Product product);
 	public void deleteProduct(final Transaction transaction, final PersistenceId id);
 	
+	/*****************************************************************************
+	 * Product Buttons
+	 *****************************************************************************/
 	public List<ProductButtonConfig> getProductButtons(final Transaction transaction);
 	public ProductButtonConfig saveProductButton(final Transaction transaction, final ProductButtonConfig config);
 	

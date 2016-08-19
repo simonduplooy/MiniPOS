@@ -5,13 +5,13 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaUpdate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.common.exception.NameInUseException;
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.Account;
 
 public class AccountManager {
@@ -22,7 +22,8 @@ public class AccountManager {
 	}
 
 	public static List<Account> getAccounts(final EntityManager entityManager) {
-		log.debug("Getting Accounts");
+		log.debug("getAccounts()");
+		
 		final Query query = entityManager.createQuery("from AccountDAO");
 		final List<AccountDAO> resultList = query.getResultList();
 
@@ -30,6 +31,15 @@ public class AccountManager {
 		for(AccountDAO result: resultList) {
 			accounts.add(result.getAccount());
 		}
+		
+		return accounts;
+	}
+	
+	public static List<Account> getAccounts(final EntityManager entityManager, HibernatePersistenceId userId) {
+		log.debug("getAccounts({})",userId);
+		
+		final UserDAO userDAO = UserDAO.load(entityManager,userId);
+		final List<Account> accounts = userDAO.getAccounts();
 		
 		return accounts;
 	}

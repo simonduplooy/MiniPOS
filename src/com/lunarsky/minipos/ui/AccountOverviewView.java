@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.User;
@@ -52,9 +53,12 @@ public class AccountOverviewView extends BorderPane {
 			@Override
 			protected Task<List<Account>> createTask() {
 				return new Task<List<Account>>() {
+					
+					final PersistenceId userId = appData.getActiveUser().getId();
+					
 					@Override
 					protected List<Account> call() {
-						final List<Account> account = appData.getServerConnector().getAccounts(); 
+						final List<Account> account = appData.getServerConnector().getAccounts(userId); 
 						return account;
 					}
 					@Override

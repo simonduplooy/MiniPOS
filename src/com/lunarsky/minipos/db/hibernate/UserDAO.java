@@ -1,10 +1,13 @@
 package com.lunarsky.minipos.db.hibernate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -12,6 +15,7 @@ import javax.persistence.UniqueConstraint;
 
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
+import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.User;
 
@@ -111,4 +115,16 @@ public class UserDAO extends HibernateDAO {
 		this.role = RoleDAO.load(getEntityManager(),(HibernatePersistenceId)role.getId()); 
 	}
 
+	public List<Account> getAccounts() {
+		final List<Account> accounts = new ArrayList<Account>();
+		
+		if(null != accounts) {
+			for(AccountDAO account: this.accounts){
+				accounts.add(account.getAccount());
+			}
+		}
+		
+		return accounts;
+	}
+	
 }

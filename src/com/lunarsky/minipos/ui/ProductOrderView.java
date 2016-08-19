@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.db.hibernate.HibernatePersistenceId;
+import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.Product;
@@ -93,6 +94,11 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		}
 		
 		calculateTotal();
+	}
+	
+	public void productButtonGroupSelected(final PersistenceId id) {
+		log.debug("productButtonGroupSelected() ",id);
+	
 	}
 	
 	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {

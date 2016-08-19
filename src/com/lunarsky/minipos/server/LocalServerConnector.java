@@ -49,6 +49,9 @@ public class LocalServerConnector implements ServerConnector {
 		persistenceProvider.testConnection(config);
 	}
 	
+	/*****************************************************************************
+	 * Users
+	 *****************************************************************************/	
 	public List<User> getUsers() {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final List<User> users = (List<User>)persistenceCall(transaction,()->(persistenceProvider.getUsers(transaction)));
@@ -77,13 +80,19 @@ public class LocalServerConnector implements ServerConnector {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.deleteUser(transaction, id);return null;});
 	}
-			
+	
+	/*****************************************************************************
+	 * Roles
+	 *****************************************************************************/
 	public List<Role> getRoles() {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final List<Role> roles= (List<Role>)persistenceCall(transaction,()->(persistenceProvider.getRoles(transaction)));
 		return roles;
 	}
 	
+	/*****************************************************************************
+	 * Roles
+	 *****************************************************************************/
 	public Role saveRole(final Role role) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final Role updatedRole= (Role)persistenceCall(transaction,()->(persistenceProvider.saveRole(transaction, role)));
@@ -95,6 +104,9 @@ public class LocalServerConnector implements ServerConnector {
 		persistenceCall(transaction,()->{persistenceProvider.deleteRole(transaction, id);return null;});
 	}
 
+	/*****************************************************************************
+	 * Stock
+	 *****************************************************************************/
 	public List<StockItem> getStock() {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final List<StockItem> stockItems = (List<StockItem>)persistenceCall(transaction,()->(persistenceProvider.getStock(transaction)));
@@ -112,12 +124,20 @@ public class LocalServerConnector implements ServerConnector {
 		persistenceCall(transaction,()->{persistenceProvider.deleteStockItem(transaction, id);return null;});
 	}
 
+	/*****************************************************************************
+	 * Accounts
+	 *****************************************************************************/
 	public List<Account> getAccounts() {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final List<Account> accounts = (List<Account>)persistenceCall(transaction,()->(persistenceProvider.getAccounts(transaction)));
 		return accounts;		
 	}
 
+	public List<Account> getAccounts(final PersistenceId userId) {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		final List<Account> accounts = (List<Account>)persistenceCall(transaction,()->(persistenceProvider.getAccounts(transaction,userId)));
+		return accounts;		
+	}
 	public Account createAccount(final PersistenceId userId, final Account account) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final Account updatedAccount = (Account)persistenceCall(transaction,()->(persistenceProvider.createAccount(transaction, userId, account)));
@@ -134,7 +154,9 @@ public class LocalServerConnector implements ServerConnector {
 		persistenceCall(transaction,()->{persistenceProvider.deleteAccount(transaction, id);return null;});		
 	}
 	
-	
+	/*****************************************************************************
+	 * Products
+	 *****************************************************************************/
 	public List<Product> getProducts() {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final List<Product> products = (List<Product>)persistenceCall(transaction,()->(persistenceProvider.getProducts(transaction)));
@@ -153,6 +175,9 @@ public class LocalServerConnector implements ServerConnector {
 		persistenceCall(transaction,()->{persistenceProvider.deleteProduct(transaction, id);return null;});	
 	}
 	
+	/*****************************************************************************
+	 * Product Buttons
+	 *****************************************************************************/
 	public List<ProductButtonConfig> getProductButtons() {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final List<ProductButtonConfig> buttons = (List<ProductButtonConfig>)persistenceCall(transaction,()->(persistenceProvider.getProductButtons(transaction)));

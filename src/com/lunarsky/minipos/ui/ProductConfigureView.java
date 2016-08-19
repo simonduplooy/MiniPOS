@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
@@ -83,6 +84,11 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	public void productSelected(final Product product) {
 		log.debug("productSelected {}", product);
 
+	}
+	
+	public void productButtonGroupSelected(final PersistenceId id) {
+		log.debug("productButtonGroupSelected() ",id);
+	
 	}
 	
 	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
