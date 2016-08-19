@@ -37,8 +37,8 @@ public class ProductButton extends Button {
 	    	throw new RuntimeException(e);
 	    }
 	    
-	    GridPane.setColumnIndex(this,config.getColumn());
-	    GridPane.setRowIndex(this,config.getRow());
+	    GridPane.setColumnIndex(this,config.getColumnIndex());
+	    GridPane.setRowIndex(this,config.getRowIndex());
 	    
 	}
 	

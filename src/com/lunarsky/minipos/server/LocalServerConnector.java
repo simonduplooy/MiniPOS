@@ -13,6 +13,7 @@ import com.lunarsky.minipos.interfaces.Transaction;
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.PersistenceConfig;
 import com.lunarsky.minipos.model.Product;
+import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
@@ -150,6 +151,18 @@ public class LocalServerConnector implements ServerConnector {
 	public void deleteProduct(final PersistenceId id) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.deleteProduct(transaction, id);return null;});	
+	}
+	
+	public List<ProductButtonConfig> getProductButtons() {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		final List<ProductButtonConfig> buttons = (List<ProductButtonConfig>)persistenceCall(transaction,()->(persistenceProvider.getProductButtons(transaction)));
+		return buttons;
+	}
+	
+	public ProductButtonConfig saveProductButton(final ProductButtonConfig config) {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		final ProductButtonConfig updatedButton = (ProductButtonConfig)persistenceCall(transaction,()->(persistenceProvider.saveProductButton(transaction, config)));
+		return updatedButton;
 	}
 	
 	public void close() {

@@ -5,6 +5,7 @@ import java.util.List;
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.PersistenceConfig;
 import com.lunarsky.minipos.model.Product;
+import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
@@ -38,6 +39,9 @@ public interface ServerConnector {
 	public List<Product> getProducts();
 	public Product saveProduct(final Product product);
 	public void deleteProduct(final PersistenceId id);
+	
+	public List<ProductButtonConfig> getProductButtons();
+	public ProductButtonConfig saveProductButton(final ProductButtonConfig config);
 	
 	public void close();
 }

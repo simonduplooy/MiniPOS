@@ -20,6 +20,7 @@ import com.lunarsky.minipos.interfaces.Transaction;
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.PersistenceConfig;
 import com.lunarsky.minipos.model.Product;
+import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
@@ -168,7 +169,10 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		AccountManager.delete(entityManager,(HibernatePersistenceId)id);		
 	}
-	
+
+	/******************************************
+	 * Products
+	 ******************************************/
 	public List<Product> getProducts(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		final List<Product> products = ProductManager.getProducts(entityManager);
@@ -184,6 +188,21 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	public void deleteProduct(final Transaction transaction, final PersistenceId id) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		ProductManager.delete(entityManager,(HibernatePersistenceId)id);
+	}
+	
+	/******************************************
+	 * Product Button Config
+	 ******************************************/
+	public List<ProductButtonConfig> getProductButtons(final Transaction transaction) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		final List<ProductButtonConfig> productButtonConfigs = ProductButtonManager.getConfigs(entityManager);
+		return productButtonConfigs;	
+	}
+	
+	public ProductButtonConfig saveProductButton(final Transaction transaction, final ProductButtonConfig config) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		final ProductButtonConfig updatedConfig = ProductButtonManager.save(entityManager,config);
+		return updatedConfig;
 	}
 	
 	/******************************************

@@ -10,24 +10,24 @@ public class ProductButtonConfig extends PersistenceObject {
 	
 	final PersistenceId parentId; 
 	final Product product;
-	final Integer column;
-	final Integer row;
+	final Integer columnIdx;
+	final Integer rowIdx;
 	
-	public ProductButtonConfig(final PersistenceId parentId, final Product product, final Integer column, final Integer row) {
-		this(null,parentId,product,column,row);
+	public ProductButtonConfig(final PersistenceId parentId, final Product product, final Integer columnIdx, final Integer rowIdx) {
+		this(null,parentId,product,columnIdx,rowIdx);
 	}
 	
-	public ProductButtonConfig(final PersistenceId id, final PersistenceId parentId, final Product product, final Integer column, final Integer row) {
+	public ProductButtonConfig(final PersistenceId id, final PersistenceId parentId, final Product product, final Integer columnIdx, final Integer rowIdx) {
 		super(id);
 		
 		assert(null != product);
-		assert(null != column);		
-		assert(null != row);
+		assert(null != columnIdx);		
+		assert(null != rowIdx);
 		
 		this.parentId = parentId;
 		this.product = product;
-		this.column = column;
-		this.row = row;
+		this.columnIdx = columnIdx;
+		this.rowIdx = rowIdx;
 	}
 	
 	public PersistenceId getParent() {
@@ -39,17 +39,17 @@ public class ProductButtonConfig extends PersistenceObject {
 		return product;
 	}
 	
-	public Integer getColumn() {
-		assert(null != column);
-		return column;
+	public Integer getColumnIndex() {
+		assert(null != columnIdx);
+		return columnIdx;
 	}
 	
-	public Integer getRow() {
-		assert(null != row);
-		return row;
+	public Integer getRowIndex() {
+		assert(null != rowIdx);
+		return rowIdx;
 	}
 	
 	public String toString() {
-		return getProduct().getName()+","+column+","+row;
+		return getProduct().getName()+","+columnIdx+","+rowIdx;
 	}
 }

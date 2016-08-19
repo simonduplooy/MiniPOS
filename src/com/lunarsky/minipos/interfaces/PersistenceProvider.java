@@ -6,6 +6,7 @@ import java.util.Set;
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.PersistenceConfig;
 import com.lunarsky.minipos.model.Product;
+import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
@@ -38,10 +39,12 @@ public interface PersistenceProvider {
 	public void updateAccount(final Transaction transaction, final Account account);
 	public void deleteAccount(final Transaction transaction, final PersistenceId id);
 	
-	
 	public List<Product> getProducts(final Transaction transaction);
 	public Product saveProduct(final Transaction transaction, final Product product);
 	public void deleteProduct(final Transaction transaction, final PersistenceId id);
+	
+	public List<ProductButtonConfig> getProductButtons(final Transaction transaction);
+	public ProductButtonConfig saveProductButton(final Transaction transaction, final ProductButtonConfig config);
 	
 	public void close();
 	
