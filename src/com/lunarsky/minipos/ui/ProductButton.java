@@ -18,14 +18,14 @@ public class ProductButton extends Button {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final ProductButtonObserver observer;
-	private final Product product;
+	private ProductButtonConfig config;
 	
 	public ProductButton(final ProductButtonObserver observer, final ProductButtonConfig config) {
 		assert(null != observer);
 		assert(null != config);
 		
 		this.observer = observer;
-		this.product = config.getProduct();
+		this.config = config;
 		
 	    FXMLLoader loader = new FXMLLoader();
 	    loader.setLocation(getClass().getResource("ProductButton.fxml"));
@@ -42,17 +42,42 @@ public class ProductButton extends Button {
 	    
 	}
 	
+	public ProductButtonConfig getConfig() {
+		log.debug("getConfig()");
+		assert(null != config);
+		return config;
+	}
+	
+	public void setConfig(final ProductButtonConfig config) {
+		assert(null != config);
+		this.config = config;
+		
+		initializeControls();
+	}
+	
 	@FXML
 	private void initialize() {
-		setText(product.getName());
+		initializeControls();
+	}
+	
+	private void initializeControls() {
+		final String name = getConfig().getProduct().getName();
+		setText(name);
 	}
 	
 	@FXML
 	private void handleButton(ActionEvent event) {
+		final Product product = config.getProduct();
 		log.debug("Product Selected: {}",product);
 		observer.productSelected(product);
 	}
 
+	@FXML
+	private void handleUpdate() {
+		log.debug("handleUpdate()");
+		observer.updateProductButton(this);
+	}
+	
 	@FXML
 	private void handleDelete() {
 		log.debug("handleDelete()");

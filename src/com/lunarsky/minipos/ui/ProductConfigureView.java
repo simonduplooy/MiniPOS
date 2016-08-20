@@ -87,16 +87,6 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	}
 	
 	//Implement ProductButtonObserver
-	public void productSelected(final Product product) {
-		log.debug("productSelected {}", product);
-
-	}
-	
-	public void productButtonGroupSelected(final PersistenceId id) {
-		log.debug("productButtonGroupSelected() ",id);
-	
-	}
-	
 	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
 		log.debug("createProductButton()");
 		
@@ -108,6 +98,27 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 			final ProductButton button = new ProductButton(this,config);
 			productGridPane.getChildren().add(button);
 		}
+	}
+	
+	public void updateProductButton(final ProductButton button) {
+		log.debug("updateProductButton()");
+		final ProductButtonConfig config = button.getConfig();
+		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(appData,stage,config);
+		dialog.getStage().showAndWait();
+		final ProductButtonConfig updatedConfig = dialog.getButtonConfig();
+		if(null != updatedConfig) {
+			button.setConfig(updatedConfig);
+		}
+	}
+	
+	public void productSelected(final Product product) {
+		log.debug("productSelected {}", product);
+	}
+	
+	public void deleteProductButton(final ProductButton button) {
+		log.debug("deleteProductButton {}",button);
+		//TODO Delete from Database
+		productGridPane.getChildren().remove(button);
 	}
 	
 	public void createProductButtonGroup(final Integer columnIdx, final Integer rowIdx) {
@@ -123,10 +134,8 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		rowConstraints.setMinHeight(button.getMinHeight());
 	}
 	
-	public void deleteProductButton(final ProductButton button) {
-		log.debug("deleteProductButton {}",button);
-		//TODO Delete from Database
-		productGridPane.getChildren().remove(button);
+	public void productButtonGroupSelected(final PersistenceId id) {
+		log.debug("productButtonGroupSelected() ",id);
 	}
 	
 	public void deleteProductButtonGroup(final ProductButtonGroup button) {

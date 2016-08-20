@@ -80,6 +80,9 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	}
 	
 	//Implement ProductButtonObserver
+	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
+	}
+	
 	public void productSelected(final Product product) {
 		log.debug("productSelected {}", product);
 		
@@ -96,18 +99,18 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		calculateTotal();
 	}
 	
-	public void productButtonGroupSelected(final PersistenceId id) {
-		log.debug("productButtonGroupSelected() ",id);
-	
+	public void updateProductButton(final ProductButton button) {
 	}
 	
-	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
+	public void deleteProductButton(final ProductButton button) {
 	}
 	
 	public void createProductButtonGroup(final Integer columnIdx, final Integer rowIdx) {
 	}
 	
-	public void deleteProductButton(final ProductButton button) {
+	public void productButtonGroupSelected(final PersistenceId id) {
+		log.debug("productButtonGroupSelected() ",id);
+	
 	}
 	
 	public void deleteProductButtonGroup(final ProductButtonGroup button) {

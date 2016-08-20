@@ -10,6 +10,7 @@
       <ContextMenu>
         <items>
           <MenuItem mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
+            <MenuItem mnemonicParsing="false" onAction="#handleUpdate" text="Update" />
         </items>
       </ContextMenu>
    </contextMenu>

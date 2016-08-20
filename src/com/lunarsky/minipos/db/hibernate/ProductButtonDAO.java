@@ -3,6 +3,7 @@ package com.lunarsky.minipos.db.hibernate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -14,8 +15,12 @@ import com.lunarsky.minipos.model.ProductButtonConfig;
 @Table(	name="productbuttons")
 public class ProductButtonDAO extends HibernateDAO {
 
+	@ManyToOne (optional = true)
+	@JoinColumn(name="parent_id")
+	ProductButtonGroupDAO parentButtonGroupDAO;
 	@ManyToOne (optional = false)
-	ProductDAO product;
+	@JoinColumn(name="product_id")
+	ProductDAO productDAO;
 	@Column(nullable = false )
 	Integer columnIdx;
 	@Column(nullable = false )
@@ -48,6 +53,8 @@ public class ProductButtonDAO extends HibernateDAO {
 	}
 	
 	public ProductButtonConfig getConfig() {
+		//TODO FIX ME
+		//final ProductButtonConfig buttonConfig = new ProductButtonConfig(getId(),getParentId(),getProduct(),getColumnIndex(),getRowIndex()); 
 		final ProductButtonConfig buttonConfig = new ProductButtonConfig(getId(),getProduct(),getColumnIndex(),getRowIndex()); 
 		return buttonConfig;
 	}
@@ -65,17 +72,16 @@ public class ProductButtonDAO extends HibernateDAO {
 		super(entityManager);
 		setConfig(buttonConfig);
 	}
-	
+
 	private Product getProduct() {
-		assert(null != product);
-		final Product product = this.product.getProduct();
+		assert(null != productDAO);
+		final Product product = productDAO.getProduct();
 		return product; 
 		}
 	
 	private void setProduct(final Product product) {
 		assert(null != product);
-		final ProductDAO productDAO = ProductDAO.load(getEntityManager(),(HibernatePersistenceId)product.getId());
-		this.product = productDAO; 
+		this.productDAO = ProductDAO.load(getEntityManager(),(HibernatePersistenceId)product.getId());
 		}
 	
 	private Integer getColumnIndex() {
