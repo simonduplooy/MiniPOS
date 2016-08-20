@@ -3,22 +3,21 @@ package com.lunarsky.minipos.db.hibernate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.ProductButtonGroupConfig;
-import com.lunarsky.minipos.ui.ProductButtonGroup;
 
 @Entity
 @Table(	name="productbuttongroups")
 public class ProductButtonGroupDAO extends HibernateDAO {
 
 	@ManyToOne(optional = true)
-	@JoinColumn(name = "parent_id")
+	@JoinColumn(name = "parentId", foreignKey = @ForeignKey(name = "FK_ProductButtonGroups_ProductButtonGroups"))
 	private ProductButtonGroupDAO parentButtonGroupDAO;
 	@Column(nullable = false)
 	private String name;

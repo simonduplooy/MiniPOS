@@ -3,6 +3,7 @@ package com.lunarsky.minipos.db.hibernate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -12,14 +13,14 @@ import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
 
 @Entity
-@Table(	name="productbuttons")
+@Table(	name="productButtons")
 public class ProductButtonDAO extends HibernateDAO {
 
 	@ManyToOne (optional = true)
-	@JoinColumn(name="parent_id")
+	@JoinColumn(name="parentId", foreignKey = @ForeignKey(name = "FK_ProductButtons_ProductButtonGroups"))
 	ProductButtonGroupDAO parentButtonGroupDAO;
 	@ManyToOne (optional = false)
-	@JoinColumn(name="product_id")
+	@JoinColumn(name="productId", foreignKey = @ForeignKey(name = "FK_ProductButtons_Product"))
 	ProductDAO productDAO;
 	@Column(nullable = false )
 	Integer columnIdx;
