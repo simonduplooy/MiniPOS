@@ -3,7 +3,7 @@ package com.lunarsky.minipos.db.hibernate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
@@ -14,7 +14,7 @@ import com.lunarsky.minipos.model.ProductButtonConfig;
 @Table(	name="productbuttons")
 public class ProductButtonDAO extends HibernateDAO {
 
-	@OneToOne (optional = false)
+	@ManyToOne (optional = false)
 	ProductDAO product;
 	@Column(nullable = false )
 	Integer columnIdx;

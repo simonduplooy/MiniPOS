@@ -19,19 +19,25 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.Stage;
 
 public class ProductConfigureView extends BorderPane implements ProductButtonObserver {
 	private static final Logger log = LogManager.getLogger();
 
 	private final AppData appData;
+	private final Stage stage;
+	
+	private PersistenceId parentId;
 	
 	@FXML
 	private GridPane productGridPane;
 	
-	public ProductConfigureView(final AppData appData) {
-		assert(null!=appData);
+	public ProductConfigureView(final AppData appData, final Stage stage) {
+		assert(null != appData);
+		assert(null != stage);
 		
 		this.appData = appData;
+		this.stage = stage;
 
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("ProductConfigureView.fxml"));
@@ -41,7 +47,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
         	loader.load();
         } catch (IOException e) {
         	throw new RuntimeException(e);
-        }        
+        }
 	}
 		
 	@FXML
@@ -93,17 +99,15 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	
 	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
 		log.debug("createProductButton()");
-		//TODO Create Config and Save
-		final Product product = new Product("Burger",10.0);
-		final ProductButtonConfig config = new ProductButtonConfig(null,product,columnIdx,rowIdx);
-		final ProductButton button = new ProductButton(this,config);
-		productGridPane.getChildren().add(button);
 		
-		final ColumnConstraints columnConstraints = productGridPane.getColumnConstraints().get(columnIdx);
-		final RowConstraints rowConstraints = productGridPane.getRowConstraints().get(rowIdx);
-		columnConstraints.setMinWidth(button.getMinWidth());
-		rowConstraints.setMinHeight(button.getMinHeight());
+		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(appData,stage,parentId,columnIdx,rowIdx);
+		dialog.getStage().showAndWait();
+		final ProductButtonConfig config = dialog.getButtonConfig();
 		
+		if(null != config) {
+			final ProductButton button = new ProductButton(this,config);
+			productGridPane.getChildren().add(button);
+		}
 	}
 	
 	public void createProductButtonGroup(final Integer columnIdx, final Integer rowIdx) {

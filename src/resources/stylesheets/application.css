@@ -15,8 +15,12 @@
 }
 
 .account-button {
+	
 }
 
+.product-button {
+
+}
 
 #login-label {
    -fx-font-family: "Arial Black";
@@ -43,7 +47,7 @@
     -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
 }
 
-.button > .text {
+.button .text {
     -fx-effect: dropshadow( one-pass-box , black , 0, 0.0 , 0 , -1 );
 }
 
@@ -65,7 +69,7 @@
     -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
 }
 
-.toggle-button > .text {
+.toggle-button .text {
         -fx-effect: dropshadow( one-pass-box , black , 0, 0.0 , 0 , -1 );
 }
 

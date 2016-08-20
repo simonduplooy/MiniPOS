@@ -159,7 +159,7 @@ public class ViewManager {
 	
 	public void showProductConfigureView() {
 		final Stage stage = getPrimaryStage();
-		final ProductConfigureView view = new ProductConfigureView(appData);
+		final ProductConfigureView view = new ProductConfigureView(appData,stage);
 		setScene(view);
 		final Scene scene = stage.getScene();
 		setDefaultLayout(scene,view);	
