@@ -29,8 +29,8 @@
             <RowConstraints vgrow="NEVER" />
 	     </rowConstraints>
 	      <children>
-	         <Label text="Name" GridPane.valignment="CENTER" />
-            <TextField fx:id="nameTextField" GridPane.columnIndex="1" />
+	         <Label text="Product" GridPane.valignment="BOTTOM" />
+	         <ComboBox fx:id="productComboBox" GridPane.columnIndex="1" />
 	      </children>
 	   </GridPane>
 	</center>

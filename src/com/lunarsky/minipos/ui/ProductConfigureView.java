@@ -12,6 +12,7 @@ import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.ProductButtonGroupConfig;
 
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -53,25 +54,53 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	@FXML
 	private void initialize() {
 		initializeControls();
+		initializeProductPane();
 		initializeAsync();
 	}
 	
 	private void initializeControls() {
-
-		final List<RowConstraints> rowConstraints = productGridPane.getRowConstraints();
-		final List<ColumnConstraints> columnConstraints = productGridPane.getColumnConstraints();
-		final int noRows = rowConstraints.size();
-		final int noColumns = columnConstraints.size();
-		
-		for(int row=0;row<noRows;row++) {
-			for(int column=0;column<noColumns;column++) {
-				final ProductButtonBlank button = new ProductButtonBlank(this,column,row);
-				productGridPane.getChildren().add(button);
-			}
-		}
 	}
 
 	private void initializeAsync() {
+		
+		//TODO GetProductButtonGroups
+		final Task<List<ProductButtonGroupConfig>> buttonGroupTask = new Task<List<ProductButtonGroupConfig>>() {
+			@Override
+			protected List<ProductButtonGroupConfig> call() {
+				//appData.getServerConnector().getProductButtons();
+				return null;
+			}
+			@Override
+			protected void succeeded() {
+				log.debug("Succeeded");
+			}
+			@Override
+			protected void failed() {
+				log.debug("Failed");
+			}
+		};
+		
+		//TODO GetProductButtonGroups
+		final Task<List<ProductButtonConfig>> buttonTask = new Task<List<ProductButtonConfig>>() {
+			@Override
+			protected List<ProductButtonConfig> call() {
+				final List<ProductButtonConfig> buttonConfigList = appData.getServerConnector().getProductButtons();
+				return buttonConfigList;
+			}
+			@Override
+			protected void succeeded() {
+				log.debug("Succeeded");
+				final List<ProductButtonConfig> buttonConfigList = getValue();
+			}
+			@Override
+			protected void failed() {
+				log.debug("Failed");
+			}
+		};
+		
+	final Thread buttonThread = new Thread(buttonTask);
+	buttonThread.start();
+		
 	}
 	
 	@FXML
@@ -84,6 +113,24 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	private void handleBack(final ActionEvent event) {
 		log.debug("handleBack()");
 		//TODO
+	}
+	
+	private void initializeProductPane() {
+		
+		final List<ColumnConstraints> columnConstraintsList = productGridPane.getColumnConstraints();
+		final List<RowConstraints> rowConstraintsList = productGridPane.getRowConstraints();
+		
+		columnConstraintsList.clear();
+		rowConstraintsList.clear();
+		
+		for(int rowIdx=0; rowIdx< UiConst.NO_PRODUCT_BUTTON_ROWS; rowIdx++) {
+			for(int columnIdx=0; columnIdx<UiConst.NO_PRODUCT_BUTTON_COLUMNS; columnIdx++) {
+				final ProductButtonBlank button = new ProductButtonBlank(this,columnIdx,rowIdx);
+				productGridPane.getChildren().add(button);
+			}
+		}
+		
+		//TODO CONFIGURE CONSTRAINTS
 	}
 	
 	//Implement ProductButtonObserver
@@ -123,15 +170,25 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	
 	public void createProductButtonGroup(final Integer columnIdx, final Integer rowIdx) {
 		log.debug("createProductButtonGroup()");
-		//TODO Create Config and Save
+		
+		final Task<ProductButtonGroupConfig> task = new Task<ProductButtonGroupConfig>() {
+			@Override
+			protected ProductButtonGroupConfig call() {
+				return null;
+			}
+			@Override
+			protected void succeeded() {
+				
+			}
+			@Override
+			protected void failed() {
+				
+			}
+		};
+		
 		final ProductButtonGroupConfig config = new ProductButtonGroupConfig(null,"Drinks",columnIdx,rowIdx);
 		final ProductButtonGroup button = new ProductButtonGroup(this,config);
 		productGridPane.getChildren().add(button);
-		
-		final ColumnConstraints columnConstraints = productGridPane.getColumnConstraints().get(columnIdx);
-		final RowConstraints rowConstraints = productGridPane.getRowConstraints().get(rowIdx);
-		columnConstraints.setMinWidth(button.getMinWidth());
-		rowConstraints.setMinHeight(button.getMinHeight());
 	}
 	
 	public void productButtonGroupSelected(final PersistenceId id) {

@@ -92,7 +92,7 @@ public class ViewManager {
 	
 	private void setDefaultLayout(final Scene scene, final Region region) {
 		setStyleSheets(scene);
-		region.setPrefSize(UiConsts.PREF_LAYOUT_WIDTH,UiConsts.PREF_LAYOUT_HEIGHT);
+		region.setPrefSize(UiConst.PREF_LAYOUT_WIDTH,UiConst.PREF_LAYOUT_HEIGHT);
 	}
 	
 	//Workaround Stage.setScene() resizes the stage if it is maximized. 

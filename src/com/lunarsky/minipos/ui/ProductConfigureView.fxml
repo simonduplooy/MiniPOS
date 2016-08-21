@@ -32,21 +32,7 @@
    <center>
       <ScrollPane fitToHeight="true" fitToWidth="true" focusTraversable="false" BorderPane.alignment="CENTER">
          <content>
-            <GridPane fx:id="productGridPane">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" prefWidth="200.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" prefWidth="200.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" prefWidth="200.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" prefWidth="200.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="100.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="100.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="100.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="100.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="100.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="1.7976931348623157E308" prefHeight="100.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+            <GridPane fx:id="productGridPane" gridLinesVisible="true">
             </GridPane>
          </content>
       </ScrollPane>

@@ -6,9 +6,11 @@ import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.PersistenceConfig;
 import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
+import com.lunarsky.minipos.model.ProductButtonGroupConfig;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.ui.ProductButtonGroup;
 
 public interface ServerConnector {
 	
@@ -61,6 +63,9 @@ public interface ServerConnector {
 	 *****************************************************************************/
 	public List<ProductButtonConfig> getProductButtons();
 	public ProductButtonConfig saveProductButton(final ProductButtonConfig config);
+	
+	public List<ProductButtonGroup> getProductButtonGroups();
+	public ProductButtonGroupConfig saveProductButtonGroup(final ProductButtonGroupConfig config);
 	
 	public void close();
 }
