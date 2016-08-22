@@ -13,8 +13,7 @@
          <bottom>
             <VBox alignment="BOTTOM_LEFT" spacing="5.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleBack" prefHeight="100.0" prefWidth="200.0" text="Back" />
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#handleDone" prefHeight="100.0" prefWidth="200.0" text="Done" />
+                  <Button defaultButton="true" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleBack" prefHeight="100.0" prefWidth="200.0" text="Back" />
                </children>
             </VBox>
          </bottom>

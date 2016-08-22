@@ -198,16 +198,11 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	}
 	
 	@FXML
-	private void handleDone(final ActionEvent event) {
-		log.debug("handleDone()");
-		close();
-	}
-	
-	@FXML
 	private void handleBack(final ActionEvent event) {
 		log.debug("handleBack()");
 		
 		if(null == parentId) {
+			close();
 			return;
 		}
 		

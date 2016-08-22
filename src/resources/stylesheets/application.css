@@ -19,7 +19,7 @@
 }
 
 .product-button {
-
+   -fx-font-size: 20px;
 }
 
 #login-label {
