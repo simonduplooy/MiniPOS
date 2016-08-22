@@ -1,78 +1,51 @@
 package com.lunarsky.minipos.ui;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.Product;
-import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.ProductButtonGroupConfig;
+import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 
-import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 public class ProductButtonGroupUpdateDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 
 	private final AppData appData;
 	private final Stage stage;
-	
-	private final PersistenceId id;
-	private final PersistenceId parentId;
-	private final String name;
-	private final Integer columnIdx;
-	private final Integer rowIdx;
 
 	private ProductButtonGroupConfig buttonConfig;
 
 	@FXML
 	private TextField nameTextField;
+	private StringTextFieldValidator nameValidator;
 	@FXML
 	private Button saveButton;
 
 	public ProductButtonGroupUpdateDialog(final AppData appData, final Stage parentStage, final ProductButtonGroupConfig buttonConfig) {
-		this(appData,parentStage,buttonConfig.getId(),buttonConfig.getParentId(),null,buttonConfig.getColumnIndex(),buttonConfig.getRowIndex());
-	}
-	
-	public ProductButtonGroupUpdateDialog(final AppData appData, final Stage parentStage, final PersistenceId parentId, final Integer columnIdx, final Integer rowIdx) {
-		this(appData,parentStage,null,parentId,"",columnIdx,rowIdx);
-	}
-	
-	public ProductButtonGroupUpdateDialog(final AppData appData, final Stage parentStage, final PersistenceId id, final PersistenceId parentId, final String name, final Integer columnIdx, final Integer rowIdx) {
 
 		assert(null != appData);
 		assert(null != parentStage);
-		//id can be null
-		//parentId can be null
-		assert(null != name);
-		assert(null != columnIdx);
-		assert(null != rowIdx);
+		//buttonConfig can be null
 
-		
 		this.appData = appData;
-		this.id = id;
-		this.parentId = parentId;
-		this.name = name;
-		this.columnIdx = columnIdx;
-		this.rowIdx = rowIdx;
+		this.buttonConfig = buttonConfig;
 
 		stage = new Stage();
 		stage.initOwner(parentStage);
@@ -111,6 +84,14 @@ public class ProductButtonGroupUpdateDialog extends BorderPane {
 	}
 	
 	private void initializeControls() {
+		if(null == buttonConfig) {
+			nameTextField.setText("");
+		} else {
+			nameTextField.setText(buttonConfig.getName());
+		}
+		
+		nameValidator = new StringTextFieldValidator(nameTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
+		saveButton.disableProperty().bind(nameValidator.validProperty().not());
 		//TODO Bind Save Service
 		//saveButton.disableProperty().bind(saveService.runningProperty());
 	}
@@ -158,6 +139,11 @@ public class ProductButtonGroupUpdateDialog extends BorderPane {
 	}
 	
 	private ProductButtonGroupConfig createButtonConfigFromControls() {
+		final PersistenceId id = buttonConfig.getId();
+		final PersistenceId parentId = buttonConfig.getParentId();
+		final String name = nameTextField.getText();
+		final Integer columnIdx = buttonConfig.getColumnIndex();
+		final Integer rowIdx = buttonConfig.getRowIndex();
 		final ProductButtonGroupConfig buttonConfig = new ProductButtonGroupConfig(id,parentId,name,columnIdx,rowIdx);
 		return buttonConfig;
 	}

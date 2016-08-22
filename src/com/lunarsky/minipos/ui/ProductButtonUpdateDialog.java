@@ -54,7 +54,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	private Button saveButton;
 
 	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final ProductButtonConfig buttonConfig) {
-		this(appData,parentStage,buttonConfig.getId(),buttonConfig.getParent(),null,buttonConfig.getColumnIndex(),buttonConfig.getRowIndex());
+		this(appData,parentStage,buttonConfig.getId(),buttonConfig.getParentId(),null,buttonConfig.getColumnIndex(),buttonConfig.getRowIndex());
 	}
 	
 	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final PersistenceId parentId, final Integer columnIdx, final Integer rowIdx) {

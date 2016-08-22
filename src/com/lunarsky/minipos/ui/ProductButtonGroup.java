@@ -17,7 +17,7 @@ public class ProductButtonGroup extends Button {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final ProductButtonObserver observer;
-	private final ProductButtonGroupConfig config;
+	private ProductButtonGroupConfig config;
 	
 	public ProductButtonGroup(final ProductButtonObserver observer, final ProductButtonGroupConfig config) {
 		assert(null != observer);
@@ -41,17 +41,34 @@ public class ProductButtonGroup extends Button {
 	    
 	}
 	
-	@FXML
-	private void initialize() {
+	public ProductButtonGroupConfig getConfig() {
+		assert(null != config);
+		return config;
+	}
+	
+	public void setConfig(final ProductButtonGroupConfig config) {
+		assert(null != config);
+		this.config = config;
 		setText(config.getName());
 	}
 	
 	@FXML
+	private void initialize() {
+		setConfig(config);
+	}
+	
+	@FXML
 	private void handleButton(ActionEvent event) {
-		log.debug("handleButton() {}",config);
-		observer.productButtonGroupSelected(config.getId());
+		log.debug("handleButton()");
+		observer.productButtonGroupSelected(getConfig());
 	}
 
+	@FXML
+	private void handleUpdate() {
+		log.debug("handleUpdate()");
+		observer.updateProductButtonGroup(this);
+	}
+	
 	@FXML
 	private void handleDelete() {
 		log.debug("handleDelete()");

@@ -65,9 +65,11 @@ public interface PersistenceProvider {
 	 *****************************************************************************/
 	public List<ProductButtonConfig> getProductButtons(final Transaction transaction);
 	public ProductButtonConfig saveProductButton(final Transaction transaction, final ProductButtonConfig config);
+	public void deleteProductButton(final Transaction transaction, final PersistenceId id);
 	
-	public List<ProductButtonGroup> getProductButtonGroups(final Transaction transaction);
+	public List<ProductButtonGroupConfig> getProductButtonGroups(final Transaction transaction);
 	public ProductButtonGroupConfig saveProductButtonGroup(final Transaction transaction, final ProductButtonGroupConfig config);
+	public void deleteProductButtonGroup(final Transaction transaction, final PersistenceId id);
 	
 	public void close();
 	

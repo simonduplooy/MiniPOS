@@ -1,6 +1,7 @@
 package com.lunarsky.minipos.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +17,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -29,6 +31,8 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	private final Stage stage;
 	
 	private PersistenceId parentId;
+	private List<ProductButtonGroup> productButtonGroupList;
+	private List<ProductButton> productButtonList;
 	
 	@FXML
 	private GridPane productGridPane;
@@ -61,26 +65,50 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	private void initializeControls() {
 	}
 
+	private void initializeProductPane() {
+		
+		final List<Node> nodeList = productGridPane.getChildren();
+		nodeList.clear();
+		
+		//TODO Only the last Constraints have an Effect
+		for(int rowIdx=0; rowIdx< UiConst.NO_PRODUCT_BUTTON_ROWS; rowIdx++) {
+			final RowConstraints rowConstraints = productGridPane.getRowConstraints().get(rowIdx);
+			for(int columnIdx=0; columnIdx<UiConst.NO_PRODUCT_BUTTON_COLUMNS; columnIdx++) {
+				final ColumnConstraints columnConstraints = productGridPane.getColumnConstraints().get(columnIdx);
+				final ProductButtonBlank button = new ProductButtonBlank(this,columnIdx,rowIdx);
+				rowConstraints.setPrefHeight(button.getPrefHeight());
+				columnConstraints.setPrefWidth(button.getPrefWidth());
+				nodeList.add(button);
+			}
+		}
+	}
+	
 	private void initializeAsync() {
 		
-		//TODO GetProductButtonGroups
+		//GetProductButtonGroups
 		final Task<List<ProductButtonGroupConfig>> buttonGroupTask = new Task<List<ProductButtonGroupConfig>>() {
 			@Override
 			protected List<ProductButtonGroupConfig> call() {
-				//appData.getServerConnector().getProductButtons();
-				return null;
+				final List<ProductButtonGroupConfig> buttonGroupConfigList = appData.getServerConnector().getProductButtonGroups();
+				return buttonGroupConfigList;
 			}
 			@Override
 			protected void succeeded() {
-				log.debug("Succeeded");
+				log.debug("getProductButtonGroups() Succeeded");
+				final List<ProductButtonGroupConfig>buttonGroupConfigList = getValue();
+				createGroupButtons(buttonGroupConfigList);
+				showGroupButtons();
 			}
 			@Override
 			protected void failed() {
-				log.debug("Failed");
+				log.debug("getProductButtonGroups() Failed");
 			}
 		};
 		
-		//TODO GetProductButtonGroups
+		final Thread buttonGroupThread = new Thread(buttonGroupTask);
+		buttonGroupThread.start();
+		
+		//GetProductButtons
 		final Task<List<ProductButtonConfig>> buttonTask = new Task<List<ProductButtonConfig>>() {
 			@Override
 			protected List<ProductButtonConfig> call() {
@@ -89,18 +117,84 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 			}
 			@Override
 			protected void succeeded() {
-				log.debug("Succeeded");
+				log.debug("getProductButtons() Succeeded");
 				final List<ProductButtonConfig> buttonConfigList = getValue();
+				createProductButtons(buttonConfigList);
+				showProductButtons();
 			}
 			@Override
 			protected void failed() {
-				log.debug("Failed");
+				log.debug("getProductButtons() Failed");
 			}
 		};
 		
 	final Thread buttonThread = new Thread(buttonTask);
 	buttonThread.start();
 		
+	}
+	
+	private void createGroupButtons(final List<ProductButtonGroupConfig> buttonGroupConfigList) {
+		assert(null == productButtonGroupList);
+		
+		productButtonGroupList = new ArrayList<ProductButtonGroup>();
+		for(ProductButtonGroupConfig buttonConfig: buttonGroupConfigList) {
+			final ProductButtonGroup button = new ProductButtonGroup(this,buttonConfig);
+			productButtonGroupList.add(button);
+		}
+	}
+	
+	private void showGroupButtons() {
+		final List<Node> nodeList = productGridPane.getChildren();
+		
+		for(ProductButtonGroup buttonGroup: productButtonGroupList) {
+			final PersistenceId buttonParentId = buttonGroup.getConfig().getParentId();
+			if(null == parentId) {
+				if(null == buttonParentId) {
+					nodeList.add(buttonGroup);
+				}
+			} else {
+				if(null != buttonParentId) {
+					if(parentId.equals(buttonParentId)) {
+						nodeList.add(buttonGroup);
+					}
+				}
+			}
+		}
+	}
+	
+	private void createProductButtons(final List<ProductButtonConfig> buttonConfigList) {
+		assert(null == productButtonList);
+		
+		productButtonList = new ArrayList<ProductButton>();
+		for(ProductButtonConfig buttonConfig: buttonConfigList) {
+			final ProductButton button = new ProductButton(this,buttonConfig);
+			productButtonList.add(button);
+		}
+	}
+	
+	private void showProductButtons() {
+		final List<Node> nodeList = productGridPane.getChildren();
+		
+		for(ProductButton button: productButtonList) {
+			final PersistenceId buttonParentId = button.getConfig().getParentId();
+			if(null == parentId) {
+				if(null == buttonParentId) {
+					nodeList.add(button);
+				}
+			} else {
+				if(null != buttonParentId) {
+					if(parentId.equals(buttonParentId)) {
+						nodeList.add(button);
+					}
+				}
+			}
+		}
+	}
+	
+	private void refreshButtons() {
+		initializeProductPane();
+		showGroupButtons();
+		showProductButtons();
 	}
 	
 	@FXML
@@ -112,25 +206,22 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	@FXML
 	private void handleBack(final ActionEvent event) {
 		log.debug("handleBack()");
-		//TODO
-	}
-	
-	private void initializeProductPane() {
 		
-		final List<ColumnConstraints> columnConstraintsList = productGridPane.getColumnConstraints();
-		final List<RowConstraints> rowConstraintsList = productGridPane.getRowConstraints();
+		if(null == parentId) {
+			return;
+		}
 		
-		columnConstraintsList.clear();
-		rowConstraintsList.clear();
-		
-		for(int rowIdx=0; rowIdx< UiConst.NO_PRODUCT_BUTTON_ROWS; rowIdx++) {
-			for(int columnIdx=0; columnIdx<UiConst.NO_PRODUCT_BUTTON_COLUMNS; columnIdx++) {
-				final ProductButtonBlank button = new ProductButtonBlank(this,columnIdx,rowIdx);
-				productGridPane.getChildren().add(button);
+		//Find the parent
+		for(ProductButtonGroup buttonGroup: productButtonGroupList) {
+			final ProductButtonGroupConfig config = buttonGroup.getConfig();
+			final PersistenceId id = config.getId();
+			if(parentId.equals(id)) {
+				parentId = config.getParentId();
+				break;
 			}
 		}
 		
-		//TODO CONFIGURE CONSTRAINTS
+		refreshButtons();
 	}
 	
 	//Implement ProductButtonObserver
@@ -143,6 +234,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		
 		if(null != config) {
 			final ProductButton button = new ProductButton(this,config);
+			productButtonList.add(button);
 			productGridPane.getChildren().add(button);
 		}
 	}
@@ -164,41 +256,101 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	
 	public void deleteProductButton(final ProductButton button) {
 		log.debug("deleteProductButton {}",button);
-		//TODO Delete from Database
-		productGridPane.getChildren().remove(button);
+
+		final Task<Void> task = new Task<Void>() {
+			final PersistenceId id = button.getConfig().getId();
+			@Override
+			protected Void call() {
+				log.debug("deleteProductButton() {}",button);
+				appData.getServerConnector().deleteProductButton(id);
+				return null;
+			}
+			@Override
+			protected void succeeded() {
+				log.debug("deleteProductButton() Succeeded");
+				productButtonList.remove(button);
+				productGridPane.getChildren().remove(button);
+			}
+			@Override
+			protected void failed() {
+				final Throwable t = getException();
+				log.catching(t);
+				throw new RuntimeException(t);
+			}
+		};
+		
+		final Thread thread = new Thread(task);
+		thread.start();
 	}
 	
 	public void createProductButtonGroup(final Integer columnIdx, final Integer rowIdx) {
 		log.debug("createProductButtonGroup()");
 		
-		final Task<ProductButtonGroupConfig> task = new Task<ProductButtonGroupConfig>() {
-			@Override
-			protected ProductButtonGroupConfig call() {
-				return null;
-			}
-			@Override
-			protected void succeeded() {
-				
-			}
-			@Override
-			protected void failed() {
-				
-			}
-		};
+		final ProductButtonGroupConfig config = new ProductButtonGroupConfig(parentId,"",columnIdx,rowIdx);
+		final ProductButtonGroupUpdateDialog dialog = new ProductButtonGroupUpdateDialog(appData,stage,config);
+		dialog.getStage().showAndWait();
+		final ProductButtonGroupConfig updatedConfig = dialog.getButtonConfig();
+
+		//Cancelled
+		if(updatedConfig == config) {
+			return;
+		}
 		
-		final ProductButtonGroupConfig config = new ProductButtonGroupConfig(null,"Drinks",columnIdx,rowIdx);
-		final ProductButtonGroup button = new ProductButtonGroup(this,config);
+		final ProductButtonGroup button = new ProductButtonGroup(this,updatedConfig);
+		productButtonGroupList.add(button);
 		productGridPane.getChildren().add(button);
 	}
 	
-	public void productButtonGroupSelected(final PersistenceId id) {
-		log.debug("productButtonGroupSelected() ",id);
+	public void updateProductButtonGroup(final ProductButtonGroup buttonGroup) {
+		log.debug("updateProductButtonGroup()");
+		
+		final ProductButtonGroupConfig config = buttonGroup.getConfig();
+		final ProductButtonGroupUpdateDialog dialog = new ProductButtonGroupUpdateDialog(appData,stage,config);
+		dialog.getStage().showAndWait();
+		final ProductButtonGroupConfig updatedConfig = dialog.getButtonConfig();
+		//Cancelled
+		if(updatedConfig == config) {
+			return;
+		}
+		
+		buttonGroup.setConfig(updatedConfig);
+	}
+	
+	public void productButtonGroupSelected(final ProductButtonGroupConfig config) {
+		log.debug("productButtonGroupSelected() ",config);
+		
+		parentId = config.getId();
+		refreshButtons();
 	}
 	
 	public void deleteProductButtonGroup(final ProductButtonGroup button) {
 		log.debug("deleteProductButtonGroup {}",button);
-		//TODO Delete from Database
-		productGridPane.getChildren().remove(button);
+		
+		final Task<Void> task = new Task<Void>() {
+			final PersistenceId id = button.getConfig().getId();
+			
+			@Override
+			protected Void call() {
+				log.debug("deleteProductButtonGroup() {}",button);
+				appData.getServerConnector().deleteProductButtonGroup(id);
+				return null;
+			}
+			@Override
+			protected void succeeded() {
+				log.debug("deleteProductButtonGroup() Succeeded");
+				productButtonGroupList.remove(button);
+				productGridPane.getChildren().remove(button);
+			}
+			@Override
+			protected void failed() {
+				final Throwable t = getException();
+				log.catching(t);
+				throw new RuntimeException(t);
+			}
+		};
+		
+		final Thread thread = new Thread(task);
+		thread.start();
 	}
 	
 	private void close() {

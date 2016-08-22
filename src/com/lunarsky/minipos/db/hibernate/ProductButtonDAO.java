@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
+import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
 
@@ -54,9 +55,7 @@ public class ProductButtonDAO extends HibernateDAO {
 	}
 	
 	public ProductButtonConfig getConfig() {
-		//TODO FIX ME
-		//final ProductButtonConfig buttonConfig = new ProductButtonConfig(getId(),getParentId(),getProduct(),getColumnIndex(),getRowIndex()); 
-		final ProductButtonConfig buttonConfig = new ProductButtonConfig(getId(),getProduct(),getColumnIndex(),getRowIndex()); 
+		final ProductButtonConfig buttonConfig = new ProductButtonConfig(getId(),getParentId(),getProduct(),getColumnIndex(),getRowIndex());  
 		return buttonConfig;
 	}
 
@@ -64,6 +63,7 @@ public class ProductButtonDAO extends HibernateDAO {
 		assert(null != buttonConfig);
 		
 		setId(buttonConfig.getId());
+		setParentId(buttonConfig.getParentId());
 		setProduct(buttonConfig.getProduct());
 		setColumnIndex(buttonConfig.getColumnIndex());
 		setRowIndex(buttonConfig.getRowIndex());
@@ -74,6 +74,20 @@ public class ProductButtonDAO extends HibernateDAO {
 		setConfig(buttonConfig);
 	}
 
+	private PersistenceId getParentId() {
+		if(null == parentButtonGroupDAO) {
+			return null;
+		}
+		final PersistenceId parentId = parentButtonGroupDAO.getId();
+		return parentId;
+	}
+	
+	private void setParentId(final PersistenceId parentId) {
+		if(null != parentId) {
+			this.parentButtonGroupDAO = ProductButtonGroupDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
+		}
+	}
+	
 	private Product getProduct() {
 		assert(null != productDAO);
 		final Product product = productDAO.getProduct();

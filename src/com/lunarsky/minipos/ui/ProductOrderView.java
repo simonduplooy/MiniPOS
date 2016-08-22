@@ -2,18 +2,16 @@ package com.lunarsky.minipos.ui;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.db.hibernate.HibernatePersistenceId;
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.Product;
+import com.lunarsky.minipos.model.ProductButtonGroupConfig;
 import com.lunarsky.minipos.model.ProductSale;
 
 import javafx.event.ActionEvent;
@@ -108,9 +106,11 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	public void createProductButtonGroup(final Integer columnIdx, final Integer rowIdx) {
 	}
 	
-	public void productButtonGroupSelected(final PersistenceId id) {
-		log.debug("productButtonGroupSelected() ",id);
+	public void updateProductButtonGroup(final ProductButtonGroup button) {
+	}
 	
+	public void productButtonGroupSelected(final ProductButtonGroupConfig config) {
+		log.debug("productButtonGroupSelected() {}",config);
 	}
 	
 	public void deleteProductButtonGroup(final ProductButtonGroup button) {

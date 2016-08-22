@@ -14,6 +14,7 @@ import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.PersistenceConfig;
 import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
+import com.lunarsky.minipos.model.ProductButtonGroupConfig;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
@@ -186,10 +187,35 @@ public class LocalServerConnector implements ServerConnector {
 	
 	public ProductButtonConfig saveProductButton(final ProductButtonConfig config) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final ProductButtonConfig updatedButton = (ProductButtonConfig)persistenceCall(transaction,()->(persistenceProvider.saveProductButton(transaction, config)));
-		return updatedButton;
+		final ProductButtonConfig updatedConfig = (ProductButtonConfig)persistenceCall(transaction,()->(persistenceProvider.saveProductButton(transaction, config)));
+		return updatedConfig;
 	}
 	
+	public void deleteProductButton(final PersistenceId id) {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		persistenceCall(transaction,()->{persistenceProvider.deleteProductButton(transaction,id);return null;});
+	}
+	
+	public List<ProductButtonGroupConfig> getProductButtonGroups() {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		final List<ProductButtonGroupConfig> buttons = (List<ProductButtonGroupConfig>)persistenceCall(transaction,()->(persistenceProvider.getProductButtonGroups(transaction)));
+		return buttons;
+	}
+	
+	public ProductButtonGroupConfig saveProductButtonGroup(final ProductButtonGroupConfig config) {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		final ProductButtonGroupConfig updatedConfig = (ProductButtonGroupConfig)persistenceCall(transaction,()->(persistenceProvider.saveProductButtonGroup(transaction, config)));
+		return updatedConfig;
+	}
+	
+	public void deleteProductButtonGroup(final PersistenceId id) {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		persistenceCall(transaction,()->{persistenceProvider.deleteProductButtonGroup(transaction,id);return null;});
+	}
+	
+	/*****************************************************************************
+	 * Utils
+	 *****************************************************************************/
 	public void close() {
 		persistenceProvider.close();
 	}

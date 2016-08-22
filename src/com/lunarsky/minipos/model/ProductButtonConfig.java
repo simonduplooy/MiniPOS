@@ -30,7 +30,7 @@ public class ProductButtonConfig extends PersistenceObject {
 		this.rowIdx = rowIdx;
 	}
 	
-	public PersistenceId getParent() {
+	public PersistenceId getParentId() {
 		return parentId;
 	}
 	

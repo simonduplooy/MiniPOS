@@ -63,9 +63,11 @@ public interface ServerConnector {
 	 *****************************************************************************/
 	public List<ProductButtonConfig> getProductButtons();
 	public ProductButtonConfig saveProductButton(final ProductButtonConfig config);
+	public void deleteProductButton(final PersistenceId id);
 	
-	public List<ProductButtonGroup> getProductButtonGroups();
+	public List<ProductButtonGroupConfig> getProductButtonGroups();
 	public ProductButtonGroupConfig saveProductButtonGroup(final ProductButtonGroupConfig config);
+	public void deleteProductButtonGroup(final PersistenceId id);
 	
 	public void close();
 }

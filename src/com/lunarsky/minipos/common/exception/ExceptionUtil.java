@@ -11,6 +11,7 @@ public class ExceptionUtil {
 	
 	private static final String NAME_CONTRAINT_REGEX = "Duplicate entry '.*' for key 'NAME_CONSTRAINT'";
 	private static final String PASSWORD_CONTRAINT_REGEX = "Duplicate entry '.*' for key 'PASSWORD_CONSTRAINT'";
+	private static final String FOREIGN_KEY_CONSTRAINT_REGEX = ".*a foreign key constraint fails.*";
 	
 	public static void translate(final RuntimeException exception) {
 
@@ -31,7 +32,12 @@ public class ExceptionUtil {
 				
 				if(constraintName.matches(PASSWORD_CONTRAINT_REGEX)) {
 					throw new PasswordInUseException(constraintName,exception);
-				}				
+				}
+				
+				if(constraintName.matches(FOREIGN_KEY_CONSTRAINT_REGEX)) {
+					throw new EntityInUseException(constraintName,exception);
+				}
+				
 			}
 			throwable = throwable.getCause();
 		} while (null != throwable);

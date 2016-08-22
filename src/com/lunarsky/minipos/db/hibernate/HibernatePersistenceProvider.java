@@ -21,6 +21,7 @@ import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.PersistenceConfig;
 import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
+import com.lunarsky.minipos.model.ProductButtonGroupConfig;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
@@ -201,14 +202,36 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	 *****************************************************************************/
 	public List<ProductButtonConfig> getProductButtons(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<ProductButtonConfig> productButtonConfigs = ProductButtonManager.getConfigs(entityManager);
-		return productButtonConfigs;	
+		final List<ProductButtonConfig> buttonConfigs = ProductButtonManager.getConfigs(entityManager);
+		return buttonConfigs;	
 	}
 	
 	public ProductButtonConfig saveProductButton(final Transaction transaction, final ProductButtonConfig config) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		final ProductButtonConfig updatedConfig = ProductButtonManager.save(entityManager,config);
 		return updatedConfig;
+	}
+	
+	public void deleteProductButton(final Transaction transaction, final PersistenceId id) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		ProductButtonManager.delete(entityManager,(HibernatePersistenceId)id);
+	}
+	
+	public List<ProductButtonGroupConfig> getProductButtonGroups(final Transaction transaction) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		final List<ProductButtonGroupConfig> buttonConfigs = ProductButtonGroupManager.getConfigs(entityManager);
+		return buttonConfigs;	
+	}
+	
+	public ProductButtonGroupConfig saveProductButtonGroup(final Transaction transaction, final ProductButtonGroupConfig config) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		final ProductButtonGroupConfig updatedConfig = ProductButtonGroupManager.save(entityManager,config);
+		return updatedConfig;
+	}
+	
+	public void deleteProductButtonGroup(final Transaction transaction, final PersistenceId id) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		ProductButtonGroupManager.delete(entityManager,(HibernatePersistenceId)id);
 	}
 	
 	/*****************************************************************************
