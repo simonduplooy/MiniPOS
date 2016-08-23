@@ -8,11 +8,11 @@ import com.lunarsky.minipos.interfaces.PersistenceId;
 public class PersistenceObject {
 	private static final Logger log = LogManager.getLogger();
 
-	private final PersistenceId id;
+	private PersistenceId id;
 		
 	//id can be null, must be assigned by persistence provider
 	protected PersistenceObject(final PersistenceId id) { 
-		this.id = id; 
+		setId(id); 
 	}
 	
 	public boolean hasId() { 
@@ -21,6 +21,11 @@ public class PersistenceObject {
 	
 	public PersistenceId getId() {
 		return id;
+	}
+	
+	public void setId(final PersistenceId id) {
+		if(null != this.id) {throw new IllegalArgumentException();}
+		this.id = id;
 	}
 	
 	//PersistenceObjects are compared by id

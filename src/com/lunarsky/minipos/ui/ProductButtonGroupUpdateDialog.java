@@ -94,6 +94,8 @@ public class ProductButtonGroupUpdateDialog extends BorderPane {
 		saveButton.disableProperty().bind(nameValidator.validProperty().not());
 		//TODO Bind Save Service
 		//saveButton.disableProperty().bind(saveService.runningProperty());
+		
+		nameTextField.requestFocus();
 	}
 	
 	private void initializeServices() {

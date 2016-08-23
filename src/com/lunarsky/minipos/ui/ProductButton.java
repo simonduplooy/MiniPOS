@@ -8,10 +8,12 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
 
 public class ProductButton extends Button {

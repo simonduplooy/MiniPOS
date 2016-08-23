@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="600.0" prefWidth="800.0" type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <bottom>
       <HBox alignment="BOTTOM_RIGHT" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
@@ -18,9 +18,6 @@
          </children>
       </HBox>
    </bottom>
-   <left>
-      <ListView fx:id="productListView" BorderPane.alignment="CENTER" />
-   </left>
    <center>
       <VBox spacing="5.0" BorderPane.alignment="CENTER">
          <children>
@@ -44,4 +41,7 @@
          </padding>
       </VBox>
    </center>
+   <left>
+      <ScrollPane fx:id="productScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER" />
+   </left>
 </fx:root>

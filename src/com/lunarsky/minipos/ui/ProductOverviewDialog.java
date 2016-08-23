@@ -1,10 +1,8 @@
 package com.lunarsky.minipos.ui;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -24,13 +22,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.converter.CurrencyStringConverter;
 
 public class ProductOverviewDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
@@ -38,13 +34,14 @@ public class ProductOverviewDialog extends BorderPane {
 	private final AppData appData;
 	private final Stage stage;
 	
+	//TODO Remove 
 	private ObservableList<Product> productList;
+	private ProductTreeView productTreeView;
 	private Product selectedProduct;
 	private ChangeListener<Product> selectedItemChangeListener;
 	
-	
 	@FXML
-	private ListView<Product> productListView;
+	private ScrollPane productScrollPane;
 	@FXML
 	private TextField nameTextField;
 	@FXML
@@ -94,6 +91,9 @@ public class ProductOverviewDialog extends BorderPane {
 
 	private void initializeControls() {
 		
+		final ProductTreeView productTreeView = new ProductTreeView(appData);
+		productScrollPane.setContent(productTreeView);
+		/*
 		productListView.setCellFactory((listCell) -> {
 			ListCell<Product> cell = new ListCell<Product>() {
 				@Override
@@ -108,14 +108,15 @@ public class ProductOverviewDialog extends BorderPane {
 			};
 			return cell;
 		});
-		
+		*/
 	}
 	
 	private void initializeBindings() {
+		/*
 		editButton.disableProperty().bind(productListView.getSelectionModel().selectedItemProperty().isNull());
 		duplicateButton.disableProperty().bind(productListView.getSelectionModel().selectedItemProperty().isNull());
 		deleteButton.disableProperty().bind(productListView.getSelectionModel().selectedItemProperty().isNull());
-		
+		*/
 	}
 	
 	private void initializeListeners() {
@@ -129,12 +130,12 @@ public class ProductOverviewDialog extends BorderPane {
 			}
 		};
 		
-		productListView.getSelectionModel().selectedItemProperty().addListener(selectedItemChangeListener);
+		//productListView.getSelectionModel().selectedItemProperty().addListener(selectedItemChangeListener);
 		
 	}
 	
 	private void releaseListeners() {
-		productListView.getSelectionModel().selectedItemProperty().removeListener(selectedItemChangeListener);		
+		//productListView.getSelectionModel().selectedItemProperty().removeListener(selectedItemChangeListener);		
 	}
 	
 	private void releaseBindings() {
@@ -156,7 +157,7 @@ public class ProductOverviewDialog extends BorderPane {
 				log.debug("GetProducts() Succeeded");
 				productList = FXCollections.observableList(getValue());
 				Collections.sort(productList);
-				productListView.setItems(productList);
+				//productListView.setItems(productList);
 			}
 			@Override
 			protected void failed() {
@@ -209,7 +210,7 @@ public class ProductOverviewDialog extends BorderPane {
 			productList.remove(product);
 			productList.add(updatedProduct);
 			FXCollections.sort(productList);
-			productListView.getSelectionModel().select(updatedProduct);
+			//productListView.getSelectionModel().select(updatedProduct);
 		}
 	}
 
@@ -238,8 +239,7 @@ public class ProductOverviewDialog extends BorderPane {
 			
 		};
 		
-		//ProductListView.getSelectionModel().select(null);
-		productListView.getSelectionModel().clearSelection();
+		//productListView.getSelectionModel().clearSelection();
 		
 		Thread thread = new Thread(task);
 		log.debug("Starting DeleteProduct() Task {}",thread);
