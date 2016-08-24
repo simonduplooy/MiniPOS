@@ -10,7 +10,7 @@ import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
 import com.lunarsky.minipos.model.dto.ProductDTO;
-import com.lunarsky.minipos.ui.ProductButtonGroup;
+import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 
 public interface ServerConnector {
 	
@@ -57,6 +57,10 @@ public interface ServerConnector {
 	public List<ProductDTO> getProducts();
 	public ProductDTO saveProduct(final ProductDTO product);
 	public void deleteProduct(final PersistenceId id);
+	
+	public List<ProductGroupDTO> getProductGroups();
+	public ProductGroupDTO saveProductGroup(final ProductGroupDTO group);
+	public void deleteProductGroup(final PersistenceId id);
 	
 	/*****************************************************************************
 	 * Product Buttons

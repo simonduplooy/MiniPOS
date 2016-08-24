@@ -25,6 +25,7 @@ import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
 import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 
 public class HibernatePersistenceProvider implements PersistenceProvider {
 	private static final Logger log = LogManager.getLogger();
@@ -195,6 +196,21 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	public void deleteProduct(final Transaction transaction, final PersistenceId id) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		ProductManager.delete(entityManager,(HibernatePersistenceId)id);
+	}
+	
+	public List<ProductGroupDTO> getProductGroups(final Transaction transaction) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		final List<ProductGroupDTO> groups = ProductGroupManager.getGroups(entityManager);
+		return groups;	
+	}
+	public ProductGroupDTO saveProductGroup(final Transaction transaction, final ProductGroupDTO group) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		final ProductGroupDTO updatedGroup = ProductGroupManager.save(entityManager,group);
+		return updatedGroup;
+	}
+	public void deleteProductGroup(final Transaction transaction, final PersistenceId id) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		ProductGroupManager.delete(entityManager,(HibernatePersistenceId)id);
 	}
 	
 	/*****************************************************************************

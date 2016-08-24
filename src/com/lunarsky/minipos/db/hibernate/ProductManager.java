@@ -30,7 +30,7 @@ public class ProductManager {
 	}
 	
 	public static ProductDTO save(final EntityManager entityManager, final ProductDTO product) {
-		log.debug("Save Product {}",product.getName());
+		log.debug("Save Product {}",product);
 		
 		final ProductDAO productDAO;
 		if(product.hasId()) {

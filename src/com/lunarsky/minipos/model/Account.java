@@ -4,8 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
+import com.lunarsky.minipos.model.dto.PersistenceObjectDTO;
 
-public class Account extends PersistenceObject {
+public class Account extends PersistenceObjectDTO {
 	private static final Logger log = LogManager.getLogger();
 	
 	private String name;

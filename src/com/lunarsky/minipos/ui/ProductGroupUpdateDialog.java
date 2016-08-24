@@ -10,12 +10,13 @@ import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.common.exception.NameInUseException;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 import com.lunarsky.minipos.model.ui.Product;
+import com.lunarsky.minipos.model.ui.ProductGroup;
 import com.lunarsky.minipos.ui.validator.CurrencyTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 
-import javafx.beans.binding.BooleanBinding;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -29,7 +30,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class ProductUpdateDialog extends BorderPane {
+public class ProductGroupUpdateDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final AppData appData;
@@ -38,33 +39,31 @@ public class ProductUpdateDialog extends BorderPane {
 	private Label nameErrorLabel;
 	@FXML
 	private TextField nameTextField;
-	@FXML
-	private TextField priceTextField;
+
 	@FXML
 	private Button saveButton;
 	
 	private StringTextFieldValidator nameValidator;
-	private CurrencyTextFieldValidator priceValidator;
 	
-	private Service<ProductDTO> saveService;
+	private Service<ProductGroupDTO> saveService;
 	
 	private final Stage stage;
-	private Product product;
+	private ProductGroup group;
 	 
 	// product can be null to create a new Product
-	public ProductUpdateDialog(final AppData appData, final Stage parentStage, final Product product) {
+	public ProductGroupUpdateDialog(final AppData appData, final Stage parentStage, final ProductGroup group) {
 		assert(null != appData);
 		assert(null != parentStage);
 		
 		this.appData = appData;
-		setProduct((null!=product)?product:new Product());
+		setGroup((null!=group)?group:new ProductGroup());
 
 		stage = new Stage();
 		stage.initOwner(parentStage);
 		stage.initModality(Modality.WINDOW_MODAL);
 		
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("ProductUpdateDialog.fxml"));
+        loader.setLocation(getClass().getResource("ProductGroupUpdateDialog.fxml"));
         loader.setRoot(this);
         loader.setController(this);
         try {
@@ -79,13 +78,14 @@ public class ProductUpdateDialog extends BorderPane {
 
 	}
 	
-	public Product getProduct() {
-		assert(null != product);
-		return product;
+	public ProductGroup getGroup() {
+		assert(null != group);
+		return group;
 	}
-	private void setProduct(final Product product) {
-		assert(null != product);
-		this.product = product;
+	
+	private void setGroup(final ProductGroup group) {
+		assert(null != group);
+		this.group = group;
 	}
 	
 	@FXML
@@ -100,42 +100,41 @@ public class ProductUpdateDialog extends BorderPane {
 	
 	private void initializeControls() {
 		
-		final Product product = getProduct();
+		final ProductGroup group = getGroup();
 
 		nameErrorLabel.managedProperty().bind(nameErrorLabel.visibleProperty());
 		clearErrorMessages();
 		
 		nameValidator = new StringTextFieldValidator(nameTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
-		priceValidator = new CurrencyTextFieldValidator(priceTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
 		
-		nameTextField.textProperty().bindBidirectional(product.nameProperty());
-		priceTextField.textProperty().bindBidirectional(product.priceProperty());
+		nameTextField.textProperty().bindBidirectional(group.nameProperty());
 		
-		saveButton.disableProperty().bind(nameValidator.validProperty().and(priceValidator.validProperty()).not().or(saveService.runningProperty()));
+		saveButton.disableProperty().bind(nameValidator.validProperty().not().or(saveService.runningProperty()));
 	}
 
 	public void createSaveService() {
-		saveService = new Service<ProductDTO>() {
+		
+		saveService = new Service<ProductGroupDTO>() {
 			@Override
-			protected Task<ProductDTO> createTask() {
-				final Task<ProductDTO> task = new Task<ProductDTO>() {
-					final ProductDTO productDTO = getProduct().createDTO();
+			protected Task<ProductGroupDTO> createTask() {
+				final Task<ProductGroupDTO> task = new Task<ProductGroupDTO>() {
+					final ProductGroupDTO groupDTO = getGroup().createDTO();
 					@Override
-					protected ProductDTO call() throws EntityNotFoundException {
-						return appData.getServerConnector().saveProduct(productDTO);
+					protected ProductGroupDTO call() throws EntityNotFoundException {
+						return appData.getServerConnector().saveProductGroup(groupDTO);
 					}
 					@Override
 					protected void succeeded() {
-						log.debug("saveProduct() Succeeded");
-						final ProductDTO productDTO = getValue();
-						final Product product = new Product(productDTO);
-						setProduct(product);
+						log.debug("saveProductGroup() Succeeded");
+						final ProductGroupDTO groupDTO = getValue();
+						final ProductGroup group = new ProductGroup(groupDTO);
+						setGroup(group);
 						close();
 					}
 					@Override
 					protected void failed() {
 						final Throwable t = getException();
-						log.debug("saveProduct() Failed");
+						log.debug("saveProductGroup() Failed");
 						log.catching(Level.ERROR, t);
 						if(t instanceof NameInUseException) {
 							nameErrorLabel.setVisible(true);

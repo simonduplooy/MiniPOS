@@ -13,7 +13,7 @@ import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.ProductButtonGroupConfig;
-import com.lunarsky.minipos.model.ProductGroup;
+import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 
 @Entity
 @Table(	name="productgroups",
@@ -34,39 +34,35 @@ public class ProductGroupDAO extends HibernateDAO {
 		assert(null != entityManager);
 		assert(null != id);
 		
-		final ProductGroupDAO productGroupDAO = entityManager.find(ProductGroupDAO.class,id.getId());
-		if(null == productGroupDAO) { 
+		final ProductGroupDAO groupDAO = entityManager.find(ProductGroupDAO.class,id.getId());
+		if(null == groupDAO) { 
 			throw new EntityNotFoundException(String.format("ProductGroup %s not found",id));
 		}
 		
-		productGroupDAO.setEntityManager(entityManager);
-		return productGroupDAO;
+		groupDAO.setEntityManager(entityManager);
+		return groupDAO;
 	}
 	
-	public static ProductGroupDAO create(final EntityManager entityManager, final ProductGroup group) {
+	public static ProductGroupDAO create(final EntityManager entityManager, final ProductGroupDTO group) {
 		assert(null != entityManager);
 		assert(null != group);
 		
-		final ProductGroupDAO productGroupDAO = new ProductGroupDAO(entityManager,group);
-		entityManager.persist(productGroupDAO);
+		final ProductGroupDAO groupDAO = new ProductGroupDAO(entityManager,group);
+		entityManager.persist(groupDAO);
 		
-		return productGroupDAO;
+		return groupDAO;
 	}
 	
-	private ProductGroupDAO(final EntityManager entityManager,final ProductGroup group) {
+	private ProductGroupDAO(final EntityManager entityManager,final ProductGroupDTO group) {
 		super(entityManager);
 		setProductGroup(group);
 	}
 	
-	public ProductGroup getProductGroup() {
-		final ProductGroup group = new ProductGroup(); 
-		group.setId(getId());
-		group.setParentId(getParentId());
-		group.setName(getName());
-		return group;
+	public ProductGroupDTO getProductGroup() {
+		return new ProductGroupDTO(getId(),getParentId(),getName());
 	}
 	
-	public void setProductGroup(final ProductGroup group) {
+	public void setProductGroup(final ProductGroupDTO group) {
 		assert(null != group);
 		
 		setId(group.getId());
@@ -84,7 +80,7 @@ public class ProductGroupDAO extends HibernateDAO {
 	
 	private void setParentId(final PersistenceId parentId) {
 		if(null != parentId) {
-			this.parentProductGroupDAO = ProductGroupDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
+			parentProductGroupDAO = ProductGroupDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
 		}
 	}
 	
@@ -94,8 +90,7 @@ public class ProductGroupDAO extends HibernateDAO {
 	}
 	
 	private void setName(final String name) {
-		if(null==name) {throw new IllegalArgumentException();}
-		if(null!=this.name) {throw new IllegalArgumentException();}
+		assert(null!=name);
 		this.name = name; 
 	}
 }

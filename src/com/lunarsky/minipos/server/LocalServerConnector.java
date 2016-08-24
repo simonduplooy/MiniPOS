@@ -18,6 +18,7 @@ import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
 import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 
 public class LocalServerConnector implements ServerConnector {
 	
@@ -170,10 +171,26 @@ public class LocalServerConnector implements ServerConnector {
 		return updatedProduct;
 	}
 
-
 	public void deleteProduct(final PersistenceId id) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.deleteProduct(transaction, id);return null;});	
+	}
+	
+	public List<ProductGroupDTO> getProductGroups() {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		final List<ProductGroupDTO> groups = (List<ProductGroupDTO>)persistenceCall(transaction,()->(persistenceProvider.getProductGroups(transaction)));
+		return groups;
+	}
+	
+	public ProductGroupDTO saveProductGroup(final ProductGroupDTO group) {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		final ProductGroupDTO updatedGroup = (ProductGroupDTO)persistenceCall(transaction,()->(persistenceProvider.saveProductGroup(transaction, group)));
+		return updatedGroup;
+	}
+	
+	public void deleteProductGroup(final PersistenceId id) {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		persistenceCall(transaction,()->{persistenceProvider.deleteProductGroup(transaction, id);return null;});	
 	}
 	
 	/*****************************************************************************

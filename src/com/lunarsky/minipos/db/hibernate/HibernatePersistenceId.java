@@ -15,6 +15,9 @@ public class HibernatePersistenceId implements PersistenceId {
 	}
 	
 	public boolean equals(PersistenceId persistenceId) {
+		if((null == id)||(null == persistenceId)) {
+			return false;
+		}
 		final HibernatePersistenceId compareId = (HibernatePersistenceId)persistenceId;
 		final boolean match = id.equals(compareId.getId());
 		return match;
@@ -22,6 +25,11 @@ public class HibernatePersistenceId implements PersistenceId {
 	
 	public String getId() {
 		return id;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("id:[%s]",id);
 	}
 	
 }

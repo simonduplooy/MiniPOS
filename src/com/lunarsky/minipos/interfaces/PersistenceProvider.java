@@ -10,6 +10,7 @@ import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
 import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 import com.lunarsky.minipos.ui.ProductButtonGroup;
 
 public interface PersistenceProvider {
@@ -59,6 +60,10 @@ public interface PersistenceProvider {
 	public List<ProductDTO> getProducts(final Transaction transaction);
 	public ProductDTO saveProduct(final Transaction transaction, final ProductDTO product);
 	public void deleteProduct(final Transaction transaction, final PersistenceId id);
+	
+	public List<ProductGroupDTO> getProductGroups(final Transaction transaction);
+	public ProductGroupDTO saveProductGroup(final Transaction transaction, final ProductGroupDTO group);
+	public void deleteProductGroup(final Transaction transaction, final PersistenceId id);
 	
 	/*****************************************************************************
 	 * Product Buttons

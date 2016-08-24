@@ -1,4 +1,4 @@
-package com.lunarsky.minipos.model;
+package com.lunarsky.minipos.model.ui;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +10,9 @@ public class PersistenceObject {
 
 	private PersistenceId id;
 		
+	protected PersistenceObject() {
+		this(null);
+	}
 	//id can be null, must be assigned by persistence provider
 	protected PersistenceObject(final PersistenceId id) { 
 		setId(id); 
@@ -24,7 +27,7 @@ public class PersistenceObject {
 	}
 	
 	public void setId(final PersistenceId id) {
-		if(null != this.id) {throw new IllegalArgumentException();}
+		assert(null == this.id);
 		this.id = id;
 	}
 	

@@ -11,45 +11,48 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 
 public class ProductGroupManager {
 	private static final Logger log = LogManager.getLogger();
 	
-	public static List<ProductDTO> getProducts(final EntityManager entityManager) {
-		log.debug("Getting Products");
+	public static List<ProductGroupDTO> getGroups(final EntityManager entityManager) {
+		log.debug("getGroups()");
 		
-		final Query query = entityManager.createQuery("from ProductDAO");
-		final List<ProductDAO> resultList = query.getResultList();
+		final Query query = entityManager.createQuery("from ProductGroupDAO");
+		final List<ProductGroupDAO> resultList = query.getResultList();
 
-		final List<ProductDTO> products = new ArrayList<ProductDTO>();
-		for(ProductDAO result: resultList) {
-			products.add(result.getProduct());
+		final List<ProductGroupDTO> groups = new ArrayList<ProductGroupDTO>();
+		for(ProductGroupDAO result: resultList) {
+			groups.add(result.getProductGroup());
 		}
 		
-		return products;
+		return groups;
 	}
 	
-	public static ProductDTO save(final EntityManager entityManager, final ProductDTO product) {
-		log.debug("Save Product {}",product.getName());
+	public static ProductGroupDTO save(final EntityManager entityManager, final ProductGroupDTO group) {
+		log.debug("save() {}",group.getName());
 		
-		final ProductDAO productDAO;
-		if(product.hasId()) {
-			productDAO = ProductDAO.load(entityManager,(HibernatePersistenceId)product.getId());
-			productDAO.setProduct(product);
+		final ProductGroupDAO groupDAO;
+		if(group.hasId()) {
+			groupDAO = ProductGroupDAO.load(entityManager,(HibernatePersistenceId)group.getId());
+			groupDAO.setProductGroup(group);
 		} else {
-			productDAO = ProductDAO.create(entityManager,product);
+			groupDAO = ProductGroupDAO.create(entityManager,group);
 		}
 		
-		final ProductDTO updatedProduct = productDAO.getProduct();		
-		return updatedProduct;
+		final ProductGroupDTO updatedGroup= groupDAO.getProductGroup();		
+		return updatedGroup;
 	}
 
 	public static void delete(final EntityManager entityManager, final HibernatePersistenceId id) {
-		log.debug("Deleting Product {}",id);
+		log.debug("delete() {}",id);
 		
-		final ProductDAO productDAO = entityManager.find(ProductDAO.class,id.getId());
-		if(null == productDAO) { throw new EntityNotFoundException(String.format("Product %s not found",id)); }
-		entityManager.remove(productDAO);
+		final ProductGroupDAO groupDAO = entityManager.find(ProductGroupDAO.class,id.getId());
+		if(null == groupDAO) { 
+			throw new EntityNotFoundException(String.format("ProductGroup %s not found",id)); 
+			}
+		entityManager.remove(groupDAO);
 	}	
 	
 }

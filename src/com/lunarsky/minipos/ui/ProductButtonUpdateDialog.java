@@ -9,13 +9,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.common.exception.NameInUseException;
-import com.lunarsky.minipos.common.exception.PasswordInUseException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.ProductButtonConfig;
-import com.lunarsky.minipos.model.User;
 import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.ui.Product;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,10 +44,10 @@ public class ProductButtonUpdateDialog extends BorderPane {
 
 	private ProductButtonConfig buttonConfig;
 	
-	private ObservableList<ProductDTO> productList;
+	private ObservableList<Product> productList;
 
 	@FXML
-	private ComboBox<ProductDTO> productComboBox;
+	private ComboBox<Product> productComboBox;
 	@FXML
 	private Button saveButton;
 
@@ -118,9 +116,9 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	private void initializeControls() {
 		
 		productComboBox.setCellFactory((listCell) -> {
-			ListCell<ProductDTO> cell = new ListCell<ProductDTO>() {
+			ListCell<Product> cell = new ListCell<Product>() {
 				@Override
-				protected void updateItem(ProductDTO product, boolean empty) {
+				protected void updateItem(Product product, boolean empty) {
 					super.updateItem(product,empty);
 					if(null != product) {
 						setText(product.getName());
@@ -132,13 +130,13 @@ public class ProductButtonUpdateDialog extends BorderPane {
 			return cell;
 		});
 		
-		final StringConverter<ProductDTO> converter = new StringConverter<ProductDTO>() {
+		final StringConverter<Product> converter = new StringConverter<Product>() {
 			@Override
-			public String toString(final ProductDTO product) {
+			public String toString(final Product product) {
 				return product.getName();
 			}
 			@Override
-			public ProductDTO fromString(final String productName) {
+			public Product fromString(final String productName) {
 				return null;
 			}
 		};
@@ -223,7 +221,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	}
 	
 	private ProductButtonConfig createButtonConfigFromControls() {
-		final ProductDTO product = productComboBox.getValue();
+		final Product product = productComboBox.getValue();
 		final ProductButtonConfig buttonConfig = new ProductButtonConfig(id,parentId,product,columnIdx,rowIdx);
 		return buttonConfig;
 	}
