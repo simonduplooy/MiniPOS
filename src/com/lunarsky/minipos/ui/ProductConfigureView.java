@@ -9,9 +9,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.ProductButtonGroupConfig;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -245,7 +245,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		}
 	}
 	
-	public void productSelected(final Product product) {
+	public void productSelected(final ProductDTO product) {
 		log.debug("productSelected {}", product);
 	}
 	

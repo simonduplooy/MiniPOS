@@ -7,9 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.Product;
-import com.lunarsky.minipos.ui.model.UiProduct;
-import com.lunarsky.minipos.ui.model.UiProductBase;
+import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.ui.UiProduct;
+import com.lunarsky.minipos.model.ui.UiProductBase;
 
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
@@ -65,8 +65,8 @@ public class ProductTreeView extends TreeView<UiProductBase> {
 		
 		productList = new ArrayList<UiProductBase>();
 		
-		List<Product> products = appData.getServerConnector().getProducts();
-		for(Product product: products) {
+		List<ProductDTO> products = appData.getServerConnector().getProducts();
+		for(ProductDTO product: products) {
 			final UiProduct uiProduct = new UiProduct(product);
 			productList.add(uiProduct);
 			//TODO remove

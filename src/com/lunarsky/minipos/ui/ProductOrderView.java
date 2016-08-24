@@ -11,10 +11,10 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.ProductButtonGroupConfig;
 import com.lunarsky.minipos.model.ProductSale;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -222,7 +222,7 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
 	}
 	
-	public void productSelected(final Product product) {
+	public void productSelected(final ProductDTO product) {
 		log.debug("productSelected {}", product);
 		
 		ProductSale sale = findProductSale(product);
@@ -271,7 +271,7 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		costLabel.setText(costText);
 	}
 	
-	private ProductSale findProductSale(final Product product) {
+	private ProductSale findProductSale(final ProductDTO product) {
 		for(ProductSale sale: productSales) {
 			if(sale.getProduct().equals(product)) {
 				return sale;

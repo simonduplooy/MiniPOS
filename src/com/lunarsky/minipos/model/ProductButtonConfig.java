@@ -4,20 +4,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 public class ProductButtonConfig extends PersistenceObject {
 	private static final Logger log = LogManager.getLogger();
 	
 	final PersistenceId parentId; 
-	final Product product;
+	final ProductDTO product;
 	final Integer columnIdx;
 	final Integer rowIdx;
 	
-	public ProductButtonConfig(final PersistenceId parentId, final Product product, final Integer columnIdx, final Integer rowIdx) {
+	public ProductButtonConfig(final PersistenceId parentId, final ProductDTO product, final Integer columnIdx, final Integer rowIdx) {
 		this(null,parentId,product,columnIdx,rowIdx);
 	}
 	
-	public ProductButtonConfig(final PersistenceId id, final PersistenceId parentId, final Product product, final Integer columnIdx, final Integer rowIdx) {
+	public ProductButtonConfig(final PersistenceId id, final PersistenceId parentId, final ProductDTO product, final Integer columnIdx, final Integer rowIdx) {
 		super(id);
 		
 		assert(null != product);
@@ -34,7 +35,7 @@ public class ProductButtonConfig extends PersistenceObject {
 		return parentId;
 	}
 	
-	public Product getProduct() {
+	public ProductDTO getProduct() {
 		assert(null != product);
 		return product;
 	}

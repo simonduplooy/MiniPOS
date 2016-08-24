@@ -10,8 +10,8 @@ import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 @Entity
 @Table(	name="productButtons")
@@ -88,13 +88,13 @@ public class ProductButtonDAO extends HibernateDAO {
 		}
 	}
 	
-	private Product getProduct() {
+	private ProductDTO getProduct() {
 		assert(null != productDAO);
-		final Product product = productDAO.getProduct();
+		final ProductDTO product = productDAO.getProduct();
 		return product; 
 		}
 	
-	private void setProduct(final Product product) {
+	private void setProduct(final ProductDTO product) {
 		assert(null != product);
 		this.productDAO = ProductDAO.load(getEntityManager(),(HibernatePersistenceId)product.getId());
 		}

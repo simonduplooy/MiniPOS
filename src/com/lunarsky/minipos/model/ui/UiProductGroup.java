@@ -1,10 +1,10 @@
-package com.lunarsky.minipos.ui.model;
+package com.lunarsky.minipos.model.ui;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductGroup;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 public class UiProductGroup extends UiProductBase {
 	private static final Logger log = LogManager.getLogger();

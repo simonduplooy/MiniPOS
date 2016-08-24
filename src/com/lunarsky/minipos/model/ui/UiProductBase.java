@@ -1,4 +1,4 @@
-package com.lunarsky.minipos.ui.model;
+package com.lunarsky.minipos.model.ui;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

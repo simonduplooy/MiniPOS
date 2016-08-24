@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -69,7 +69,7 @@ public class ProductButton extends Button {
 	
 	@FXML
 	private void handleButton(ActionEvent event) {
-		final Product product = config.getProduct();
+		final ProductDTO product = config.getProduct();
 		log.debug("Product Selected: {}",product);
 		observer.productSelected(product);
 	}

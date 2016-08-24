@@ -10,18 +10,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.Product;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 public class ProductGroupManager {
 	private static final Logger log = LogManager.getLogger();
 	
-	public static List<Product> getProducts(final EntityManager entityManager) {
+	public static List<ProductDTO> getProducts(final EntityManager entityManager) {
 		log.debug("Getting Products");
 		
 		final Query query = entityManager.createQuery("from ProductDAO");
 		final List<ProductDAO> resultList = query.getResultList();
 
-		final List<Product> products = new ArrayList<Product>();
+		final List<ProductDTO> products = new ArrayList<ProductDTO>();
 		for(ProductDAO result: resultList) {
 			products.add(result.getProduct());
 		}
@@ -29,7 +29,7 @@ public class ProductGroupManager {
 		return products;
 	}
 	
-	public static Product save(final EntityManager entityManager, final Product product) {
+	public static ProductDTO save(final EntityManager entityManager, final ProductDTO product) {
 		log.debug("Save Product {}",product.getName());
 		
 		final ProductDAO productDAO;
@@ -40,7 +40,7 @@ public class ProductGroupManager {
 			productDAO = ProductDAO.create(entityManager,product);
 		}
 		
-		final Product updatedProduct = productDAO.getProduct();		
+		final ProductDTO updatedProduct = productDAO.getProduct();		
 		return updatedProduct;
 	}
 

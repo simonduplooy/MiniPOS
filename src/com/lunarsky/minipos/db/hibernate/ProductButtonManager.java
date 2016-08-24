@@ -10,8 +10,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 public class ProductButtonManager {
 	private static final Logger log = LogManager.getLogger();

@@ -11,7 +11,7 @@ import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.common.exception.NameInUseException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.Product;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.ui.validator.CurrencyTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 
@@ -45,13 +45,13 @@ public class ProductUpdateDialog extends BorderPane {
 	private StringTextFieldValidator nameValidator;
 	private CurrencyTextFieldValidator priceValidator;
 	
-	private Service<Product> saveService;
+	private Service<ProductDTO> saveService;
 	
 	private final Stage stage;
-	private Product product;
+	private ProductDTO product;
 	 
 	// product can be null to create a new Product
-	public ProductUpdateDialog(final AppData appData, final Stage parentStage, final Product product) {
+	public ProductUpdateDialog(final AppData appData, final Stage parentStage, final ProductDTO product) {
 		assert(null != appData);
 		assert(null != parentStage);
 		
@@ -79,7 +79,7 @@ public class ProductUpdateDialog extends BorderPane {
 	}
 	
 	//Can be null if canceled
-	public Product getProduct() {
+	public ProductDTO getProduct() {
 		return product;
 	}
 	
@@ -89,7 +89,7 @@ public class ProductUpdateDialog extends BorderPane {
 		initializeControls(getProduct());
 	}
 	
-	private void initializeControls(final Product product) {
+	private void initializeControls(final ProductDTO product) {
 		if(null == product) {
 			nameTextField.setText("");
 			priceTextField.setText(Double.toString(0.0));
@@ -110,19 +110,19 @@ public class ProductUpdateDialog extends BorderPane {
 	}
 
 	public void createSaveService() {
-		saveService = new Service<Product>() {
+		saveService = new Service<ProductDTO>() {
 			@Override
-			protected Task<Product> createTask() {
-				final Task<Product> task = new Task<Product>() {
-					final Product product = createProductFromControls();
+			protected Task<ProductDTO> createTask() {
+				final Task<ProductDTO> task = new Task<ProductDTO>() {
+					final ProductDTO product = createProductFromControls();
 					@Override
-					protected Product call() throws EntityNotFoundException {
+					protected ProductDTO call() throws EntityNotFoundException {
 						return appData.getServerConnector().saveProduct(product);
 					}
 					@Override
 					protected void succeeded() {
 						log.debug("SaveProduct() Succeeded");
-						final Product updatedProduct = getValue();
+						final ProductDTO updatedProduct = getValue();
 						setProduct(updatedProduct);
 						getStage().close();
 					}
@@ -168,17 +168,17 @@ public class ProductUpdateDialog extends BorderPane {
 		getStage().close();
 	}
 	
-	private Product createProductFromControls() {
+	private ProductDTO createProductFromControls() {
 		final PersistenceId id = (null == product) ? null : product.getId();
 		final String name = nameTextField.getText();
 		final String priceText = priceTextField.getText();
 		final Double price = Double.parseDouble(priceText);
 		
-		final Product updatedProduct = new Product(id, name,price);
+		final ProductDTO updatedProduct = new ProductDTO(id, name,price);
 		return updatedProduct;
 	}
 	
-	private void setProduct(final Product product) {
+	private void setProduct(final ProductDTO product) {
 		assert(null != product);
 		this.product = product;
 	}

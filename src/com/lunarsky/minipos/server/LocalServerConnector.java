@@ -12,12 +12,12 @@ import com.lunarsky.minipos.interfaces.ServerConnector;
 import com.lunarsky.minipos.interfaces.Transaction;
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.PersistenceConfig;
-import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.ProductButtonGroupConfig;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 public class LocalServerConnector implements ServerConnector {
 	
@@ -158,15 +158,15 @@ public class LocalServerConnector implements ServerConnector {
 	/*****************************************************************************
 	 * Products
 	 *****************************************************************************/
-	public List<Product> getProducts() {
+	public List<ProductDTO> getProducts() {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<Product> products = (List<Product>)persistenceCall(transaction,()->(persistenceProvider.getProducts(transaction)));
+		final List<ProductDTO> products = (List<ProductDTO>)persistenceCall(transaction,()->(persistenceProvider.getProducts(transaction)));
 		return products;
 	}
 	
-	public Product saveProduct(final Product product) {
+	public ProductDTO saveProduct(final ProductDTO product) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final Product updatedProduct = (Product)persistenceCall(transaction,()->(persistenceProvider.saveProduct(transaction, product)));
+		final ProductDTO updatedProduct = (ProductDTO)persistenceCall(transaction,()->(persistenceProvider.saveProduct(transaction, product)));
 		return updatedProduct;
 	}
 

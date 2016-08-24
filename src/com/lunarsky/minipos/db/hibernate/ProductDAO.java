@@ -11,7 +11,7 @@ import javax.persistence.UniqueConstraint;
 
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.Product;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 @Entity
 @Table(	name="products", 
@@ -40,7 +40,7 @@ public class ProductDAO extends HibernateDAO {
 		return productDAO;
 	}
 	
-	public static ProductDAO create(final EntityManager entityManager, final Product product) {
+	public static ProductDAO create(final EntityManager entityManager, final ProductDTO product) {
 		assert(null != entityManager);
 		assert(null != product);
 		
@@ -50,12 +50,12 @@ public class ProductDAO extends HibernateDAO {
 		return productDAO;
 	}
 	
-	public Product getProduct() {
-		final Product product = new Product(getId(),getName(),getPrice()); 
+	public ProductDTO getProduct() {
+		final ProductDTO product = new ProductDTO(getId(),getName(),getPrice()); 
 		return product;
 	}
 
-	public void setProduct(final Product product) {
+	public void setProduct(final ProductDTO product) {
 		assert(null != product);
 		
 		setId(product.getId());
@@ -63,7 +63,7 @@ public class ProductDAO extends HibernateDAO {
 		setPrice(product.getPrice());
 	}
 
-	private ProductDAO(final EntityManager entityManager,final Product product) {
+	private ProductDAO(final EntityManager entityManager,final ProductDTO product) {
 		super(entityManager);
 		setProduct(product);
 	}

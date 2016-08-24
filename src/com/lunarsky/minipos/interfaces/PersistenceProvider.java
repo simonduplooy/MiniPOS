@@ -4,12 +4,12 @@ import java.util.List;
 
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.PersistenceConfig;
-import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.ProductButtonGroupConfig;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.ui.ProductButtonGroup;
 
 public interface PersistenceProvider {
@@ -56,8 +56,8 @@ public interface PersistenceProvider {
 	/*****************************************************************************
 	 * Products
 	 *****************************************************************************/
-	public List<Product> getProducts(final Transaction transaction);
-	public Product saveProduct(final Transaction transaction, final Product product);
+	public List<ProductDTO> getProducts(final Transaction transaction);
+	public ProductDTO saveProduct(final Transaction transaction, final ProductDTO product);
 	public void deleteProduct(final Transaction transaction, final PersistenceId id);
 	
 	/*****************************************************************************

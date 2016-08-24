@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.model.Product;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

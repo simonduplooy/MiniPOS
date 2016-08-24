@@ -13,9 +13,9 @@ import com.lunarsky.minipos.common.exception.NameInUseException;
 import com.lunarsky.minipos.common.exception.PasswordInUseException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -42,14 +42,14 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	private final PersistenceId parentId;
 	private final Integer columnIdx;
 	private final Integer rowIdx;
-	private final Product product;
+	private final ProductDTO product;
 
 	private ProductButtonConfig buttonConfig;
 	
-	private ObservableList<Product> productList;
+	private ObservableList<ProductDTO> productList;
 
 	@FXML
-	private ComboBox<Product> productComboBox;
+	private ComboBox<ProductDTO> productComboBox;
 	@FXML
 	private Button saveButton;
 
@@ -61,7 +61,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 		this(appData,parentStage,null,parentId,null,columnIdx,rowIdx);
 	}
 	
-	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final PersistenceId id, final PersistenceId parentId, final Product product, final Integer columnIdx, final Integer rowIdx) {
+	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final PersistenceId id, final PersistenceId parentId, final ProductDTO product, final Integer columnIdx, final Integer rowIdx) {
 
 		assert(null != appData);
 		assert(null != parentStage);
@@ -118,9 +118,9 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	private void initializeControls() {
 		
 		productComboBox.setCellFactory((listCell) -> {
-			ListCell<Product> cell = new ListCell<Product>() {
+			ListCell<ProductDTO> cell = new ListCell<ProductDTO>() {
 				@Override
-				protected void updateItem(Product product, boolean empty) {
+				protected void updateItem(ProductDTO product, boolean empty) {
 					super.updateItem(product,empty);
 					if(null != product) {
 						setText(product.getName());
@@ -132,13 +132,13 @@ public class ProductButtonUpdateDialog extends BorderPane {
 			return cell;
 		});
 		
-		final StringConverter<Product> converter = new StringConverter<Product>() {
+		final StringConverter<ProductDTO> converter = new StringConverter<ProductDTO>() {
 			@Override
-			public String toString(final Product product) {
+			public String toString(final ProductDTO product) {
 				return product.getName();
 			}
 			@Override
-			public Product fromString(final String productName) {
+			public ProductDTO fromString(final String productName) {
 				return null;
 			}
 		};
@@ -155,10 +155,10 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	
 	private void initializeAsync() {
 		
-		Task<List<Product>> task = new Task<List<Product>>() {
+		Task<List<ProductDTO>> task = new Task<List<ProductDTO>>() {
 			@Override
-			protected List<Product> call() {
-				final List<Product> products = appData.getServerConnector().getProducts();
+			protected List<ProductDTO> call() {
+				final List<ProductDTO> products = appData.getServerConnector().getProducts();
 				return products;
 			}
 			@Override 
@@ -223,7 +223,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	}
 	
 	private ProductButtonConfig createButtonConfigFromControls() {
-		final Product product = productComboBox.getValue();
+		final ProductDTO product = productComboBox.getValue();
 		final ProductButtonConfig buttonConfig = new ProductButtonConfig(id,parentId,product,columnIdx,rowIdx);
 		return buttonConfig;
 	}

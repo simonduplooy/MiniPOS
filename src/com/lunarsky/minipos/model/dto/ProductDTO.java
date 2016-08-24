@@ -1,21 +1,22 @@
-package com.lunarsky.minipos.model;
+package com.lunarsky.minipos.model.dto;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
+import com.lunarsky.minipos.model.PersistenceObject;
 
-public class Product extends PersistenceObject implements Comparable<Product> {
+public class ProductDTO extends PersistenceObject implements Comparable<ProductDTO> {
 	private static final Logger log = LogManager.getLogger();
 	
 	final String name;
 	final Double price;
 	
-	public Product(final String name, final Double price) {
+	public ProductDTO(final String name, final Double price) {
 		this(null,name,price);
 	}
 	
-	public Product(final PersistenceId id, final String name, final Double price) {
+	public ProductDTO(final PersistenceId id, final String name, final Double price) {
 		super(id);
 		
 		assert(null != name);
@@ -35,8 +36,9 @@ public class Product extends PersistenceObject implements Comparable<Product> {
 		return price;
 	}
 	
-	public Product duplicate() {
-		final Product product = new Product(getName(),getPrice());
+	//TODO Remove
+	public ProductDTO duplicate() {
+		final ProductDTO product = new ProductDTO(getName(),getPrice());
 		return product;
 	}
 	
@@ -45,7 +47,7 @@ public class Product extends PersistenceObject implements Comparable<Product> {
 	}
 
 	//Implements Comparable
-	public int compareTo(Product product) {
+	public int compareTo(ProductDTO product) {
 		return getName().compareToIgnoreCase(product.getName());
 	}
 }

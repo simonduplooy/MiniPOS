@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.Product;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -35,10 +35,10 @@ public class ProductOverviewDialog extends BorderPane {
 	private final Stage stage;
 	
 	//TODO Remove 
-	private ObservableList<Product> productList;
+	private ObservableList<ProductDTO> productList;
 	private ProductTreeView productTreeView;
-	private Product selectedProduct;
-	private ChangeListener<Product> selectedItemChangeListener;
+	private ProductDTO selectedProduct;
+	private ChangeListener<ProductDTO> selectedItemChangeListener;
 	
 	@FXML
 	private ScrollPane productScrollPane;
@@ -123,9 +123,9 @@ public class ProductOverviewDialog extends BorderPane {
 		
 		getStage().setOnCloseRequest((event) -> { close(); });
 		
-		selectedItemChangeListener = new ChangeListener<Product>() {
+		selectedItemChangeListener = new ChangeListener<ProductDTO>() {
 			@Override
-			public void changed(ObservableValue<? extends Product> observable, Product oldValue, Product newValue) {
+			public void changed(ObservableValue<? extends ProductDTO> observable, ProductDTO oldValue, ProductDTO newValue) {
 				setSelectedProduct(newValue);
 			}
 		};
@@ -146,10 +146,10 @@ public class ProductOverviewDialog extends BorderPane {
 	
 	private void initializeAsync() {
 		
-		Task<List<Product>> task = new Task<List<Product>>() {
+		Task<List<ProductDTO>> task = new Task<List<ProductDTO>>() {
 			@Override
-			protected List<Product> call() {
-				List<Product> products = appData.getServerConnector().getProducts();
+			protected List<ProductDTO> call() {
+				List<ProductDTO> products = appData.getServerConnector().getProducts();
 				return products;
 			}
 			@Override
@@ -186,24 +186,24 @@ public class ProductOverviewDialog extends BorderPane {
 	
 	@FXML
 	private void handleEdit() {
-		final Product product = getSelectedProduct();
+		final ProductDTO product = getSelectedProduct();
 		updateProduct(product);
 	}
 
 	@FXML
 	private void handleDuplicate() {		
-		final Product product = getSelectedProduct().duplicate();
+		final ProductDTO product = getSelectedProduct().duplicate();
 		log.debug("Duplicate Product {}",product);
 		updateProduct(product);
 	}
 	
-	private void updateProduct(final Product product) {
+	private void updateProduct(final ProductDTO product) {
 		log.debug("Update Product {}",product);
 
 		final ProductUpdateDialog dialog = new ProductUpdateDialog(appData,getStage(),product);
 		dialog.getStage().showAndWait();
 		
-		final Product updatedProduct = dialog.getProduct();
+		final ProductDTO updatedProduct = dialog.getProduct();
 		
 		//The Product was updated
 		if(updatedProduct != product) {
@@ -218,7 +218,7 @@ public class ProductOverviewDialog extends BorderPane {
 	private void handleDelete() {
 
 		Task<Void> task = new Task<Void>() {
-			private final Product product = getSelectedProduct();
+			private final ProductDTO product = getSelectedProduct();
 			@Override
 			protected Void call() throws EntityNotFoundException {
 				appData.getServerConnector().deleteProduct(product.getId());
@@ -259,7 +259,7 @@ public class ProductOverviewDialog extends BorderPane {
 		
 	}
 	
-	private void setSelectedProduct(Product product) {
+	private void setSelectedProduct(ProductDTO product) {
 		this.selectedProduct = product;
 		if(null == product) {
 			nameTextField.setText("");
@@ -271,7 +271,7 @@ public class ProductOverviewDialog extends BorderPane {
 		}
 	}
 
-	private Product getSelectedProduct() {
+	private ProductDTO getSelectedProduct() {
 		return selectedProduct;
 	}
 		

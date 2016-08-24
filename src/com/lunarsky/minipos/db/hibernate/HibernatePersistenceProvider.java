@@ -19,12 +19,12 @@ import com.lunarsky.minipos.interfaces.PersistenceProvider;
 import com.lunarsky.minipos.interfaces.Transaction;
 import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.PersistenceConfig;
-import com.lunarsky.minipos.model.Product;
 import com.lunarsky.minipos.model.ProductButtonConfig;
 import com.lunarsky.minipos.model.ProductButtonGroupConfig;
 import com.lunarsky.minipos.model.Role;
 import com.lunarsky.minipos.model.StockItem;
 import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.ProductDTO;
 
 public class HibernatePersistenceProvider implements PersistenceProvider {
 	private static final Logger log = LogManager.getLogger();
@@ -180,15 +180,15 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	/*****************************************************************************
 	 * Products
 	 *****************************************************************************/
-	public List<Product> getProducts(final Transaction transaction) {
+	public List<ProductDTO> getProducts(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<Product> products = ProductManager.getProducts(entityManager);
+		final List<ProductDTO> products = ProductManager.getProducts(entityManager);
 		return products;	
 	}
 	
-	public Product saveProduct(final Transaction transaction, final Product product) {
+	public ProductDTO saveProduct(final Transaction transaction, final ProductDTO product) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final Product updatedProduct = ProductManager.save(entityManager,product);
+		final ProductDTO updatedProduct = ProductManager.save(entityManager,product);
 		return updatedProduct;
 	}
 	
