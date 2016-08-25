@@ -68,19 +68,10 @@ public class ProductTreeView extends TreeView<ProductBase> {
 					if(null!=product) {
 						setText(product.getName());
 						if(product instanceof ProductGroup) {
-							
-							final ContextMenu contextMenu = new ContextMenu();
-							MenuItem addGroupItem = new MenuItem("Add Group");
-							addGroupItem.setOnAction((event) -> handleAddGroup());
-							MenuItem addProductItem = new MenuItem("Add Product");
-							addProductItem.setOnAction((event) -> handleAddProduct());
-							MenuItem updateItem = new MenuItem("Update");
-							MenuItem deleteItem = new MenuItem("Delete");
-							contextMenu.getItems().addAll(addGroupItem,addProductItem,updateItem,deleteItem);
-							
+							final ContextMenu contextMenu = createGroupContextMenu();
 							setContextMenu(contextMenu);
-						} else {
-							final ContextMenu contextMenu = new ContextMenu();
+						} else if (product instanceof Product){
+							final ContextMenu contextMenu = createProductContextMenu();
 							setContextMenu(contextMenu);
 						}
 					} else {
@@ -146,6 +137,31 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		}
 	}
 	
+	private ContextMenu createProductContextMenu() {
+		final ContextMenu contextMenu = new ContextMenu();
+		final MenuItem updateItem = new MenuItem("Update");
+		updateItem.setOnAction((event) -> handleUpdateProduct());
+		final MenuItem deleteItem = new MenuItem("Delete");
+		deleteItem.setOnAction((event) -> handleDeleteProduct());
+		contextMenu.getItems().addAll(updateItem,deleteItem);
+		return contextMenu;
+	}
+
+	private ContextMenu createGroupContextMenu() {
+		final ContextMenu contextMenu = new ContextMenu();
+		final MenuItem addGroupItem = new MenuItem("Add Group");
+		addGroupItem.setOnAction((event) -> handleAddGroup());
+		final MenuItem addProductItem = new MenuItem("Add Product");
+		addProductItem.setOnAction((event) -> handleAddProduct());
+		final MenuItem updateItem = new MenuItem("Update");
+		updateItem.setOnAction((event) -> handleUpdateGroup());
+		final MenuItem deleteItem = new MenuItem("Delete");
+		deleteItem.setOnAction((event) -> handleDeleteGroup());
+		contextMenu.getItems().addAll(addGroupItem,addProductItem,updateItem,deleteItem);
+		return contextMenu;
+	}
+
+	
 	private void handleAddRootGroup() {
 		log.debug("handleAddRootGroup()");
 		final TreeItem<ProductBase> rootItem = getRoot();
@@ -163,7 +179,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final ProductUpdateDialog dialog = new ProductUpdateDialog(appData,stage,product);
 		dialog.getStage().showAndWait();
 	}
-	
+	//TODO alot of duplicate code here
 	private void handleAddGroup() {
 		log.debug("handleAddGroup()");
 		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
@@ -180,6 +196,32 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final Product product = new Product(selectedTreeItem.getValue().getId());
 		final ProductUpdateDialog dialog = new ProductUpdateDialog(appData,stage,product);
 		dialog.getStage().showAndWait();
+	}
+	
+	private void handleUpdateGroup() {
+		log.debug("handleUpdateGroup()");
+		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
+		final ProductGroup group = (ProductGroup)selectedTreeItem.getValue();
+		final Stage stage = (Stage)getScene().getWindow();
+		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(appData,stage,group);
+		dialog.getStage().showAndWait();
+	}
+	
+	private void handleUpdateProduct() {
+		log.debug("handleUpdateProduct()");
+		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
+		final Stage stage = (Stage)getScene().getWindow();
+		final Product product = (Product)selectedTreeItem.getValue();
+		final ProductUpdateDialog dialog = new ProductUpdateDialog(appData,stage,product);
+		dialog.getStage().showAndWait();
+	}
+	
+	private void handleDeleteGroup() {
+		log.debug("handleDeleteGroup()");
+	}
+	
+	private void handleDeleteProduct() {
+		log.debug("handleDeleteProduct()");
 	}
 	
 	private class ProductRoot extends ProductBase {
