@@ -46,11 +46,10 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	@FXML
 	private GridPane productGridPane;
 	
-	public ProductOrderView(final AppData appData, final AccountDTO account) {
-		assert(null != appData);
+	public ProductOrderView(final AccountDTO account) {
 		assert(null != account);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.account = account;
 		
         productSales = new ArrayList<ProductSaleDTO>();

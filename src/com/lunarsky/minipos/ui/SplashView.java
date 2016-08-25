@@ -24,9 +24,9 @@ public class SplashView extends StackPane {
 	@FXML
 	private FlowPane itemFlowPane;
 	
-	public SplashView(final AppData appData) {
-		assert(null != appData);
-		this.appData = appData;
+	public SplashView() {
+
+		this.appData = AppData.getInstance();
 		
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("SplashView.fxml"));

@@ -37,11 +37,10 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	@FXML
 	private GridPane productGridPane;
 	
-	public ProductConfigureView(final AppData appData, final Stage stage) {
-		assert(null != appData);
+	public ProductConfigureView(final Stage stage) {
 		assert(null != stage);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.stage = stage;
 
         FXMLLoader loader = new FXMLLoader();
@@ -223,7 +222,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
 		log.debug("createProductButton()");
 		
-		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(appData,stage,parentId,columnIdx,rowIdx);
+		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(stage,parentId,columnIdx,rowIdx);
 		dialog.getStage().showAndWait();
 		final ProductButtonConfigDTO config = dialog.getButtonConfig();
 		
@@ -237,7 +236,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	public void updateProductButton(final ProductButton button) {
 		log.debug("updateProductButton()");
 		final ProductButtonConfigDTO config = button.getConfig();
-		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(appData,stage,config);
+		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(stage,config);
 		dialog.getStage().showAndWait();
 		final ProductButtonConfigDTO updatedConfig = dialog.getButtonConfig();
 		if(null != updatedConfig) {
@@ -282,7 +281,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		log.debug("createProductButtonGroup()");
 		
 		final ProductGroupButtonConfigDTO config = new ProductGroupButtonConfigDTO(parentId,"",columnIdx,rowIdx);
-		final ProductButtonGroupUpdateDialog dialog = new ProductButtonGroupUpdateDialog(appData,stage,config);
+		final ProductButtonGroupUpdateDialog dialog = new ProductButtonGroupUpdateDialog(stage,config);
 		dialog.getStage().showAndWait();
 		final ProductGroupButtonConfigDTO updatedConfig = dialog.getButtonConfig();
 
@@ -300,7 +299,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		log.debug("updateProductButtonGroup()");
 		
 		final ProductGroupButtonConfigDTO config = buttonGroup.getConfig();
-		final ProductButtonGroupUpdateDialog dialog = new ProductButtonGroupUpdateDialog(appData,stage,config);
+		final ProductButtonGroupUpdateDialog dialog = new ProductButtonGroupUpdateDialog(stage,config);
 		dialog.getStage().showAndWait();
 		final ProductGroupButtonConfigDTO updatedConfig = dialog.getButtonConfig();
 		//Cancelled

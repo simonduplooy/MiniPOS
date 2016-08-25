@@ -52,17 +52,15 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	@FXML
 	private Button saveButton;
 
-	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final ProductButtonConfigDTO buttonConfig) {
-		this(appData,parentStage,buttonConfig.getId(),buttonConfig.getParentId(),null,buttonConfig.getColumnIndex(),buttonConfig.getRowIndex());
+	public ProductButtonUpdateDialog(final Stage parentStage, final ProductButtonConfigDTO buttonConfig) {
+		this(parentStage,buttonConfig.getId(),buttonConfig.getParentId(),null,buttonConfig.getColumnIndex(),buttonConfig.getRowIndex());
 	}
 	
-	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final PersistenceId parentId, final Integer columnIdx, final Integer rowIdx) {
-		this(appData,parentStage,null,parentId,null,columnIdx,rowIdx);
+	public ProductButtonUpdateDialog(final Stage parentStage, final PersistenceId parentId, final Integer columnIdx, final Integer rowIdx) {
+		this(parentStage,null,parentId,null,columnIdx,rowIdx);
 	}
 	
-	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final PersistenceId id, final PersistenceId parentId, final Product product, final Integer columnIdx, final Integer rowIdx) {
-
-		assert(null != appData);
+	public ProductButtonUpdateDialog(final Stage parentStage, final PersistenceId id, final PersistenceId parentId, final Product product, final Integer columnIdx, final Integer rowIdx) {
 		assert(null != parentStage);
 		//id can be null
 		//parentId can be null
@@ -71,7 +69,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 		assert(null != rowIdx);
 
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.id = id;
 		this.parentId = parentId;
 		this.product = product;

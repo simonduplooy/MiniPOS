@@ -38,13 +38,11 @@ public class ProductButtonGroupUpdateDialog extends BorderPane {
 	@FXML
 	private Button saveButton;
 
-	public ProductButtonGroupUpdateDialog(final AppData appData, final Stage parentStage, final ProductGroupButtonConfigDTO buttonConfig) {
-
-		assert(null != appData);
+	public ProductButtonGroupUpdateDialog(final Stage parentStage, final ProductGroupButtonConfigDTO buttonConfig) {
 		assert(null != parentStage);
 		//buttonConfig can be null
 
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.buttonConfig = buttonConfig;
 
 		stage = new Stage();

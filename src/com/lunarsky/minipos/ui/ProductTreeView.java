@@ -37,9 +37,14 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	}
 	
 	private void initialize() {
+		initializeLayout();
 		initializeMembers();
 		initializeControls();
 		initializeAsync();
+	}
+	
+	private void initializeLayout() {
+		
 	}
 	
 	private void initializeMembers() {
@@ -56,9 +61,6 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		addProductItem.setOnAction((event) -> handleAddRootProduct());
 		menu.getItems().addAll(addProductItem,addGroupItem);
 		setContextMenu(menu);
-		
-		//TODO
-		this.setPrefWidth(400f);
 		
 		setCellFactory((treeView) -> {
 			final TreeCell<ProductBase> cell = new TreeCell<ProductBase>() {
@@ -167,7 +169,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final TreeItem<ProductBase> rootItem = getRoot();
 		final ProductGroup group = new ProductGroup(rootItem.getValue().getId());
 		final Stage stage = (Stage)getScene().getWindow();
-		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(appData,stage,group);
+		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(stage,group);
 		dialog.getStage().showAndWait();
 	}
 	
@@ -176,7 +178,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final TreeItem<ProductBase> rootItem = getRoot();
 		final Product product = new Product(rootItem.getValue().getId());
 		final Stage stage = (Stage)getScene().getWindow();
-		final ProductUpdateDialog dialog = new ProductUpdateDialog(appData,stage,product);
+		final ProductUpdateDialog dialog = new ProductUpdateDialog(stage,product);
 		dialog.getStage().showAndWait();
 	}
 	//TODO alot of duplicate code here
@@ -185,8 +187,11 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
 		final Stage stage = (Stage)getScene().getWindow();
 		final ProductGroup group = new ProductGroup(selectedTreeItem.getValue().getId());
-		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(appData,stage,group);
+		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(stage,group);
 		dialog.getStage().showAndWait();
+		final ProductGroup updatedGroup = dialog.getGroup();
+		final TreeItem<ProductBase> updatedTreeItem = new TreeItem<ProductBase>(group);
+		selectedTreeItem.getChildren().add(updatedTreeItem);
 	}
 	
 	private void handleAddProduct() {
@@ -194,8 +199,11 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
 		final Stage stage = (Stage)getScene().getWindow();
 		final Product product = new Product(selectedTreeItem.getValue().getId());
-		final ProductUpdateDialog dialog = new ProductUpdateDialog(appData,stage,product);
+		final ProductUpdateDialog dialog = new ProductUpdateDialog(stage,product);
 		dialog.getStage().showAndWait();
+		final Product updatedProduct = dialog.getProduct();
+		final TreeItem<ProductBase> updatedTreeItem = new TreeItem<ProductBase>(product);
+		selectedTreeItem.getChildren().add(updatedTreeItem);
 	}
 	
 	private void handleUpdateGroup() {
@@ -203,7 +211,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
 		final ProductGroup group = (ProductGroup)selectedTreeItem.getValue();
 		final Stage stage = (Stage)getScene().getWindow();
-		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(appData,stage,group);
+		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(stage,group);
 		dialog.getStage().showAndWait();
 	}
 	
@@ -212,16 +220,26 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
 		final Stage stage = (Stage)getScene().getWindow();
 		final Product product = (Product)selectedTreeItem.getValue();
-		final ProductUpdateDialog dialog = new ProductUpdateDialog(appData,stage,product);
+		final ProductUpdateDialog dialog = new ProductUpdateDialog(stage,product);
 		dialog.getStage().showAndWait();
 	}
 	
 	private void handleDeleteGroup() {
 		log.debug("handleDeleteGroup()");
+		//TODO Async
+		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
+		final ProductGroup group = (ProductGroup)selectedTreeItem.getValue();
+		appData.getServerConnector().deleteProductGroup(group.getId());
+		selectedTreeItem.getParent().getChildren().remove(selectedTreeItem);
 	}
 	
 	private void handleDeleteProduct() {
 		log.debug("handleDeleteProduct()");
+		//TODO Async
+		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
+		final Product product = (Product)selectedTreeItem.getValue();
+		appData.getServerConnector().deleteProduct(product.getId());
+		selectedTreeItem.getParent().getChildren().remove(selectedTreeItem);
 	}
 	
 	private class ProductRoot extends ProductBase {

@@ -15,21 +15,39 @@ import javafx.stage.Stage;
 public class AppData {
 	private static final Logger log = LogManager.getLogger();
 	
-	private ViewManager viewManager;
-	private ServerConnector serverConnector;
+	//Singleton
+	private static AppData instance;
 	
-	private UserDTO activeUser;
+	private static Stage primaryStage;
+	private static ViewManager viewManager;
+	private static ServerConnector serverConnector;
 	
-	public AppData(final Stage primaryStage) throws IOException {
+	private static UserDTO activeUser;
+
+	
+	public static AppData getInstance() {
+		if(null == instance) {
+			instance = new AppData();
+			viewManager.initialize();
+		}
+		return instance;
+	}
+	
+	private AppData() {
 		serverConnector = ServerConnectorFactory.createServerConnector();
-		viewManager = new ViewManager(primaryStage,this);
+		viewManager = new ViewManager();
+	}	
+	
+	public Stage getPrimaryStage() {
+		assert(null != primaryStage);
+		return primaryStage;
 	}
 	
-	public void close() {
-		if(null != viewManager) { viewManager.close(); }
-		if(null != serverConnector) { serverConnector.close(); }
+	public void setPrimaryStage(final Stage primaryStage) {
+		assert(null != primaryStage);
+		assert(null != AppData.primaryStage);
+		AppData.primaryStage = primaryStage;
 	}
-	
 	
 	public ServerConnector getServerConnector() {
 		assert(null!= serverConnector);
@@ -49,6 +67,11 @@ public class AppData {
 	public void setActiveUser(final UserDTO user) {
 		assert(null != user);
 		activeUser = user;
+	}
+	
+	public void close() {
+		if(null != viewManager) { viewManager.close(); }
+		if(null != serverConnector) { serverConnector.close(); }
 	}
 	
 }

@@ -63,11 +63,10 @@ public class RoleOverviewDialog extends BorderPane {
 	private Button deleteButton;
 	
 	
-	public RoleOverviewDialog(final AppData appData, final Stage parentStage) {
-		assert(null!=appData);
+	public RoleOverviewDialog(final Stage parentStage) {
 		assert(null!=parentStage);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		
 		stage = new Stage();
 		stage.initOwner(parentStage);
@@ -205,7 +204,7 @@ public class RoleOverviewDialog extends BorderPane {
 		
 		RoleUpdateDialog dialog = null;
 		try {
-			dialog = new RoleUpdateDialog(appData,getStage(),role);
+			dialog = new RoleUpdateDialog(getStage(),role);
 		} catch (Exception e) {
 			log.catching(Level.ERROR, e);
 			ExceptionDialog.create(AlertType.ERROR, ErrorMessage.ERROR_CREATING_DIALOG_TEXT, e).show();

@@ -23,11 +23,10 @@ public class AccountView extends BorderPane {
 	@FXML
 	private Label accountLabel;
 	
-	public AccountView(final AppData appData, final AccountDTO account) {
-		assert(null != appData);
+	public AccountView(final AccountDTO account) {
 		assert(null != account);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.account = account;
 		
         FXMLLoader loader = new FXMLLoader();

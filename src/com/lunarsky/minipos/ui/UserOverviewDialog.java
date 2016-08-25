@@ -59,11 +59,10 @@ public class UserOverviewDialog extends BorderPane {
 	private Button deleteButton;
 	
 	
-	public UserOverviewDialog(final AppData appData, final Stage parentStage) {
-		assert(null != appData);
+	public UserOverviewDialog(final Stage parentStage) {
 		assert(null != parentStage);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		
 		stage = new Stage();
 		//stage.initOwner(parentStage);
@@ -205,7 +204,7 @@ public class UserOverviewDialog extends BorderPane {
 	private void updateUser(final UserDTO user) {
 		log.debug("Update user {}",user);
 		
-		UserUpdateDialog dialog = new UserUpdateDialog(appData,getStage(),user);
+		UserUpdateDialog dialog = new UserUpdateDialog(getStage(),user);
 		dialog.showAndWait();
 		
 		final UserDTO updatedUser = dialog.getUser();

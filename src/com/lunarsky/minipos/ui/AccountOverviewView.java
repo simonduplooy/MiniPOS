@@ -33,10 +33,9 @@ public class AccountOverviewView extends BorderPane {
 	@FXML
 	private FlowPane accountFlowPane;
 	
-	public AccountOverviewView(final AppData appData, final Stage stage) {
-		assert(null != appData);
+	public AccountOverviewView(final Stage stage) {
 		assert(null != stage);
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.stage = stage;
 		
         FXMLLoader loader = new FXMLLoader();
@@ -85,7 +84,7 @@ public class AccountOverviewView extends BorderPane {
 	private void setAccounts(final List<AccountDTO> accounts) {
 		for(AccountDTO account: accounts) {
 			log.debug("Adding Account {}",account);
-			final AccountButton button = new AccountButton(appData,account);
+			final AccountButton button = new AccountButton(account);
 			accountFlowPane.getChildren().add(button);
 		}
 	}
@@ -100,13 +99,13 @@ public class AccountOverviewView extends BorderPane {
 	private void handleNew(ActionEvent event) {
 		log.debug("handleNew()");
 		
-		final AccountUpdateDialog dialog = new AccountUpdateDialog(appData,stage,null);
+		final AccountUpdateDialog dialog = new AccountUpdateDialog(stage,null);
 		dialog.getStage().showAndWait();
 		
 		final AccountDTO account = dialog.getAccount();
 		if(null != account) {
 			log.debug("Adding Account {}",account);
-			AccountButton button = new AccountButton(appData,account);
+			AccountButton button = new AccountButton(account);
 			accountFlowPane.getChildren().add(button);
 		}
 	}

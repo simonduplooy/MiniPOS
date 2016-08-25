@@ -46,12 +46,11 @@ public class LoginDialog extends VBox {
 	private final IntegerTextFieldValidator passwordValidator;
 	private UserDTO user;
 	
-	public LoginDialog(final AppData appData, final Stage parentStage, final Stage dialogStage) {
-		assert(null != appData);
+	public LoginDialog(final Stage parentStage, final Stage dialogStage) {
 		assert(null != parentStage);
 		assert(null != dialogStage);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.stage = dialogStage;
 		
 		dialogStage.setTitle(WINDOW_TITLE); 

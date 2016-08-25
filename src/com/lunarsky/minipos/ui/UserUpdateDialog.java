@@ -68,11 +68,10 @@ public class UserUpdateDialog extends BorderPane {
 	private TextFieldValidator passwordValidator;
 		
 	// user can be null to create a new User
-	public UserUpdateDialog(final AppData appData, final Stage parentStage, final UserDTO user) {
-		assert(null != appData);
+	public UserUpdateDialog(final Stage parentStage, final UserDTO user) {
 		assert(null != parentStage);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.user = user;
 
 		stage = new Stage();

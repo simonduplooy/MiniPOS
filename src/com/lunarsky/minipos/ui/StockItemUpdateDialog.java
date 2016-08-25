@@ -52,12 +52,11 @@ public class StockItemUpdateDialog extends VBox {
 	private StockItemDTO stockItem;
 	
 	// stockItem can be null to create a new StockItem
-	public StockItemUpdateDialog(final AppData appData, final Stage parentStage, final StockItemDTO stockItem) {
-		assert(null != appData);
+	public StockItemUpdateDialog(final Stage parentStage, final StockItemDTO stockItem) {
 		assert(null != parentStage);
 		assert(null != stockItem);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.stockItem = stockItem;
 
 		stage = new Stage();

@@ -50,11 +50,10 @@ public class AccountUpdateDialog extends BorderPane {
 
 	
 	// account can be null to create a new Account
-	public AccountUpdateDialog(final AppData appData, final Stage parentStage, final AccountDTO account) {
-		assert(null != appData);
+	public AccountUpdateDialog(final Stage parentStage, final AccountDTO account) {
 		assert(null != parentStage);
 			
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.account = account;
 		
 		saveService = new Service<AccountDTO>() {

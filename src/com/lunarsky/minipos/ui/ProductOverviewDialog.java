@@ -50,11 +50,10 @@ public class ProductOverviewDialog extends BorderPane {
 	private Button deleteButton;
 	
 	
-	public ProductOverviewDialog(final AppData appData, final Stage parentStage) {
-		assert(null!=appData);
+	public ProductOverviewDialog(final Stage parentStage) {
 		assert(null!=parentStage);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		
 		stage = new Stage();
 		stage.initOwner(parentStage);
@@ -180,7 +179,7 @@ public class ProductOverviewDialog extends BorderPane {
 	private void updateProduct(final Product product) {
 		log.debug("updateProduct() {}",product);
 
-		final ProductUpdateDialog dialog = new ProductUpdateDialog(appData,getStage(),product);
+		final ProductUpdateDialog dialog = new ProductUpdateDialog(getStage(),product);
 		dialog.getStage().showAndWait();
 		
 		final Product updatedProduct = dialog.getProduct();
@@ -194,7 +193,7 @@ public class ProductOverviewDialog extends BorderPane {
 	private void updateProductGroup(final ProductGroup group) {
 		log.debug("updateProductGroup() {}",group);
 
-		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(appData,getStage(),group);
+		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(getStage(),group);
 		dialog.getStage().showAndWait();
 		
 		final ProductGroup updatedGroup = dialog.getGroup();

@@ -16,14 +16,12 @@ import javafx.scene.control.Button;
 public class AccountButton extends Button {
 	private static final Logger log = LogManager.getLogger();
 	
-	private final AppData appData;
+
 	private final AccountDTO account;
 	
-	public AccountButton(final AppData appData, final AccountDTO account) {
-		assert(null != appData);
+	public AccountButton(final AccountDTO account) {
 		assert(null != account);
 		
-		this.appData = appData;
 		this.account = account;
 		
 	    FXMLLoader loader = new FXMLLoader();
@@ -42,7 +40,7 @@ public class AccountButton extends Button {
 	@FXML
 	private void handleButton(ActionEvent event) {
 		log.debug(String.format("Account Selected: %s",account));
-		appData.getViewManager().accountSelected(account);
+		AppData.getInstance().getViewManager().accountSelected(account);
 	}
 
 }

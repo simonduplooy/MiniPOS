@@ -50,13 +50,12 @@ public class ProductGroupUpdateDialog extends BorderPane {
 	private final Stage stage;
 	private ProductGroup group;
 	 
-	// product can be null to create a new Product
-	public ProductGroupUpdateDialog(final AppData appData, final Stage parentStage, final ProductGroup group) {
-		assert(null != appData);
+	public ProductGroupUpdateDialog(final Stage parentStage, final ProductGroup group) {
 		assert(null != parentStage);
+		assert(null != group);
 		
-		this.appData = appData;
-		setGroup((null!=group)?group:new ProductGroup());
+		this.appData = AppData.getInstance();
+		setGroup(group);
 
 		stage = new Stage();
 		stage.initOwner(parentStage);

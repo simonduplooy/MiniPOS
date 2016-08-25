@@ -14,9 +14,10 @@ import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.ui.validator.CurrencyTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
-import com.sun.javafx.css.converters.StringConverter;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -53,13 +54,12 @@ public class ProductUpdateDialog extends BorderPane {
 	private final Stage stage;
 	private Product product;
 	 
-	// product can be null to create a new Product
-	public ProductUpdateDialog(final AppData appData, final Stage parentStage, final Product product) {
-		assert(null != appData);
+	public ProductUpdateDialog(final Stage parentStage, final Product product) {
 		assert(null != parentStage);
+		assert(null != product);
 		
-		this.appData = appData;
-		setProduct((null!=product)?product:new Product());
+		this.appData = AppData.getInstance();
+		setProduct(product);
 
 		stage = new Stage();
 		stage.initOwner(parentStage);
@@ -111,8 +111,17 @@ public class ProductUpdateDialog extends BorderPane {
 		priceValidator = new CurrencyTextFieldValidator(priceTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
 		
 		nameTextField.textProperty().bindBidirectional(product.nameProperty());
-		NumberStringConverter converter = new NumberStringConverter("#,###.00");
-		Bindings.bindBidirectional(priceTextField.textProperty(),product.priceProperty(),converter);
+		NumberStringConverter converter = new NumberStringConverter(UiConst.CURRENCY_FORMAT);
+		final StringProperty priceTextProperty = priceTextField.textProperty();
+		final DoubleProperty priceDoubleProperty = product.priceProperty();
+		
+		log.debug("priceTextProperty [{}]",priceTextProperty.getValue());
+		log.debug("priceDoubleProperty [{}]",priceDoubleProperty.getValue());
+		
+		Bindings.bindBidirectional(priceTextProperty,priceDoubleProperty,converter);
+		
+		log.debug("priceTextProperty [{}]",priceTextProperty.getValue());
+		log.debug("priceDoubleProperty [{}]",priceDoubleProperty.getValue());
 		
 		saveButton.disableProperty().bind(nameValidator.validProperty().and(priceValidator.validProperty()).not().or(saveService.runningProperty()));
 	}

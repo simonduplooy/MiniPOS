@@ -15,29 +15,23 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 public class ViewManager {
-	
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final String STYLESHEET_RESOURCE = "/resources/stylesheets/application.css";
 	
-	private final Stage primaryStage;
-	private final AppData appData;
+	private AppData appData;
+	private Stage primaryStage;
+	
 	//TODO Add customizable external stylesheet
 	private final String styleSheet;
 	
-	public ViewManager(final Stage primaryStage, final AppData appData) {
-		assert(null != primaryStage);
-		assert(null != appData);
-
-		this.primaryStage = primaryStage;
-		this.appData = appData;
-		
+	public ViewManager() {
 		styleSheet = getClass().getResource(STYLESHEET_RESOURCE).toExternalForm();
-
 		initialize();
 	}
 		
-	private void initialize() {
+	public void initialize() {
+		
 		final SplashView splashView = showSplashView();
 		
 		final Stage stage = getPrimaryStage();
@@ -54,7 +48,7 @@ public class ViewManager {
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				appData.getServerConnector().createPersistenceConnection();
+				AppData.getInstance().getServerConnector().createPersistenceConnection();
 				return null;
 				}
 			@Override
@@ -78,11 +72,6 @@ public class ViewManager {
 	
 	public void close () {
 
-	}
-	
-	private Stage getPrimaryStage() {
-		assert(primaryStage != null);
-		return primaryStage;
 	}
 	
 	public void setStyleSheets(final Scene scene) {
@@ -109,7 +98,7 @@ public class ViewManager {
 	
 	private SplashView showSplashView() {
 
-		SplashView splashView = new SplashView(appData);
+		SplashView splashView = new SplashView();
 		setScene(splashView);
 		final Scene scene = getPrimaryStage().getScene();
 		setDefaultLayout(scene,splashView);
@@ -119,7 +108,7 @@ public class ViewManager {
 	
 	public void showAccountOverviewView() {
 		final Stage stage = getPrimaryStage();
-		AccountOverviewView accountView = new AccountOverviewView(appData,stage);
+		AccountOverviewView accountView = new AccountOverviewView(stage);
 		setScene(accountView);
 		final Scene scene = stage.getScene();
 		setDefaultLayout(scene,accountView);
@@ -131,7 +120,7 @@ public class ViewManager {
 
 	private void showAccountView(final AccountDTO account) {
 		final Stage stage = getPrimaryStage();
-		AccountView accountView = new AccountView(appData,account);
+		AccountView accountView = new AccountView(account);
 		setScene(accountView);
 		final Scene scene = stage.getScene();
 		setDefaultLayout(scene,accountView);		
@@ -147,7 +136,7 @@ public class ViewManager {
 	
 	private void showProductOrderView(final AccountDTO account) {
 		final Stage stage = getPrimaryStage();
-		ProductOrderView view = new ProductOrderView(appData,account);
+		ProductOrderView view = new ProductOrderView(account);
 		setScene(view);
 		final Scene scene = stage.getScene();
 		setDefaultLayout(scene,view);	
@@ -159,7 +148,7 @@ public class ViewManager {
 	
 	public void showProductConfigureView() {
 		final Stage stage = getPrimaryStage();
-		final ProductConfigureView view = new ProductConfigureView(appData,stage);
+		final ProductConfigureView view = new ProductConfigureView(stage);
 		setScene(view);
 		final Scene scene = stage.getScene();
 		setDefaultLayout(scene,view);	
@@ -173,7 +162,7 @@ public class ViewManager {
 
 		// Create the dialog Stage.
         Stage dialogStage = new Stage();
-        LoginDialog loginDialog = new LoginDialog(appData,getPrimaryStage(),dialogStage);
+        LoginDialog loginDialog = new LoginDialog(getPrimaryStage(),dialogStage);
         Scene scene = new Scene(loginDialog);
         setStyleSheets(scene);
         dialogStage.setScene(scene);
@@ -191,30 +180,30 @@ public class ViewManager {
 	}
 	
 	public void showDatabaseConfigDialog() {
-        DatabaseConfigDialog dialog = new DatabaseConfigDialog(appData,getPrimaryStage());
+        DatabaseConfigDialog dialog = new DatabaseConfigDialog(getPrimaryStage());
         dialog.getStage().showAndWait();
         //TODO Try to Open Connection if it fails show the Dialog again
 
 	}	
 
 	public void showUserOverviewDialog() {
-		UserOverviewDialog dialog = new UserOverviewDialog(appData,getPrimaryStage());
+		UserOverviewDialog dialog = new UserOverviewDialog(getPrimaryStage());
 	    dialog.showAndWait();
 	}	
 	
 	
 	public void showRoleOverviewDialog() {
-		RoleOverviewDialog dialog = new RoleOverviewDialog(appData,getPrimaryStage());
+		RoleOverviewDialog dialog = new RoleOverviewDialog(getPrimaryStage());
 	    dialog.showAndWait();
 	}
 	
 	public void showStockOverviewDialog() {
-		StockOverviewDialog dialog = new StockOverviewDialog(appData,getPrimaryStage());
+		StockOverviewDialog dialog = new StockOverviewDialog(getPrimaryStage());
 	    dialog.showAndWait();
 	}
 	
 	public void showProductOverviewDialog() {
-		ProductOverviewDialog dialog = new ProductOverviewDialog(appData,getPrimaryStage());
+		ProductOverviewDialog dialog = new ProductOverviewDialog(getPrimaryStage());
 	    dialog.getStage().showAndWait();
 	}
 	

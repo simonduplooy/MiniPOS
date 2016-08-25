@@ -60,11 +60,10 @@ public class StockOverviewDialog extends BorderPane {
 	private Button deleteButton;
 	
 	
-	public StockOverviewDialog(final AppData appData, final Stage parentStage) {
-		assert(null!=appData);
+	public StockOverviewDialog(final Stage parentStage) {
 		assert(null!=parentStage);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		
 		stage = new Stage();
 		stage.initOwner(parentStage);
@@ -202,7 +201,7 @@ public class StockOverviewDialog extends BorderPane {
 		
 		StockItemUpdateDialog dialog = null;
 		try {
-			dialog = new StockItemUpdateDialog(appData,getStage(),StockItem);
+			dialog = new StockItemUpdateDialog(getStage(),StockItem);
 		} catch (Exception e) {
 			log.catching(Level.ERROR, e);
 			ExceptionDialog.create(AlertType.ERROR, ErrorMessage.ERROR_CREATING_DIALOG_TEXT, e).show();

@@ -24,7 +24,8 @@ public class Main extends Application {
 		//Set the log level for the whole application
 		Util.setLogLevel(APPLICATION_PACKAGE, LOG_LEVEL);
 		try {
-			appData = new AppData(primaryStage);
+			appData = AppData.getInstance();
+			appData.setPrimaryStage(primaryStage);
 		} catch(Exception e) {
 			log.catching(e);
 			throw(e);

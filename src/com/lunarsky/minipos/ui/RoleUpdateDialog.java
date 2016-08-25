@@ -43,11 +43,10 @@ public class RoleUpdateDialog extends VBox {
 	private RoleDTO role;
 	
 	// role can be null to create a new Role
-	public RoleUpdateDialog(final AppData appData, Stage parentStage, RoleDTO role) {
-		assert(null != appData);
+	public RoleUpdateDialog(Stage parentStage, RoleDTO role) {
 		assert(null != parentStage);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		this.role = role;
 
 		stage = new Stage();

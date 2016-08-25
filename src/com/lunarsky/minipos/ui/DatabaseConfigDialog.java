@@ -55,11 +55,10 @@ public class DatabaseConfigDialog extends BorderPane {
 	@FXML
 	private Button saveButton;
 	
-	public DatabaseConfigDialog (final AppData appData, final Stage parentStage) {
-		assert(null!=appData);
+	public DatabaseConfigDialog (final Stage parentStage) {
 		assert(null!=parentStage);
 		
-		this.appData = appData;
+		this.appData = AppData.getInstance();
 		
 		stage = new Stage();
 		stage.initOwner(parentStage);

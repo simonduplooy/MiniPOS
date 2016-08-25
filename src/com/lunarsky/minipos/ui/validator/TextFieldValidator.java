@@ -44,10 +44,6 @@ public class TextFieldValidator {
 	}
 	
 	public void close() {
-		//TODO
-		//errorLabel.managedProperty().unbind();
-		//textField.focusedProperty().removeListener();
-		//textField.textProperty().removeListener();
 	}
 	
 	
@@ -72,6 +68,7 @@ public class TextFieldValidator {
 	private void validate(final String previousText, final String newText) {
 		
 		if(!contentValid(newText)) {
+			log.debug("Invalid Content: [{}] Replace with: [{}}",newText,previousText);
 			textField.setText(previousText);
 		}
 		
