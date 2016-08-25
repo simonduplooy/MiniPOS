@@ -1,13 +1,12 @@
-package com.lunarsky.minipos.model;
+package com.lunarsky.minipos.model.dto;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.dto.PersistenceObjectDTO;
-import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.ui.Product;
 
-public class ProductButtonConfig extends PersistenceObjectDTO {
+public class ProductButtonConfigDTO extends PersistenceObjectDTO {
 	private static final Logger log = LogManager.getLogger();
 	
 	final PersistenceId parentId; 
@@ -15,11 +14,11 @@ public class ProductButtonConfig extends PersistenceObjectDTO {
 	final Integer columnIdx;
 	final Integer rowIdx;
 	
-	public ProductButtonConfig(final PersistenceId parentId, final ProductDTO product, final Integer columnIdx, final Integer rowIdx) {
+	public ProductButtonConfigDTO(final PersistenceId parentId, final ProductDTO product, final Integer columnIdx, final Integer rowIdx) {
 		this(null,parentId,product,columnIdx,rowIdx);
 	}
 	
-	public ProductButtonConfig(final PersistenceId id, final PersistenceId parentId, final ProductDTO product, final Integer columnIdx, final Integer rowIdx) {
+	public ProductButtonConfigDTO(final PersistenceId id, final PersistenceId parentId, final ProductDTO product, final Integer columnIdx, final Integer rowIdx) {
 		super(id);
 		
 		assert(null != product);

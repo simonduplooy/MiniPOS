@@ -1,6 +1,7 @@
 package com.lunarsky.minipos.ui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.ProductButtonConfig;
+import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.ui.Product;
 
@@ -40,9 +41,9 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	private final PersistenceId parentId;
 	private final Integer columnIdx;
 	private final Integer rowIdx;
-	private final ProductDTO product;
+	private final Product product;
 
-	private ProductButtonConfig buttonConfig;
+	private ProductButtonConfigDTO buttonConfig;
 	
 	private ObservableList<Product> productList;
 
@@ -51,7 +52,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	@FXML
 	private Button saveButton;
 
-	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final ProductButtonConfig buttonConfig) {
+	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final ProductButtonConfigDTO buttonConfig) {
 		this(appData,parentStage,buttonConfig.getId(),buttonConfig.getParentId(),null,buttonConfig.getColumnIndex(),buttonConfig.getRowIndex());
 	}
 	
@@ -59,7 +60,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 		this(appData,parentStage,null,parentId,null,columnIdx,rowIdx);
 	}
 	
-	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final PersistenceId id, final PersistenceId parentId, final ProductDTO product, final Integer columnIdx, final Integer rowIdx) {
+	public ProductButtonUpdateDialog(final AppData appData, final Stage parentStage, final PersistenceId id, final PersistenceId parentId, final Product product, final Integer columnIdx, final Integer rowIdx) {
 
 		assert(null != appData);
 		assert(null != parentStage);
@@ -102,7 +103,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	}
 	
 	//Can be null if canceled
-	public ProductButtonConfig getButtonConfig() {
+	public ProductButtonConfigDTO getButtonConfig() {
 		return buttonConfig;
 	}
 	
@@ -162,7 +163,14 @@ public class ProductButtonUpdateDialog extends BorderPane {
 			@Override 
 			protected void succeeded() {
 				log.debug("GetProducts() Succeeded");
-				productList = FXCollections.observableList(getValue());
+
+				final List<ProductDTO> productDTOList = getValue();
+				final List<Product> list = new ArrayList<Product>();
+				for(ProductDTO productDTO: productDTOList) {
+					final Product product = new Product(productDTO);
+					list.add(product);
+				}
+				productList = FXCollections.observableList(list);
 				Collections.sort(productList);
 				productComboBox.setItems(productList);
 				
@@ -190,10 +198,10 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	private void handleSave(ActionEvent event) {
 		
 		//TODO Service
-		Task<ProductButtonConfig> task = new Task<ProductButtonConfig>() {
-			final ProductButtonConfig buttonConfig = createButtonConfigFromControls();
+		Task<ProductButtonConfigDTO> task = new Task<ProductButtonConfigDTO>() {
+			final ProductButtonConfigDTO buttonConfig = createButtonConfigFromControls();
 			@Override
-			protected ProductButtonConfig call() throws EntityNotFoundException {
+			protected ProductButtonConfigDTO call() throws EntityNotFoundException {
 				return appData.getServerConnector().saveProductButton(buttonConfig);
 			}
 			@Override
@@ -220,13 +228,13 @@ public class ProductButtonUpdateDialog extends BorderPane {
 		close();
 	}
 	
-	private ProductButtonConfig createButtonConfigFromControls() {
+	private ProductButtonConfigDTO createButtonConfigFromControls() {
 		final Product product = productComboBox.getValue();
-		final ProductButtonConfig buttonConfig = new ProductButtonConfig(id,parentId,product,columnIdx,rowIdx);
+		final ProductButtonConfigDTO buttonConfig = new ProductButtonConfigDTO(id,parentId,product.createDTO(),columnIdx,rowIdx);
 		return buttonConfig;
 	}
 	
-	private void setButtonConfig(final ProductButtonConfig buttonConfig) {
+	private void setButtonConfig(final ProductButtonConfigDTO buttonConfig) {
 		assert(null != buttonConfig);
 		this.buttonConfig = buttonConfig;
 	}

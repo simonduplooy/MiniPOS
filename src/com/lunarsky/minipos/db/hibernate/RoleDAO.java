@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.Role;
+import com.lunarsky.minipos.model.dto.RoleDTO;
 
 @Entity
 @Table(name="roles")
@@ -32,7 +32,7 @@ public class RoleDAO extends HibernateDAO {
 		return roleDAO;
 	}
 	
-	public static RoleDAO create(final EntityManager entityManager, final Role role) {
+	public static RoleDAO create(final EntityManager entityManager, final RoleDTO role) {
 		assert(null != entityManager);
 		assert(null != role);
 		
@@ -42,11 +42,11 @@ public class RoleDAO extends HibernateDAO {
 		return roleDAO;
 	}
 	
-	public Role getRole() {
-		return new Role(getId(),getName(),getCanVoid(),getCanManageUsers());
+	public RoleDTO getRole() {
+		return new RoleDTO(getId(),getName(),getCanVoid(),getCanManageUsers());
 	}
 
-	public void setRole(final Role role) {
+	public void setRole(final RoleDTO role) {
 		assert(null != role);
 		
 		setId(role.getId());
@@ -55,7 +55,7 @@ public class RoleDAO extends HibernateDAO {
 		setCanManageUsers(role.getCanManageUsers());
 	}
 	
-	private RoleDAO(final EntityManager entityManager, final Role role) {
+	private RoleDAO(final EntityManager entityManager, final RoleDTO role) {
 		super(entityManager);
 		setRole(role);
 	}

@@ -2,53 +2,53 @@ package com.lunarsky.minipos.interfaces;
 
 import java.util.List;
 
-import com.lunarsky.minipos.model.Account;
-import com.lunarsky.minipos.model.PersistenceConfig;
-import com.lunarsky.minipos.model.ProductButtonConfig;
-import com.lunarsky.minipos.model.ProductButtonGroupConfig;
-import com.lunarsky.minipos.model.Role;
-import com.lunarsky.minipos.model.StockItem;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.dto.PersistenceConfigDTO;
+import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.dto.RoleDTO;
+import com.lunarsky.minipos.model.dto.StockItemDTO;
+import com.lunarsky.minipos.model.dto.UserDTO;
 
 public interface ServerConnector {
 	
-	public PersistenceConfig getPersistenceConfig();
-	public void setPersistenceConfig(PersistenceConfig config);
+	public PersistenceConfigDTO getPersistenceConfig();
+	public void setPersistenceConfig(PersistenceConfigDTO config);
 	public void createPersistenceConnection();
-	public void testPersistenceConnection(PersistenceConfig config);
+	public void testPersistenceConnection(PersistenceConfigDTO config);
 	
 	/*****************************************************************************
 	 * Users 
 	 *****************************************************************************/
-	public List<User> getUsers();
-	public User getUser(final PersistenceId id);
-	public User getUserWithPassword(final String password);
-	public User saveUser(final User user);
+	public List<UserDTO> getUsers();
+	public UserDTO getUser(final PersistenceId id);
+	public UserDTO getUserWithPassword(final String password);
+	public UserDTO saveUser(final UserDTO user);
 	public void deleteUser(final PersistenceId id);
 	
 	/*****************************************************************************
 	 * Roles
 	 *****************************************************************************/
-	public List<Role> getRoles();
-	public Role saveRole(final Role role);
+	public List<RoleDTO> getRoles();
+	public RoleDTO saveRole(final RoleDTO role);
 	public void deleteRole(final PersistenceId id);
 	
 	/*****************************************************************************
 	 * Stock
 	 *****************************************************************************/
-	public List<StockItem> getStock();
-	public StockItem saveStockItem(final StockItem stockItem);
+	public List<StockItemDTO> getStock();
+	public StockItemDTO saveStockItem(final StockItemDTO stockItem);
 	public void deleteStockItem(final PersistenceId id);
 	
 	/*****************************************************************************
 	 * Accounts
 	 *****************************************************************************/
-	public List<Account> getAccounts();
-	public List<Account> getAccounts(final PersistenceId userId);
-	public Account createAccount(final PersistenceId userId,final Account account);
-	public void updateAccount(final Account account);
+	public List<AccountDTO> getAccounts();
+	public List<AccountDTO> getAccounts(final PersistenceId userId);
+	public AccountDTO createAccount(final PersistenceId userId,final AccountDTO account);
+	public void updateAccount(final AccountDTO account);
 	public void deleteAccount(final PersistenceId id);
 	
 	/*****************************************************************************
@@ -65,12 +65,12 @@ public interface ServerConnector {
 	/*****************************************************************************
 	 * Product Buttons
 	 *****************************************************************************/
-	public List<ProductButtonConfig> getProductButtons();
-	public ProductButtonConfig saveProductButton(final ProductButtonConfig config);
+	public List<ProductButtonConfigDTO> getProductButtons();
+	public ProductButtonConfigDTO saveProductButton(final ProductButtonConfigDTO config);
 	public void deleteProductButton(final PersistenceId id);
 	
-	public List<ProductButtonGroupConfig> getProductButtonGroups();
-	public ProductButtonGroupConfig saveProductButtonGroup(final ProductButtonGroupConfig config);
+	public List<ProductGroupButtonConfigDTO> getProductButtonGroups();
+	public ProductGroupButtonConfigDTO saveProductButtonGroup(final ProductGroupButtonConfigDTO config);
 	public void deleteProductButtonGroup(final PersistenceId id);
 	
 	public void close();

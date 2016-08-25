@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.StockItem;
+import com.lunarsky.minipos.model.dto.StockItemDTO;
 import com.lunarsky.minipos.util.ErrorMessage;
 
 import javafx.beans.value.ChangeListener;
@@ -39,13 +39,13 @@ public class StockOverviewDialog extends BorderPane {
 	private final AppData appData;
 	private final Stage stage;
 	
-	private ObservableList<StockItem> stockItemList;
-	private StockItem selectedStockItem;
-	private ChangeListener<StockItem> selectedItemChangeListener;
+	private ObservableList<StockItemDTO> stockItemList;
+	private StockItemDTO selectedStockItem;
+	private ChangeListener<StockItemDTO> selectedItemChangeListener;
 	
 	
 	@FXML
-	private ListView<StockItem> stockListView;
+	private ListView<StockItemDTO> stockListView;
 	@FXML
 	private TextField nameTextField;
 	@FXML
@@ -102,9 +102,9 @@ public class StockOverviewDialog extends BorderPane {
 	private void initializeControls() {
 		
 		stockListView.setCellFactory((listCell) -> {
-			ListCell<StockItem> cell = new ListCell<StockItem>() {
+			ListCell<StockItemDTO> cell = new ListCell<StockItemDTO>() {
 				@Override
-				protected void updateItem(StockItem StockItem, boolean empty) {
+				protected void updateItem(StockItemDTO StockItem, boolean empty) {
 					super.updateItem(StockItem,empty);
 					if(null!=StockItem) {
 						setText(StockItem.getName());
@@ -129,9 +129,9 @@ public class StockOverviewDialog extends BorderPane {
 		
 		getStage().setOnCloseRequest((event) -> { close(); });
 		
-		selectedItemChangeListener = new ChangeListener<StockItem>() {
+		selectedItemChangeListener = new ChangeListener<StockItemDTO>() {
 			@Override
-			public void changed(ObservableValue<? extends StockItem> observable, StockItem oldValue, StockItem newValue) {
+			public void changed(ObservableValue<? extends StockItemDTO> observable, StockItemDTO oldValue, StockItemDTO newValue) {
 				setSelectedStockItem(newValue);
 			}
 		};
@@ -151,10 +151,10 @@ public class StockOverviewDialog extends BorderPane {
 	}
 	
 	private void initializeAsync() {
-		Task<List<StockItem>> task = new Task<List<StockItem>>() {
+		Task<List<StockItemDTO>> task = new Task<List<StockItemDTO>>() {
 			@Override
-			protected List<StockItem> call() {
-				List<StockItem> StockItems = appData.getServerConnector().getStock();
+			protected List<StockItemDTO> call() {
+				List<StockItemDTO> StockItems = appData.getServerConnector().getStock();
 				return StockItems;
 			}
 			@Override
@@ -186,18 +186,18 @@ public class StockOverviewDialog extends BorderPane {
 	
 	@FXML
 	private void handleEdit() {
-		final StockItem StockItem = getSelectedStockItem();
+		final StockItemDTO StockItem = getSelectedStockItem();
 		updateStockItem(StockItem);
 	}
 
 	@FXML
 	private void handleDuplicate() {		
-		final StockItem StockItem = getSelectedStockItem().duplicate();
+		final StockItemDTO StockItem = getSelectedStockItem().duplicate();
 		log.debug("Duplicate StockItem {}",StockItem);
 		updateStockItem(StockItem);
 	}
 	
-	private void updateStockItem(final StockItem StockItem) {
+	private void updateStockItem(final StockItemDTO StockItem) {
 		log.debug("Update StockItem {}",StockItem);
 		
 		StockItemUpdateDialog dialog = null;
@@ -209,7 +209,7 @@ public class StockOverviewDialog extends BorderPane {
 		}
 		
 		dialog.showAndWait();
-		final StockItem updatedStockItem = dialog.getStockItem();
+		final StockItemDTO updatedStockItem = dialog.getStockItem();
 		
 		//The StockItem was updated
 		if(updatedStockItem != StockItem) {
@@ -224,7 +224,7 @@ public class StockOverviewDialog extends BorderPane {
 	private void handleDelete() {
 
 		Task<Void> task = new Task<Void>() {
-			private final StockItem StockItem = getSelectedStockItem();
+			private final StockItemDTO StockItem = getSelectedStockItem();
 			@Override
 			protected Void call() throws EntityNotFoundException {
 				appData.getServerConnector().deleteStockItem(StockItem.getId());
@@ -266,7 +266,7 @@ public class StockOverviewDialog extends BorderPane {
 		
 	}
 	
-	private void setSelectedStockItem(StockItem stockItem) {
+	private void setSelectedStockItem(StockItemDTO stockItem) {
 		this.selectedStockItem = stockItem;
 		if(null==stockItem) {
 			nameTextField.setText("");
@@ -280,7 +280,7 @@ public class StockOverviewDialog extends BorderPane {
 		}
 	}
 
-	private StockItem getSelectedStockItem() {
+	private StockItemDTO getSelectedStockItem() {
 		return selectedStockItem;
 	}
 	

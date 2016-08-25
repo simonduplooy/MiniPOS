@@ -7,9 +7,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.dto.UserDTO;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -26,7 +26,7 @@ public class AccountOverviewView extends BorderPane {
 
 	private final AppData appData;
 	private final Stage stage;
-	private final Service<List<Account>> loadService;
+	private final Service<List<AccountDTO>> loadService;
 	
 	@FXML
 	private Label userLabel;
@@ -49,21 +49,21 @@ public class AccountOverviewView extends BorderPane {
         	throw new RuntimeException(e);
         }
         
-		loadService = new Service<List<Account>>() {
+		loadService = new Service<List<AccountDTO>>() {
 			@Override
-			protected Task<List<Account>> createTask() {
-				return new Task<List<Account>>() {
+			protected Task<List<AccountDTO>> createTask() {
+				return new Task<List<AccountDTO>>() {
 					
 					final PersistenceId userId = appData.getActiveUser().getId();
 					
 					@Override
-					protected List<Account> call() {
-						final List<Account> account = appData.getServerConnector().getAccounts(userId); 
+					protected List<AccountDTO> call() {
+						final List<AccountDTO> account = appData.getServerConnector().getAccounts(userId); 
 						return account;
 					}
 					@Override
 					protected void succeeded() {
-						final List<Account> accounts = getValue();
+						final List<AccountDTO> accounts = getValue();
 						log.debug("GetAccounts Succeeded: {} accounts",accounts.size());
 						setAccounts(accounts);
 					}
@@ -82,8 +82,8 @@ public class AccountOverviewView extends BorderPane {
         
 	}
 	
-	private void setAccounts(final List<Account> accounts) {
-		for(Account account: accounts) {
+	private void setAccounts(final List<AccountDTO> accounts) {
+		for(AccountDTO account: accounts) {
 			log.debug("Adding Account {}",account);
 			final AccountButton button = new AccountButton(appData,account);
 			accountFlowPane.getChildren().add(button);
@@ -92,7 +92,7 @@ public class AccountOverviewView extends BorderPane {
 	
 	@FXML
 	private void initialize() {
-		final User user = appData.getActiveUser();
+		final UserDTO user = appData.getActiveUser();
 		userLabel.setText(user.getName());
 	}
 	
@@ -103,7 +103,7 @@ public class AccountOverviewView extends BorderPane {
 		final AccountUpdateDialog dialog = new AccountUpdateDialog(appData,stage,null);
 		dialog.getStage().showAndWait();
 		
-		final Account account = dialog.getAccount();
+		final AccountDTO account = dialog.getAccount();
 		if(null != account) {
 			log.debug("Adding Account {}",account);
 			AccountButton button = new AccountButton(appData,account);

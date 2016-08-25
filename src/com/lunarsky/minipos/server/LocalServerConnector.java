@@ -10,15 +10,15 @@ import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.interfaces.PersistenceProvider;
 import com.lunarsky.minipos.interfaces.ServerConnector;
 import com.lunarsky.minipos.interfaces.Transaction;
-import com.lunarsky.minipos.model.Account;
-import com.lunarsky.minipos.model.PersistenceConfig;
-import com.lunarsky.minipos.model.ProductButtonConfig;
-import com.lunarsky.minipos.model.ProductButtonGroupConfig;
-import com.lunarsky.minipos.model.Role;
-import com.lunarsky.minipos.model.StockItem;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.dto.PersistenceConfigDTO;
+import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.dto.RoleDTO;
+import com.lunarsky.minipos.model.dto.StockItemDTO;
+import com.lunarsky.minipos.model.dto.UserDTO;
 
 public class LocalServerConnector implements ServerConnector {
 	
@@ -34,12 +34,12 @@ public class LocalServerConnector implements ServerConnector {
 		persistenceProvider = PersistenceProviderFactory.getPersistenceProvider();
 	}
 	
-	public PersistenceConfig getPersistenceConfig() {
-		PersistenceConfig config = persistenceProvider.getConfig(); 
+	public PersistenceConfigDTO getPersistenceConfig() {
+		PersistenceConfigDTO config = persistenceProvider.getConfig(); 
 		return config;
 	}
 	
-	public void setPersistenceConfig(PersistenceConfig config) {
+	public void setPersistenceConfig(PersistenceConfigDTO config) {
 		persistenceProvider.setConfig(config);
 	}
 
@@ -47,34 +47,34 @@ public class LocalServerConnector implements ServerConnector {
 		persistenceProvider.createConnection();
 	}
 	
-	public void testPersistenceConnection(PersistenceConfig config) {
+	public void testPersistenceConnection(PersistenceConfigDTO config) {
 		persistenceProvider.testConnection(config);
 	}
 	
 	/*****************************************************************************
 	 * Users
 	 *****************************************************************************/	
-	public List<User> getUsers() {
+	public List<UserDTO> getUsers() {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<User> users = (List<User>)persistenceCall(transaction,()->(persistenceProvider.getUsers(transaction)));
+		final List<UserDTO> users = (List<UserDTO>)persistenceCall(transaction,()->(persistenceProvider.getUsers(transaction)));
 		return users;
 	}
 	
-	public User getUser(final PersistenceId id){
+	public UserDTO getUser(final PersistenceId id){
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final User user = (User)persistenceCall(transaction,()->(persistenceProvider.getUser(transaction, id)));
+		final UserDTO user = (UserDTO)persistenceCall(transaction,()->(persistenceProvider.getUser(transaction, id)));
 		return user;
 	}
 	
-	public User getUserWithPassword(final String password) {
+	public UserDTO getUserWithPassword(final String password) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final User user = (User)persistenceCall(transaction,()->(persistenceProvider.getUserWithPassword(transaction,password)));
+		final UserDTO user = (UserDTO)persistenceCall(transaction,()->(persistenceProvider.getUserWithPassword(transaction,password)));
 		return user;
 	}
 	
-	public User saveUser(final User user) {
+	public UserDTO saveUser(final UserDTO user) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final User updatedUser = (User)persistenceCall(transaction,()->(persistenceProvider.saveUser(transaction, user)));
+		final UserDTO updatedUser = (UserDTO)persistenceCall(transaction,()->(persistenceProvider.saveUser(transaction, user)));
 		return updatedUser;
 	}
 
@@ -86,18 +86,18 @@ public class LocalServerConnector implements ServerConnector {
 	/*****************************************************************************
 	 * Roles
 	 *****************************************************************************/
-	public List<Role> getRoles() {
+	public List<RoleDTO> getRoles() {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<Role> roles= (List<Role>)persistenceCall(transaction,()->(persistenceProvider.getRoles(transaction)));
+		final List<RoleDTO> roles= (List<RoleDTO>)persistenceCall(transaction,()->(persistenceProvider.getRoles(transaction)));
 		return roles;
 	}
 	
 	/*****************************************************************************
 	 * Roles
 	 *****************************************************************************/
-	public Role saveRole(final Role role) {
+	public RoleDTO saveRole(final RoleDTO role) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final Role updatedRole= (Role)persistenceCall(transaction,()->(persistenceProvider.saveRole(transaction, role)));
+		final RoleDTO updatedRole= (RoleDTO)persistenceCall(transaction,()->(persistenceProvider.saveRole(transaction, role)));
 		return updatedRole;
 	}
 
@@ -109,15 +109,15 @@ public class LocalServerConnector implements ServerConnector {
 	/*****************************************************************************
 	 * Stock
 	 *****************************************************************************/
-	public List<StockItem> getStock() {
+	public List<StockItemDTO> getStock() {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<StockItem> stockItems = (List<StockItem>)persistenceCall(transaction,()->(persistenceProvider.getStock(transaction)));
+		final List<StockItemDTO> stockItems = (List<StockItemDTO>)persistenceCall(transaction,()->(persistenceProvider.getStock(transaction)));
 		return stockItems;
 	}
 	
-	public StockItem saveStockItem(final StockItem stockItem) {
+	public StockItemDTO saveStockItem(final StockItemDTO stockItem) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final StockItem updatedStockItem = (StockItem)persistenceCall(transaction,()->(persistenceProvider.saveStockItem(transaction, stockItem)));
+		final StockItemDTO updatedStockItem = (StockItemDTO)persistenceCall(transaction,()->(persistenceProvider.saveStockItem(transaction, stockItem)));
 		return updatedStockItem;
 	}
 	
@@ -129,24 +129,24 @@ public class LocalServerConnector implements ServerConnector {
 	/*****************************************************************************
 	 * Accounts
 	 *****************************************************************************/
-	public List<Account> getAccounts() {
+	public List<AccountDTO> getAccounts() {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<Account> accounts = (List<Account>)persistenceCall(transaction,()->(persistenceProvider.getAccounts(transaction)));
+		final List<AccountDTO> accounts = (List<AccountDTO>)persistenceCall(transaction,()->(persistenceProvider.getAccounts(transaction)));
 		return accounts;		
 	}
 
-	public List<Account> getAccounts(final PersistenceId userId) {
+	public List<AccountDTO> getAccounts(final PersistenceId userId) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<Account> accounts = (List<Account>)persistenceCall(transaction,()->(persistenceProvider.getAccounts(transaction,userId)));
+		final List<AccountDTO> accounts = (List<AccountDTO>)persistenceCall(transaction,()->(persistenceProvider.getAccounts(transaction,userId)));
 		return accounts;		
 	}
-	public Account createAccount(final PersistenceId userId, final Account account) {
+	public AccountDTO createAccount(final PersistenceId userId, final AccountDTO account) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final Account updatedAccount = (Account)persistenceCall(transaction,()->(persistenceProvider.createAccount(transaction, userId, account)));
+		final AccountDTO updatedAccount = (AccountDTO)persistenceCall(transaction,()->(persistenceProvider.createAccount(transaction, userId, account)));
 		return updatedAccount;
 	}
 
-	public void updateAccount(final Account account) {
+	public void updateAccount(final AccountDTO account) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.updateAccount(transaction, account);return null;});
 	}
@@ -196,15 +196,15 @@ public class LocalServerConnector implements ServerConnector {
 	/*****************************************************************************
 	 * Product Buttons
 	 *****************************************************************************/
-	public List<ProductButtonConfig> getProductButtons() {
+	public List<ProductButtonConfigDTO> getProductButtons() {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<ProductButtonConfig> buttons = (List<ProductButtonConfig>)persistenceCall(transaction,()->(persistenceProvider.getProductButtons(transaction)));
+		final List<ProductButtonConfigDTO> buttons = (List<ProductButtonConfigDTO>)persistenceCall(transaction,()->(persistenceProvider.getProductButtons(transaction)));
 		return buttons;
 	}
 	
-	public ProductButtonConfig saveProductButton(final ProductButtonConfig config) {
+	public ProductButtonConfigDTO saveProductButton(final ProductButtonConfigDTO config) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final ProductButtonConfig updatedConfig = (ProductButtonConfig)persistenceCall(transaction,()->(persistenceProvider.saveProductButton(transaction, config)));
+		final ProductButtonConfigDTO updatedConfig = (ProductButtonConfigDTO)persistenceCall(transaction,()->(persistenceProvider.saveProductButton(transaction, config)));
 		return updatedConfig;
 	}
 	
@@ -213,15 +213,15 @@ public class LocalServerConnector implements ServerConnector {
 		persistenceCall(transaction,()->{persistenceProvider.deleteProductButton(transaction,id);return null;});
 	}
 	
-	public List<ProductButtonGroupConfig> getProductButtonGroups() {
+	public List<ProductGroupButtonConfigDTO> getProductButtonGroups() {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<ProductButtonGroupConfig> buttons = (List<ProductButtonGroupConfig>)persistenceCall(transaction,()->(persistenceProvider.getProductButtonGroups(transaction)));
+		final List<ProductGroupButtonConfigDTO> buttons = (List<ProductGroupButtonConfigDTO>)persistenceCall(transaction,()->(persistenceProvider.getProductButtonGroups(transaction)));
 		return buttons;
 	}
 	
-	public ProductButtonGroupConfig saveProductButtonGroup(final ProductButtonGroupConfig config) {
+	public ProductGroupButtonConfigDTO saveProductButtonGroup(final ProductGroupButtonConfigDTO config) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final ProductButtonGroupConfig updatedConfig = (ProductButtonGroupConfig)persistenceCall(transaction,()->(persistenceProvider.saveProductButtonGroup(transaction, config)));
+		final ProductGroupButtonConfigDTO updatedConfig = (ProductGroupButtonConfigDTO)persistenceCall(transaction,()->(persistenceProvider.saveProductButtonGroup(transaction, config)));
 		return updatedConfig;
 	}
 	

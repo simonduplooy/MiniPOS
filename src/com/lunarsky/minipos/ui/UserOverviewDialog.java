@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.UserDTO;
 import com.lunarsky.minipos.util.ErrorMessage;
 
 import javafx.beans.value.ChangeListener;
@@ -38,13 +38,13 @@ public class UserOverviewDialog extends BorderPane {
 	private final AppData appData;
 	private final Stage stage;
 	
-	private ObservableList<User> userList;
-	private User selectedUser;
-	private ChangeListener<User> selectedItemChangeListener;
+	private ObservableList<UserDTO> userList;
+	private UserDTO selectedUser;
+	private ChangeListener<UserDTO> selectedItemChangeListener;
 	
 	
 	@FXML
-	private ListView<User> userListView;
+	private ListView<UserDTO> userListView;
 	@FXML
 	private TextField nameTextField;
 	@FXML
@@ -101,9 +101,9 @@ public class UserOverviewDialog extends BorderPane {
 	private void initializeControls() {
 		
 		userListView.setCellFactory((listCell) -> {
-			ListCell<User> cell = new ListCell<User>() {
+			ListCell<UserDTO> cell = new ListCell<UserDTO>() {
 				@Override
-				protected void updateItem(User user, boolean empty) {
+				protected void updateItem(UserDTO user, boolean empty) {
 					super.updateItem(user,empty);
 					if(null!=user) {
 						setText(user.getName());
@@ -127,9 +127,9 @@ public class UserOverviewDialog extends BorderPane {
 		
 		getStage().setOnCloseRequest((event) -> { close(); });
 		
-		selectedItemChangeListener = new ChangeListener<User>() {
+		selectedItemChangeListener = new ChangeListener<UserDTO>() {
 			@Override
-			public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
+			public void changed(ObservableValue<? extends UserDTO> observable, UserDTO oldValue, UserDTO newValue) {
 				setSelectedUser(newValue);
 			}
 		};
@@ -149,19 +149,19 @@ public class UserOverviewDialog extends BorderPane {
 	}
 	
 	private void initializeAsync() {
-		Task<List<User>> task = new Task<List<User>>() {
+		Task<List<UserDTO>> task = new Task<List<UserDTO>>() {
 			@Override
-			protected List<User> call() {
-				final List<User> users = appData.getServerConnector().getUsers();
+			protected List<UserDTO> call() {
+				final List<UserDTO> users = appData.getServerConnector().getUsers();
 				return users;
 			}
 			@Override
 			protected void succeeded() {
 				log.debug("GetUsers() Succeeded");
-				final List<User> list = getValue();
+				final List<UserDTO> list = getValue();
 				
 				//TODO REMOVE
-				for(User user: list) {
+				for(UserDTO user: list) {
 					log.debug("Adding User: {}",user);
 				}
 				
@@ -191,24 +191,24 @@ public class UserOverviewDialog extends BorderPane {
 	
 	@FXML
 	private void handleEdit() {
-		final User user = getSelectedUser();
+		final UserDTO user = getSelectedUser();
 		updateUser(user);
 	}
 
 	@FXML
 	private void handleDuplicate() {		
-		final User user = getSelectedUser().duplicate();
+		final UserDTO user = getSelectedUser().duplicate();
 		log.debug("Duplicate User {}",user);
 		updateUser(user);
 	}
 	
-	private void updateUser(final User user) {
+	private void updateUser(final UserDTO user) {
 		log.debug("Update user {}",user);
 		
 		UserUpdateDialog dialog = new UserUpdateDialog(appData,getStage(),user);
 		dialog.showAndWait();
 		
-		final User updatedUser = dialog.getUser();
+		final UserDTO updatedUser = dialog.getUser();
 	
 		//The user was updated
 		if(updatedUser != user) {
@@ -225,7 +225,7 @@ public class UserOverviewDialog extends BorderPane {
 	private void handleDelete() {
 
 		Task<Void> task = new Task<Void>() {
-			private final User user = getSelectedUser();
+			private final UserDTO user = getSelectedUser();
 			@Override
 			protected Void call() throws EntityNotFoundException {
 				appData.getServerConnector().deleteUser(user.getId());
@@ -266,7 +266,7 @@ public class UserOverviewDialog extends BorderPane {
 		
 	}
 	
-	private void setSelectedUser(User user) {
+	private void setSelectedUser(UserDTO user) {
 	
  		this.selectedUser = user;
 		if(null==user) {
@@ -281,7 +281,7 @@ public class UserOverviewDialog extends BorderPane {
 		}
 	}
 
-	private User getSelectedUser() {
+	private UserDTO getSelectedUser() {
 		return selectedUser;
 	}
 	

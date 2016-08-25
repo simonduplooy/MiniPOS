@@ -1,19 +1,19 @@
-package com.lunarsky.minipos.model;
+package com.lunarsky.minipos.model.dto;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.dto.PersistenceObjectDTO;
-import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.ui.PersistenceObject;
+import com.lunarsky.minipos.model.ui.Product;
 
-public class ProductSale extends PersistenceObjectDTO {
+public class ProductSaleDTO extends PersistenceObject {
 
-	final private ProductDTO product;
+	final private Product product;
 	private Integer count;
 	
-	public ProductSale(final ProductDTO product) {
+	public ProductSaleDTO(final Product product) {
 		this(null,product);
 	}
 	
-	public ProductSale(final PersistenceId id,final ProductDTO product) {
+	public ProductSaleDTO(final PersistenceId id,final Product product) {
 		super(id);
 		
 		assert(null != product);
@@ -22,7 +22,7 @@ public class ProductSale extends PersistenceObjectDTO {
 		count = 1;
 	}
 	
-	public ProductDTO getProduct() {
+	public Product getProduct() {
 		assert(null != product);
 		return product;
 	}

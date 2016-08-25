@@ -1,21 +1,20 @@
-package com.lunarsky.minipos.model;
+package com.lunarsky.minipos.model.dto;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.dto.PersistenceObjectDTO;
 
-public class Account extends PersistenceObjectDTO {
+public class AccountDTO extends PersistenceObjectDTO {
 	private static final Logger log = LogManager.getLogger();
 	
 	private String name;
 
-	public Account() {
+	public AccountDTO() {
 		this(null);
 	}
 
-	public Account(final PersistenceId id) {
+	public AccountDTO(final PersistenceId id) {
 		super(id);
 	}
 	

@@ -2,56 +2,56 @@ package com.lunarsky.minipos.interfaces;
 
 import java.util.List;
 
-import com.lunarsky.minipos.model.Account;
-import com.lunarsky.minipos.model.PersistenceConfig;
-import com.lunarsky.minipos.model.ProductButtonConfig;
-import com.lunarsky.minipos.model.ProductButtonGroupConfig;
-import com.lunarsky.minipos.model.Role;
-import com.lunarsky.minipos.model.StockItem;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.dto.PersistenceConfigDTO;
+import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.dto.RoleDTO;
+import com.lunarsky.minipos.model.dto.StockItemDTO;
+import com.lunarsky.minipos.model.dto.UserDTO;
 import com.lunarsky.minipos.ui.ProductButtonGroup;
 
 public interface PersistenceProvider {
 	
-	public PersistenceConfig getConfig();
-	public void setConfig(PersistenceConfig config);
+	public PersistenceConfigDTO getConfig();
+	public void setConfig(PersistenceConfigDTO config);
 	public void createConnection();
-	public void testConnection(PersistenceConfig config);
+	public void testConnection(PersistenceConfigDTO config);
 	
 	public Transaction startTransaction();
 	
 	/*****************************************************************************
 	 * Users
 	 *****************************************************************************/
-	public List<User> getUsers(final Transaction transaction);
-	public User getUser(final Transaction transaction, final PersistenceId id);
-	public User getUserWithPassword(final Transaction transaction, final String password);	
-	public User saveUser(final Transaction transaction, final User user);
+	public List<UserDTO> getUsers(final Transaction transaction);
+	public UserDTO getUser(final Transaction transaction, final PersistenceId id);
+	public UserDTO getUserWithPassword(final Transaction transaction, final String password);	
+	public UserDTO saveUser(final Transaction transaction, final UserDTO user);
 	public void deleteUser(final Transaction transaction, final PersistenceId id);
 	
 	/*****************************************************************************
 	 * Roles
 	 *****************************************************************************/
-	public List<Role> getRoles(final Transaction transaction);
-	public Role saveRole(final Transaction transaction, final Role role);
+	public List<RoleDTO> getRoles(final Transaction transaction);
+	public RoleDTO saveRole(final Transaction transaction, final RoleDTO role);
 	public void deleteRole(final Transaction transaction, final PersistenceId id);
 	
 	/*****************************************************************************
 	 * Stock
 	 *****************************************************************************/
-	public List<StockItem> getStock(final Transaction transaction);
-	public StockItem saveStockItem(final Transaction transaction, final StockItem stockItem);
+	public List<StockItemDTO> getStock(final Transaction transaction);
+	public StockItemDTO saveStockItem(final Transaction transaction, final StockItemDTO stockItem);
 	public void deleteStockItem(final Transaction transaction, final PersistenceId id);
 	
 	/*****************************************************************************
 	 * Accounts
 	 *****************************************************************************/
-	public List<Account> getAccounts(final Transaction transaction);
-	public List<Account> getAccounts(final Transaction transaction, final PersistenceId userId);
-	public Account createAccount(final Transaction transaction, final PersistenceId userId, final Account account);
-	public void updateAccount(final Transaction transaction, final Account account);
+	public List<AccountDTO> getAccounts(final Transaction transaction);
+	public List<AccountDTO> getAccounts(final Transaction transaction, final PersistenceId userId);
+	public AccountDTO createAccount(final Transaction transaction, final PersistenceId userId, final AccountDTO account);
+	public void updateAccount(final Transaction transaction, final AccountDTO account);
 	public void deleteAccount(final Transaction transaction, final PersistenceId id);
 	
 	/*****************************************************************************
@@ -68,12 +68,12 @@ public interface PersistenceProvider {
 	/*****************************************************************************
 	 * Product Buttons
 	 *****************************************************************************/
-	public List<ProductButtonConfig> getProductButtons(final Transaction transaction);
-	public ProductButtonConfig saveProductButton(final Transaction transaction, final ProductButtonConfig config);
+	public List<ProductButtonConfigDTO> getProductButtons(final Transaction transaction);
+	public ProductButtonConfigDTO saveProductButton(final Transaction transaction, final ProductButtonConfigDTO config);
 	public void deleteProductButton(final Transaction transaction, final PersistenceId id);
 	
-	public List<ProductButtonGroupConfig> getProductButtonGroups(final Transaction transaction);
-	public ProductButtonGroupConfig saveProductButtonGroup(final Transaction transaction, final ProductButtonGroupConfig config);
+	public List<ProductGroupButtonConfigDTO> getProductButtonGroups(final Transaction transaction);
+	public ProductGroupButtonConfigDTO saveProductButtonGroup(final Transaction transaction, final ProductGroupButtonConfigDTO config);
 	public void deleteProductButtonGroup(final Transaction transaction, final PersistenceId id);
 	
 	public void close();

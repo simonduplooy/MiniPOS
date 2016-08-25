@@ -6,7 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.StockItem;
+import com.lunarsky.minipos.model.dto.StockItemDTO;
 
 @Entity
 @Table(name="stockitems")
@@ -30,7 +30,7 @@ public class StockItemDAO extends HibernateDAO {
 		return stockItemDAO;
 	}
 	
-	public static StockItemDAO create(final EntityManager entityManager, final StockItem stockItem) {
+	public static StockItemDAO create(final EntityManager entityManager, final StockItemDTO stockItem) {
 		assert(null != entityManager);
 		assert(null != stockItem);
 		
@@ -40,12 +40,12 @@ public class StockItemDAO extends HibernateDAO {
 		return stockItemDAO;
 	}
 	
-	public StockItem getStockItem() {
-		final StockItem stockItem = new StockItem(getId(),getName(),getTrackStockLevel(),getStockLevel()); 
+	public StockItemDTO getStockItem() {
+		final StockItemDTO stockItem = new StockItemDTO(getId(),getName(),getTrackStockLevel(),getStockLevel()); 
 		return stockItem;
 	}
 
-	public void setStockItem(final StockItem stockItem) {
+	public void setStockItem(final StockItemDTO stockItem) {
 		assert(null != stockItem);
 		
 		setId(stockItem.getId());
@@ -54,7 +54,7 @@ public class StockItemDAO extends HibernateDAO {
 		setStockLevel(stockItem.getStockLevel());
 	}
 
-	private StockItemDAO(final EntityManager entityManager,final StockItem stockItem) {
+	private StockItemDAO(final EntityManager entityManager,final StockItemDTO stockItem) {
 		super(entityManager);
 		setStockItem(stockItem);
 	}

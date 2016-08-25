@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
 
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.Account;
+import com.lunarsky.minipos.model.dto.AccountDTO;
 
 @Entity
 @Table(
@@ -47,7 +47,7 @@ public class AccountDAO extends HibernateDAO {
 		return accountDAO;
 	}
 	
-	public static AccountDAO create(final EntityManager entityManager, final Account account) {
+	public static AccountDAO create(final EntityManager entityManager, final AccountDTO account) {
 		assert(null != entityManager);
 		assert(null != account);
 		
@@ -57,18 +57,18 @@ public class AccountDAO extends HibernateDAO {
 		return accountDAO;
 	}
 	
-	private AccountDAO(final EntityManager entityManager, final Account account) {
+	private AccountDAO(final EntityManager entityManager, final AccountDTO account) {
 		super(entityManager);
 		setAccount(account);
 	}
 	
-	public Account getAccount() {
-		final Account account = new Account(getId());
+	public AccountDTO getAccount() {
+		final AccountDTO account = new AccountDTO(getId());
 		account.setName(getName());
 		return account;
 	}
 
-	public void setAccount(final Account account) {
+	public void setAccount(final AccountDTO account) {
 		assert(null != account);
 		
 		setId(account.getId());

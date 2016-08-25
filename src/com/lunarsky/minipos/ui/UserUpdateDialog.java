@@ -14,8 +14,8 @@ import com.lunarsky.minipos.common.exception.NameInUseException;
 import com.lunarsky.minipos.common.exception.PasswordInUseException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.Role;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.RoleDTO;
+import com.lunarsky.minipos.model.dto.UserDTO;
 import com.lunarsky.minipos.ui.validator.IntegerTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.TextFieldValidator;
@@ -47,9 +47,9 @@ public class UserUpdateDialog extends BorderPane {
 
 	private final AppData appData;
 	private final Stage stage;
-	private User user;
+	private UserDTO user;
 	
-	private ObservableList<Role> roleList;
+	private ObservableList<RoleDTO> roleList;
 	
 	@FXML
 	private Label nameErrorLabel;
@@ -60,7 +60,7 @@ public class UserUpdateDialog extends BorderPane {
 	@FXML
 	private PasswordField passwordPasswordField;
 	@FXML
-	private ComboBox<Role> roleComboBox;
+	private ComboBox<RoleDTO> roleComboBox;
 	@FXML
 	private Button saveButton;
 	
@@ -68,7 +68,7 @@ public class UserUpdateDialog extends BorderPane {
 	private TextFieldValidator passwordValidator;
 		
 	// user can be null to create a new User
-	public UserUpdateDialog(final AppData appData, final Stage parentStage, final User user) {
+	public UserUpdateDialog(final AppData appData, final Stage parentStage, final UserDTO user) {
 		assert(null != appData);
 		assert(null != parentStage);
 		
@@ -101,7 +101,7 @@ public class UserUpdateDialog extends BorderPane {
 	}
 	
 	//Can be null if canceled
-	public User getUser() {
+	public UserDTO getUser() {
 		return user;
 	}
 	
@@ -112,12 +112,12 @@ public class UserUpdateDialog extends BorderPane {
 		
 	}
 	
-	private void initializeControls(final User user) {
+	private void initializeControls(final UserDTO user) {
 		
 		roleComboBox.setCellFactory((listCell) -> {
-			ListCell<Role> cell = new ListCell<Role>() {
+			ListCell<RoleDTO> cell = new ListCell<RoleDTO>() {
 				@Override
-				protected void updateItem(Role role, boolean empty) {
+				protected void updateItem(RoleDTO role, boolean empty) {
 					super.updateItem(role,empty);
 					if(null!=role) {
 						setText(role.getName());
@@ -129,13 +129,13 @@ public class UserUpdateDialog extends BorderPane {
 			return cell;
 		});
 		
-		final StringConverter<Role> converter = new StringConverter<Role>() {
+		final StringConverter<RoleDTO> converter = new StringConverter<RoleDTO>() {
 			@Override
-			public String toString(final Role role) {
+			public String toString(final RoleDTO role) {
 				return role.getName();
 			}
 			@Override
-			public Role fromString(final String roleName) {
+			public RoleDTO fromString(final String roleName) {
 				return null;
 			}
 		};
@@ -165,10 +165,10 @@ public class UserUpdateDialog extends BorderPane {
 
 	private void initializeAsync() {
 		
-		Task<List<Role>> task = new Task<List<Role>>() {
+		Task<List<RoleDTO>> task = new Task<List<RoleDTO>>() {
 			@Override
-			protected List<Role> call() {
-				List<Role> roles = appData.getServerConnector().getRoles();
+			protected List<RoleDTO> call() {
+				List<RoleDTO> roles = appData.getServerConnector().getRoles();
 				return roles;
 			}
 			@Override 
@@ -178,13 +178,13 @@ public class UserUpdateDialog extends BorderPane {
 				Collections.sort(roleList);
 				roleComboBox.setItems(roleList);
 				
-				final User user = getUser();
+				final UserDTO user = getUser();
 				if(null == user) {
 					//TODO handle no Roles defined
 					//TODO select default / last used?
 					roleComboBox.getSelectionModel().selectFirst();					
 				} else {
-					final Role role = user.getRole();
+					final RoleDTO role = user.getRole();
 					//This uses Role.compareTo()
 					roleComboBox.getSelectionModel().select(role);
 				}
@@ -208,10 +208,10 @@ public class UserUpdateDialog extends BorderPane {
 
 		clearErrorMessages();
 		
-		Task<User> task = new Task<User>() {
-			final User user = createUserFromControls();
+		Task<UserDTO> task = new Task<UserDTO>() {
+			final UserDTO user = createUserFromControls();
 			@Override
-			protected User call() throws NameInUseException, PasswordInUseException, EntityNotFoundException {
+			protected UserDTO call() throws NameInUseException, PasswordInUseException, EntityNotFoundException {
 				return appData.getServerConnector().saveUser(user);
 			}
 			@Override
@@ -255,18 +255,18 @@ public class UserUpdateDialog extends BorderPane {
 		passwordErrorLabel.setVisible(false);		
 	}
 	
-	private User createUserFromControls() {
+	private UserDTO createUserFromControls() {
 				
 		final PersistenceId id = (null == user)? null : user.getId();
 		final String name = nameTextField.getText();
 		final String password = passwordPasswordField.getText();
-		final Role role = roleComboBox.getValue();
+		final RoleDTO role = roleComboBox.getValue();
 		
-		final User updatedUser = new User(id,name,password,role);
+		final UserDTO updatedUser = new UserDTO(id,name,password,role);
 		return updatedUser;
 	}
 	
-	private void setUser(final User user) {
+	private void setUser(final UserDTO user) {
 		this.user = user;
 	}
 	

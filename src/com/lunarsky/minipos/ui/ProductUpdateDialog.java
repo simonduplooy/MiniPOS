@@ -14,8 +14,9 @@ import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.ui.validator.CurrencyTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
+import com.sun.javafx.css.converters.StringConverter;
 
-import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.Bindings;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -28,6 +29,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.converter.NumberStringConverter;
 
 public class ProductUpdateDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
@@ -109,7 +111,8 @@ public class ProductUpdateDialog extends BorderPane {
 		priceValidator = new CurrencyTextFieldValidator(priceTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
 		
 		nameTextField.textProperty().bindBidirectional(product.nameProperty());
-		priceTextField.textProperty().bindBidirectional(product.priceProperty());
+		NumberStringConverter converter = new NumberStringConverter("#,###.00");
+		Bindings.bindBidirectional(priceTextField.textProperty(),product.priceProperty(),converter);
 		
 		saveButton.disableProperty().bind(nameValidator.validProperty().and(priceValidator.validProperty()).not().or(saveService.runningProperty()));
 	}

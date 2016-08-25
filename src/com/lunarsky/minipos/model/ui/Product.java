@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -16,11 +18,11 @@ public class Product extends ProductBase implements Comparable<Product>{
 	
 	private PersistenceId parentId;
 	private final StringProperty nameProperty;
-	private final StringProperty priceProperty;
+	private final DoubleProperty priceProperty;
 
 	public Product() {
 		nameProperty = new SimpleStringProperty("");
-		priceProperty = new SimpleStringProperty("");
+		priceProperty = new SimpleDoubleProperty(0.0);
 	}
 	
 	public Product(final PersistenceId parentId) {
@@ -39,8 +41,7 @@ public class Product extends ProductBase implements Comparable<Product>{
 	}
 	
 	public ProductDTO createDTO() {
-		final Double price = Double.parseDouble(getPrice());
-		final ProductDTO productDTO = new ProductDTO(getId(),getParentId(),getName(),price);
+		final ProductDTO productDTO = new ProductDTO(getId(),getParentId(),getName(),getPrice());
 		return productDTO;
 	}
 	
@@ -67,19 +68,18 @@ public class Product extends ProductBase implements Comparable<Product>{
 		nameProperty().set(name);
 	}
 	
-	public StringProperty priceProperty() {
+	public DoubleProperty priceProperty() {
 		assert(null != priceProperty);
 		return priceProperty;
 	}
 	
-	public String getPrice() {
+	public Double getPrice() {
 		return priceProperty().getValue();
 	}
 	
 	public void setPrice(final Double price) {
-		final DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
-		final String priceText = decimalFormat.format(price);
-		priceProperty().set(priceText);
+		assert(null != price);
+		priceProperty.set(price);
 	}
 	
 	//TODO

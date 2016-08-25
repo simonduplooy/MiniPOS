@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.ServerConnector;
+import com.lunarsky.minipos.model.dto.UserDTO;
 import com.lunarsky.minipos.server.ServerConnectorFactory;
 import com.lunarsky.minipos.ui.ViewManager;
 
@@ -17,7 +18,7 @@ public class AppData {
 	private ViewManager viewManager;
 	private ServerConnector serverConnector;
 	
-	private User activeUser;
+	private UserDTO activeUser;
 	
 	public AppData(final Stage primaryStage) throws IOException {
 		serverConnector = ServerConnectorFactory.createServerConnector();
@@ -40,12 +41,12 @@ public class AppData {
 		return viewManager;
 	}
 	
-	public User getActiveUser() {
+	public UserDTO getActiveUser() {
 		assert(null != activeUser);
 		return activeUser;
 	}
 	
-	public void setActiveUser(final User user) {
+	public void setActiveUser(final UserDTO user) {
 		assert(null != user);
 		activeUser = user;
 	}

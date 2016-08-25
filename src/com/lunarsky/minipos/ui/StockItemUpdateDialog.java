@@ -10,7 +10,7 @@ import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.StockItem;
+import com.lunarsky.minipos.model.dto.StockItemDTO;
 import com.lunarsky.minipos.ui.validator.DoubleTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 
@@ -49,10 +49,10 @@ public class StockItemUpdateDialog extends VBox {
 	
 	
 	private final Stage stage;
-	private StockItem stockItem;
+	private StockItemDTO stockItem;
 	
 	// stockItem can be null to create a new StockItem
-	public StockItemUpdateDialog(final AppData appData, final Stage parentStage, final StockItem stockItem) {
+	public StockItemUpdateDialog(final AppData appData, final Stage parentStage, final StockItemDTO stockItem) {
 		assert(null != appData);
 		assert(null != parentStage);
 		assert(null != stockItem);
@@ -85,7 +85,7 @@ public class StockItemUpdateDialog extends VBox {
 	}
 	
 	//Can be null if canceled
-	public StockItem getStockItem() {
+	public StockItemDTO getStockItem() {
 		return stockItem;
 	}
 	
@@ -94,7 +94,7 @@ public class StockItemUpdateDialog extends VBox {
 		initializeControls(getStockItem());
 	}
 	
-	private void initializeControls(final StockItem stockItem) {
+	private void initializeControls(final StockItemDTO stockItem) {
 		if(null==stockItem) {
 			nameTextField.setText("");
 			trackStockLevelCheckBox.setSelected(false);
@@ -119,16 +119,16 @@ public class StockItemUpdateDialog extends VBox {
 	@FXML
 	private void handleSave(ActionEvent event) {
 
-		Task<StockItem> task = new Task<StockItem>() {
-			final StockItem stockItem = createStockItemFromControls();
+		Task<StockItemDTO> task = new Task<StockItemDTO>() {
+			final StockItemDTO stockItem = createStockItemFromControls();
 			@Override
-			protected StockItem call() throws EntityNotFoundException {
+			protected StockItemDTO call() throws EntityNotFoundException {
 				return appData.getServerConnector().saveStockItem(stockItem);
 			}
 			@Override
 			protected void succeeded() {
 				log.debug("SaveStockItem() Succeeded");
-				final StockItem updatedStockItem = getValue();
+				final StockItemDTO updatedStockItem = getValue();
 				setStockItem(updatedStockItem);
 				getStage().close();
 			}
@@ -152,7 +152,7 @@ public class StockItemUpdateDialog extends VBox {
 		getStage().close();
 	}
 	
-	private StockItem createStockItemFromControls() {
+	private StockItemDTO createStockItemFromControls() {
 		final PersistenceId id = (null == stockItem) ? null : stockItem.getId();
 		final String name = nameTextField.getText();
 		final boolean trackStockLevel = trackStockLevelCheckBox.isSelected();
@@ -160,11 +160,11 @@ public class StockItemUpdateDialog extends VBox {
 		final String stockLevelText = stockLevelTextField.getText();
 		final Double stockLevel = Double.parseDouble(stockLevelText);
 		
-		final StockItem updatedStockItem = new StockItem(id, name, trackStockLevel, stockLevel);
+		final StockItemDTO updatedStockItem = new StockItemDTO(id, name, trackStockLevel, stockLevel);
 		return updatedStockItem;
 	}
 	
-	private void setStockItem(final StockItem stockItem) {
+	private void setStockItem(final StockItemDTO stockItem) {
 		this.stockItem = stockItem;
 	}
 	

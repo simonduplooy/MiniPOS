@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.PersistenceConfig;
+import com.lunarsky.minipos.model.dto.PersistenceConfigDTO;
 import com.lunarsky.minipos.ui.validator.IntegerTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 import com.lunarsky.minipos.ui.virtualkeyboards.VirtualKeyboard;
@@ -114,10 +114,10 @@ public class DatabaseConfigDialog extends BorderPane {
 	
 	private void initializeAsync() {
 		
-		Task<PersistenceConfig> task = new Task<PersistenceConfig>() {			
+		Task<PersistenceConfigDTO> task = new Task<PersistenceConfigDTO>() {			
 			@Override
-			protected PersistenceConfig call() {
-				PersistenceConfig config = appData.getServerConnector().getPersistenceConfig(); 
+			protected PersistenceConfigDTO call() {
+				PersistenceConfigDTO config = appData.getServerConnector().getPersistenceConfig(); 
 				return config;
 			}
 			@Override
@@ -141,7 +141,7 @@ public class DatabaseConfigDialog extends BorderPane {
 	
 	@FXML
 	private void handleTest() {
-		PersistenceConfig config = getPersistenceConfig();
+		PersistenceConfigDTO config = getPersistenceConfig();
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
@@ -192,7 +192,7 @@ public class DatabaseConfigDialog extends BorderPane {
 		getStage().close();
 	}
 	
-	private void setPersistenceConfig(final PersistenceConfig config) {
+	private void setPersistenceConfig(final PersistenceConfigDTO config) {
 		serverTextField.setText(config.getServer());
 		portTextField.setText(config.getPort());
 		databaseTextField.setText(config.getDatabase());
@@ -200,7 +200,7 @@ public class DatabaseConfigDialog extends BorderPane {
 		passwordTextField.setText(config.getPassword());
 	}
 	
-	private PersistenceConfig getPersistenceConfig() {
+	private PersistenceConfigDTO getPersistenceConfig() {
 
 		final String server = serverTextField.getText();
 		final String port = portTextField.getText();
@@ -208,7 +208,7 @@ public class DatabaseConfigDialog extends BorderPane {
 		final String username = usernameTextField.getText();
 		final String password = passwordTextField.getText();
 		
-		PersistenceConfig config = new PersistenceConfig(server,port,database,username,password);
+		PersistenceConfigDTO config = new PersistenceConfigDTO(server,port,database,username,password);
 		return config;
 	}
 	

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.ProductButtonConfig;
+import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 
 @Entity
@@ -44,7 +44,7 @@ public class ProductButtonDAO extends HibernateDAO {
 		return productButtonDAO;
 	}
 	
-	public static ProductButtonDAO create(final EntityManager entityManager, final ProductButtonConfig buttonConfig) {
+	public static ProductButtonDAO create(final EntityManager entityManager, final ProductButtonConfigDTO buttonConfig) {
 		assert(null != entityManager);
 		assert(null != buttonConfig);
 		
@@ -54,12 +54,12 @@ public class ProductButtonDAO extends HibernateDAO {
 		return productButtonDAO;
 	}
 	
-	public ProductButtonConfig getConfig() {
-		final ProductButtonConfig buttonConfig = new ProductButtonConfig(getId(),getParentId(),getProduct(),getColumnIndex(),getRowIndex());  
+	public ProductButtonConfigDTO getConfig() {
+		final ProductButtonConfigDTO buttonConfig = new ProductButtonConfigDTO(getId(),getParentId(),getProduct(),getColumnIndex(),getRowIndex());  
 		return buttonConfig;
 	}
 
-	public void setConfig(final ProductButtonConfig buttonConfig) {
+	public void setConfig(final ProductButtonConfigDTO buttonConfig) {
 		assert(null != buttonConfig);
 		
 		setId(buttonConfig.getId());
@@ -69,7 +69,7 @@ public class ProductButtonDAO extends HibernateDAO {
 		setRowIndex(buttonConfig.getRowIndex());
 	}
 
-	private ProductButtonDAO(final EntityManager entityManager,final ProductButtonConfig buttonConfig) {
+	private ProductButtonDAO(final EntityManager entityManager,final ProductButtonConfigDTO buttonConfig) {
 		super(entityManager);
 		setConfig(buttonConfig);
 	}

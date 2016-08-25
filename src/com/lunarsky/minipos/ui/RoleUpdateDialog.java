@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.Role;
+import com.lunarsky.minipos.model.dto.RoleDTO;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -40,10 +40,10 @@ public class RoleUpdateDialog extends VBox {
 
 	
 	private final Stage stage;
-	private Role role;
+	private RoleDTO role;
 	
 	// role can be null to create a new Role
-	public RoleUpdateDialog(final AppData appData, Stage parentStage, Role role) {
+	public RoleUpdateDialog(final AppData appData, Stage parentStage, RoleDTO role) {
 		assert(null != appData);
 		assert(null != parentStage);
 		
@@ -75,7 +75,7 @@ public class RoleUpdateDialog extends VBox {
 	}
 	
 	//Can be null if canceled
-	public Role getRole() {
+	public RoleDTO getRole() {
 		return role;
 	}
 	
@@ -84,7 +84,7 @@ public class RoleUpdateDialog extends VBox {
 		initializeControls(getRole());
 	}
 	
-	private void initializeControls(final Role role) {
+	private void initializeControls(final RoleDTO role) {
 		if(null==role) {
 			nameTextField.setText("");
 			canVoidCheckBox.setSelected(false);
@@ -101,10 +101,10 @@ public class RoleUpdateDialog extends VBox {
 	@FXML
 	private void handleSave(ActionEvent event) {
 
-		Task<Role> task = new Task<Role>() {
-			final Role role = createRoleFromControls();
+		Task<RoleDTO> task = new Task<RoleDTO>() {
+			final RoleDTO role = createRoleFromControls();
 			@Override
-			protected Role call() throws EntityNotFoundException {
+			protected RoleDTO call() throws EntityNotFoundException {
 				return appData.getServerConnector().saveRole(role);
 			}
 			@Override
@@ -133,17 +133,17 @@ public class RoleUpdateDialog extends VBox {
 		getStage().close();
 	}
 	
-	private Role createRoleFromControls() {
+	private RoleDTO createRoleFromControls() {
 		final PersistenceId id = (null==role)?null:role.getId();
 		final String name = nameTextField.getText();
 		final boolean canVoid = canVoidCheckBox.isSelected();
 		final boolean canManageUsers = canManageUsersCheckBox.isSelected();
 		
-		final Role updatedRole = new Role(id,name,canVoid,canManageUsers);
+		final RoleDTO updatedRole = new RoleDTO(id,name,canVoid,canManageUsers);
 		return updatedRole;
 	}
 	
-	private void setRole(final Role role) {
+	private void setRole(final RoleDTO role) {
 		this.role = role;
 	}
 	

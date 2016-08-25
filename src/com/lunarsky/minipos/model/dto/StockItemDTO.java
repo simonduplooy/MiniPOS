@@ -1,19 +1,18 @@
-package com.lunarsky.minipos.model;
+package com.lunarsky.minipos.model.dto;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.dto.PersistenceObjectDTO;
 
-public class StockItem extends PersistenceObjectDTO implements Comparable<StockItem> {
+public class StockItemDTO extends PersistenceObjectDTO implements Comparable<StockItemDTO> {
 	private static final Logger log = LogManager.getLogger();
 	
 	final String name;
 	final boolean trackStockLevel;
 	final Double stockLevel;
 	
-	public StockItem(final PersistenceId id, final String name, final boolean trackStockLevel, final Double stockLevel) {
+	public StockItemDTO(final PersistenceId id, final String name, final boolean trackStockLevel, final Double stockLevel) {
 		super(id);
 		
 		assert(null != name);
@@ -24,8 +23,8 @@ public class StockItem extends PersistenceObjectDTO implements Comparable<StockI
 		this.stockLevel = stockLevel;
 	}
 	
-	public StockItem duplicate() {
-		final StockItem stockItem = new StockItem(null,getName(),getTrackStockLevel(),getStockLevel());
+	public StockItemDTO duplicate() {
+		final StockItemDTO stockItem = new StockItemDTO(null,getName(),getTrackStockLevel(),getStockLevel());
 		return stockItem;
 	}
 	
@@ -43,7 +42,7 @@ public class StockItem extends PersistenceObjectDTO implements Comparable<StockI
 		return stockLevel; 
 		}
 	
-	public int compareTo(StockItem stockItem) {
+	public int compareTo(StockItemDTO stockItem) {
 		return getName().compareToIgnoreCase(stockItem.getName());
 	}
 }

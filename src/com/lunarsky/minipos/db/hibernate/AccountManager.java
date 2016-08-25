@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.common.exception.NameInUseException;
-import com.lunarsky.minipos.model.Account;
+import com.lunarsky.minipos.model.dto.AccountDTO;
 
 public class AccountManager {
 	private static final Logger log = LogManager.getLogger();
@@ -21,13 +21,13 @@ public class AccountManager {
 	private AccountManager() {
 	}
 
-	public static List<Account> getAccounts(final EntityManager entityManager) {
+	public static List<AccountDTO> getAccounts(final EntityManager entityManager) {
 		log.debug("getAccounts()");
 		
 		final Query query = entityManager.createQuery("from AccountDAO");
 		final List<AccountDAO> resultList = query.getResultList();
 
-		final List<Account> accounts = new ArrayList<Account>();
+		final List<AccountDTO> accounts = new ArrayList<AccountDTO>();
 		for(AccountDAO result: resultList) {
 			accounts.add(result.getAccount());
 		}
@@ -35,16 +35,16 @@ public class AccountManager {
 		return accounts;
 	}
 	
-	public static List<Account> getAccounts(final EntityManager entityManager, HibernatePersistenceId userId) {
+	public static List<AccountDTO> getAccounts(final EntityManager entityManager, HibernatePersistenceId userId) {
 		log.debug("getAccounts({})",userId);
 		
 		final UserDAO userDAO = UserDAO.load(entityManager,userId);
-		final List<Account> accounts = userDAO.getAccounts();
+		final List<AccountDTO> accounts = userDAO.getAccounts();
 		
 		return accounts;
 	}
 	
-	public static Account create(final EntityManager entityManager, final HibernatePersistenceId userId, final Account account) throws NameInUseException, EntityNotFoundException {
+	public static AccountDTO create(final EntityManager entityManager, final HibernatePersistenceId userId, final AccountDTO account) throws NameInUseException, EntityNotFoundException {
 
 		log.debug("Creating new Account {}",account);
 		final AccountDAO accountDAO = AccountDAO.create(entityManager, account);
@@ -52,11 +52,11 @@ public class AccountManager {
 		accountDAO.addUser(userDAO);
 		entityManager.persist(accountDAO);
 
-		final Account updatedAccount = accountDAO.getAccount();
+		final AccountDTO updatedAccount = accountDAO.getAccount();
 		return updatedAccount;
 	}
 	
-	public static void update(final EntityManager entityManager, final Account account) throws NameInUseException, EntityNotFoundException {
+	public static void update(final EntityManager entityManager, final AccountDTO account) throws NameInUseException, EntityNotFoundException {
 		log.debug("Updating Account {}",account);
 		
 		final AccountDAO accountDAO = AccountDAO.load(entityManager,(HibernatePersistenceId)account.getId());

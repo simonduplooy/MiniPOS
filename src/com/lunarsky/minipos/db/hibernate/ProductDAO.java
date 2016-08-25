@@ -11,6 +11,7 @@ import javax.persistence.UniqueConstraint;
 
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
+import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 
 @Entity
@@ -51,7 +52,7 @@ public class ProductDAO extends HibernateDAO {
 	}
 	
 	public ProductDTO getProduct() {
-		final ProductDTO product = new ProductDTO(getId(),getName(),getPrice()); 
+		final ProductDTO product = new ProductDTO(getId(),getParentId(),getName(),getPrice()); 
 		return product;
 	}
 
@@ -59,6 +60,7 @@ public class ProductDAO extends HibernateDAO {
 		assert(null != product);
 		
 		setId(product.getId());
+		setParentId(product.getParentId());
 		setName(product.getName());
 		setPrice(product.getPrice());
 	}
@@ -66,6 +68,20 @@ public class ProductDAO extends HibernateDAO {
 	private ProductDAO(final EntityManager entityManager,final ProductDTO product) {
 		super(entityManager);
 		setProduct(product);
+	}
+	
+	private PersistenceId getParentId() {
+		if(null == parentProductGroupDAO) {
+			return null;
+		}
+		final PersistenceId parentId = parentProductGroupDAO.getId();
+		return parentId;
+	}
+	
+	private void setParentId(final PersistenceId parentId) {
+		if(null != parentId) {
+			parentProductGroupDAO = ProductGroupDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
+		}
 	}
 	
 	private String getName() {

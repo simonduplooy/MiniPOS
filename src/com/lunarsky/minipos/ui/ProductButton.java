@@ -5,24 +5,22 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.model.ProductButtonConfig;
-import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
+import com.lunarsky.minipos.model.ui.Product;
 
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.GridPane;
 
 public class ProductButton extends Button {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final ProductButtonObserver observer;
-	private ProductButtonConfig config;
+	private ProductButtonConfigDTO config;
 	
-	public ProductButton(final ProductButtonObserver observer, final ProductButtonConfig config) {
+	public ProductButton(final ProductButtonObserver observer, final ProductButtonConfigDTO config) {
 		assert(null != observer);
 		assert(null != config);
 		
@@ -44,13 +42,13 @@ public class ProductButton extends Button {
 	    
 	}
 	
-	public ProductButtonConfig getConfig() {
+	public ProductButtonConfigDTO getConfig() {
 		log.debug("getConfig()");
 		assert(null != config);
 		return config;
 	}
 	
-	public void setConfig(final ProductButtonConfig config) {
+	public void setConfig(final ProductButtonConfigDTO config) {
 		assert(null != config);
 		this.config = config;
 		
@@ -69,7 +67,7 @@ public class ProductButton extends Button {
 	
 	@FXML
 	private void handleButton(ActionEvent event) {
-		final ProductDTO product = config.getProduct();
+		final Product product = new Product(config.getProduct());
 		log.debug("Product Selected: {}",product);
 		observer.productSelected(product);
 	}

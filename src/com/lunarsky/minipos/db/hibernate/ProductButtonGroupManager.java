@@ -10,18 +10,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.ProductButtonGroupConfig;
+import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 
 public class ProductButtonGroupManager {
 	private static final Logger log = LogManager.getLogger();
 	
-	public static List<ProductButtonGroupConfig> getConfigs(final EntityManager entityManager) {
+	public static List<ProductGroupButtonConfigDTO> getConfigs(final EntityManager entityManager) {
 		log.debug("getConfigs()");
 		
 		final Query query = entityManager.createQuery("from ProductButtonGroupDAO");
 		final List<ProductButtonGroupDAO> resultList = query.getResultList();
 
-		final List<ProductButtonGroupConfig> buttonConfigs = new ArrayList<ProductButtonGroupConfig>();
+		final List<ProductGroupButtonConfigDTO> buttonConfigs = new ArrayList<ProductGroupButtonConfigDTO>();
 		for(ProductButtonGroupDAO result: resultList) {
 			buttonConfigs.add(result.getConfig());
 		}
@@ -29,7 +29,7 @@ public class ProductButtonGroupManager {
 		return buttonConfigs;
 	}
 	
-	public static ProductButtonGroupConfig save(final EntityManager entityManager, final ProductButtonGroupConfig config) {
+	public static ProductGroupButtonConfigDTO save(final EntityManager entityManager, final ProductGroupButtonConfigDTO config) {
 		log.debug("save() {}",config);
 		
 		final ProductButtonGroupDAO buttonDAO;
@@ -40,7 +40,7 @@ public class ProductButtonGroupManager {
 			buttonDAO = ProductButtonGroupDAO.create(entityManager,config);
 		}
 		
-		final ProductButtonGroupConfig updatedConfig = buttonDAO.getConfig();		
+		final ProductGroupButtonConfigDTO updatedConfig = buttonDAO.getConfig();		
 		return updatedConfig;
 	}
 

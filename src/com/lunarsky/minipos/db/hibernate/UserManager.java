@@ -14,7 +14,7 @@ import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.common.exception.NameInUseException;
 import com.lunarsky.minipos.common.exception.PasswordInUseException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.UserDTO;
 
 public class UserManager {
 	private static final Logger log = LogManager.getLogger();
@@ -23,13 +23,13 @@ public class UserManager {
 	private UserManager() {
 	}
 	
-	public static List<User> getUsers(final EntityManager entityManager) {
+	public static List<UserDTO> getUsers(final EntityManager entityManager) {
 
 		log.debug("Getting Users");
 		final Query query = entityManager.createQuery("from UserDAO");
 		final List<UserDAO> resultList = query.getResultList();
 
-		final List<User> users = new ArrayList<User>();
+		final List<UserDTO> users = new ArrayList<UserDTO>();
 		for(UserDAO result: resultList) {
 			users.add(result.getUser());
 		}
@@ -37,13 +37,13 @@ public class UserManager {
 		return users;
 	}
 	
-	public static User getUser(final EntityManager entityManager, final HibernatePersistenceId id) throws EntityNotFoundException {
+	public static UserDTO getUser(final EntityManager entityManager, final HibernatePersistenceId id) throws EntityNotFoundException {
 		log.debug("Getting User {}",id);
 		final UserDAO userDAO = UserDAO.load(entityManager,id);
 		return userDAO.getUser();
 	}
 	
-	public static User getUserWithPassword(final EntityManager entityManager, final String password) throws EntityNotFoundException {
+	public static UserDTO getUserWithPassword(final EntityManager entityManager, final String password) throws EntityNotFoundException {
 		log.debug("Getting User with Password {}",password);
 		
 		final Query query = entityManager.createQuery("from UserDAO where password = :password");
@@ -60,7 +60,7 @@ public class UserManager {
 		return userDAO.getUser();
 	}
 	
-	public static User saveUser(final EntityManager entityManager, final User user) throws NameInUseException, PasswordInUseException, EntityNotFoundException {
+	public static UserDTO saveUser(final EntityManager entityManager, final UserDTO user) throws NameInUseException, PasswordInUseException, EntityNotFoundException {
 
 		//checkConstraints(entityManager,user);
 		
@@ -74,7 +74,7 @@ public class UserManager {
 			userDAO = UserDAO.create(entityManager, user);
 		}
 		
-		final User updatedUser = userDAO.getUser();
+		final UserDTO updatedUser = userDAO.getUser();
 		return updatedUser;
 	}
 

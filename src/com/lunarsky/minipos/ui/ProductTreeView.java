@@ -50,9 +50,11 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	private void initializeControls() {
 		
 		final ContextMenu menu = new ContextMenu();
-		MenuItem item = new MenuItem("Add Group");
-		item.setOnAction((event) -> handleAddGroup());
-		menu.getItems().add(item);
+		final MenuItem addGroupItem = new MenuItem("Add Root Group");
+		addGroupItem.setOnAction((event) -> handleAddRootGroup());
+		final MenuItem addProductItem = new MenuItem("Add Root Product");
+		addProductItem.setOnAction((event) -> handleAddRootProduct());
+		menu.getItems().addAll(addProductItem,addGroupItem);
 		setContextMenu(menu);
 		
 		//TODO
@@ -66,14 +68,19 @@ public class ProductTreeView extends TreeView<ProductBase> {
 					if(null!=product) {
 						setText(product.getName());
 						if(product instanceof ProductGroup) {
+							
 							final ContextMenu contextMenu = new ContextMenu();
 							MenuItem addGroupItem = new MenuItem("Add Group");
 							addGroupItem.setOnAction((event) -> handleAddGroup());
-							MenuItem addProductItem = new MenuItem("Add Product");			
+							MenuItem addProductItem = new MenuItem("Add Product");
+							addProductItem.setOnAction((event) -> handleAddProduct());
 							MenuItem updateItem = new MenuItem("Update");
 							MenuItem deleteItem = new MenuItem("Delete");
 							contextMenu.getItems().addAll(addGroupItem,addProductItem,updateItem,deleteItem);
 							
+							setContextMenu(contextMenu);
+						} else {
+							final ContextMenu contextMenu = new ContextMenu();
 							setContextMenu(contextMenu);
 						}
 					} else {
@@ -139,12 +146,39 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		}
 	}
 	
+	private void handleAddRootGroup() {
+		log.debug("handleAddRootGroup()");
+		final TreeItem<ProductBase> rootItem = getRoot();
+		final ProductGroup group = new ProductGroup(rootItem.getValue().getId());
+		final Stage stage = (Stage)getScene().getWindow();
+		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(appData,stage,group);
+		dialog.getStage().showAndWait();
+	}
+	
+	private void handleAddRootProduct() {
+		log.debug("handleAddRootProduct()");
+		final TreeItem<ProductBase> rootItem = getRoot();
+		final Product product = new Product(rootItem.getValue().getId());
+		final Stage stage = (Stage)getScene().getWindow();
+		final ProductUpdateDialog dialog = new ProductUpdateDialog(appData,stage,product);
+		dialog.getStage().showAndWait();
+	}
+	
 	private void handleAddGroup() {
 		log.debug("handleAddGroup()");
-		TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
+		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
 		final Stage stage = (Stage)getScene().getWindow();
 		final ProductGroup group = new ProductGroup(selectedTreeItem.getValue().getId());
 		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(appData,stage,group);
+		dialog.getStage().showAndWait();
+	}
+	
+	private void handleAddProduct() {
+		log.debug("handleAddProduct()");
+		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
+		final Stage stage = (Stage)getScene().getWindow();
+		final Product product = new Product(selectedTreeItem.getValue().getId());
+		final ProductUpdateDialog dialog = new ProductUpdateDialog(appData,stage,product);
 		dialog.getStage().showAndWait();
 	}
 	

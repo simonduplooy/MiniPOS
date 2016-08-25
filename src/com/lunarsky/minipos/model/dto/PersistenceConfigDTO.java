@@ -1,4 +1,4 @@
-package com.lunarsky.minipos.model;
+package com.lunarsky.minipos.model.dto;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
  * This is MySQL specific, it should be generalized
  * Data Validation is Needed
  */
-public class PersistenceConfig {
+public class PersistenceConfigDTO {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final String server;
@@ -16,7 +16,7 @@ public class PersistenceConfig {
 	private final String username;
 	private final String password;
 	
-	public PersistenceConfig(String server, String port, String database, String username, String password) {
+	public PersistenceConfigDTO(String server, String port, String database, String username, String password) {
 		this.server = server;
 		this.port = port;
 		this.database = database;

@@ -12,7 +12,7 @@ import javax.persistence.UniqueConstraint;
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.ProductButtonGroupConfig;
+import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 
 @Entity

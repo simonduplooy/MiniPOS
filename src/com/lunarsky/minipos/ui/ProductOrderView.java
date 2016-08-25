@@ -9,12 +9,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.ProductButtonConfig;
-import com.lunarsky.minipos.model.ProductButtonGroupConfig;
-import com.lunarsky.minipos.model.ProductSale;
-import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
+import com.lunarsky.minipos.model.dto.ProductSaleDTO;
+import com.lunarsky.minipos.model.ui.Product;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -30,8 +30,8 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	private static final Logger log = LogManager.getLogger();
 
 	private final AppData appData;
-	private final Account account;
-	private final List<ProductSale> productSales;
+	private final AccountDTO account;
+	private final List<ProductSaleDTO> productSales;
 
 	private PersistenceId parentId;
 	private List<ProductButtonGroup> productButtonGroupList;
@@ -46,14 +46,14 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	@FXML
 	private GridPane productGridPane;
 	
-	public ProductOrderView(final AppData appData, final Account account) {
+	public ProductOrderView(final AppData appData, final AccountDTO account) {
 		assert(null != appData);
 		assert(null != account);
 		
 		this.appData = appData;
 		this.account = account;
 		
-        productSales = new ArrayList<ProductSale>();
+        productSales = new ArrayList<ProductSaleDTO>();
 		
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("ProductOrderView.fxml"));
@@ -85,16 +85,16 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	private void initializeAsync() {
 		
 		//GetProductButtonGroups
-		final Task<List<ProductButtonGroupConfig>> buttonGroupTask = new Task<List<ProductButtonGroupConfig>>() {
+		final Task<List<ProductGroupButtonConfigDTO>> buttonGroupTask = new Task<List<ProductGroupButtonConfigDTO>>() {
 			@Override
-			protected List<ProductButtonGroupConfig> call() {
-				final List<ProductButtonGroupConfig> buttonGroupConfigList = appData.getServerConnector().getProductButtonGroups();
+			protected List<ProductGroupButtonConfigDTO> call() {
+				final List<ProductGroupButtonConfigDTO> buttonGroupConfigList = appData.getServerConnector().getProductButtonGroups();
 				return buttonGroupConfigList;
 			}
 			@Override
 			protected void succeeded() {
 				log.debug("getProductButtonGroups() Succeeded");
-				final List<ProductButtonGroupConfig>buttonGroupConfigList = getValue();
+				final List<ProductGroupButtonConfigDTO>buttonGroupConfigList = getValue();
 				createGroupButtons(buttonGroupConfigList);
 				showGroupButtons();
 			}
@@ -108,16 +108,16 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		buttonGroupThread.start();
 		
 		//GetProductButtons
-		final Task<List<ProductButtonConfig>> buttonTask = new Task<List<ProductButtonConfig>>() {
+		final Task<List<ProductButtonConfigDTO>> buttonTask = new Task<List<ProductButtonConfigDTO>>() {
 			@Override
-			protected List<ProductButtonConfig> call() {
-				final List<ProductButtonConfig> buttonConfigList = appData.getServerConnector().getProductButtons();
+			protected List<ProductButtonConfigDTO> call() {
+				final List<ProductButtonConfigDTO> buttonConfigList = appData.getServerConnector().getProductButtons();
 				return buttonConfigList;
 			}
 			@Override
 			protected void succeeded() {
 				log.debug("getProductButtons() Succeeded");
-				final List<ProductButtonConfig> buttonConfigList = getValue();
+				final List<ProductButtonConfigDTO> buttonConfigList = getValue();
 				createProductButtons(buttonConfigList);
 				showProductButtons();
 			}
@@ -131,11 +131,11 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		buttonThread.start();
 	}
 	
-	private void createGroupButtons(final List<ProductButtonGroupConfig> buttonGroupConfigList) {
+	private void createGroupButtons(final List<ProductGroupButtonConfigDTO> buttonGroupConfigList) {
 		assert(null == productButtonGroupList);
 		
 		productButtonGroupList = new ArrayList<ProductButtonGroup>();
-		for(ProductButtonGroupConfig buttonConfig: buttonGroupConfigList) {
+		for(ProductGroupButtonConfigDTO buttonConfig: buttonGroupConfigList) {
 			final ProductButtonGroup button = new ProductButtonGroup(this,buttonConfig);
 			productButtonGroupList.add(button);
 		}
@@ -160,11 +160,11 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		}
 	}
 	
-	private void createProductButtons(final List<ProductButtonConfig> buttonConfigList) {
+	private void createProductButtons(final List<ProductButtonConfigDTO> buttonConfigList) {
 		assert(null == productButtonList);
 		
 		productButtonList = new ArrayList<ProductButton>();
-		for(ProductButtonConfig buttonConfig: buttonConfigList) {
+		for(ProductButtonConfigDTO buttonConfig: buttonConfigList) {
 			final ProductButton button = new ProductButton(this,buttonConfig);
 			productButtonList.add(button);
 		}
@@ -207,7 +207,7 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		
 		//Find the parent
 		for(ProductButtonGroup buttonGroup: productButtonGroupList) {
-			final ProductButtonGroupConfig config = buttonGroup.getConfig();
+			final ProductGroupButtonConfigDTO config = buttonGroup.getConfig();
 			final PersistenceId id = config.getId();
 			if(parentId.equals(id)) {
 				parentId = config.getParentId();
@@ -222,12 +222,12 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
 	}
 	
-	public void productSelected(final ProductDTO product) {
+	public void productSelected(final Product product) {
 		log.debug("productSelected {}", product);
 		
-		ProductSale sale = findProductSale(product);
+		ProductSaleDTO sale = findProductSale(product);
 		if(null == sale) {
-			sale = new ProductSale(product);
+			sale = new ProductSaleDTO(product);
 			log.debug("New Sale {}",sale);
 			productSales.add(sale);
 		} else {
@@ -250,7 +250,7 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	public void updateProductButtonGroup(final ProductButtonGroup button) {
 	}
 	
-	public void productButtonGroupSelected(final ProductButtonGroupConfig config) {
+	public void productButtonGroupSelected(final ProductGroupButtonConfigDTO config) {
 		log.debug("productButtonGroupSelected() {}",config);
 		
 		parentId = config.getId();
@@ -262,7 +262,7 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	
 	private void calculateTotal() {
 		Double cost = 0.0;
-		for(ProductSale sale: productSales) {
+		for(ProductSaleDTO sale: productSales) {
 			cost += sale.getCost();
 		}
 		
@@ -271,8 +271,8 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		costLabel.setText(costText);
 	}
 	
-	private ProductSale findProductSale(final ProductDTO product) {
-		for(ProductSale sale: productSales) {
+	private ProductSaleDTO findProductSale(final Product product) {
+		for(ProductSaleDTO sale: productSales) {
 			if(sale.getProduct().equals(product)) {
 				return sale;
 			}

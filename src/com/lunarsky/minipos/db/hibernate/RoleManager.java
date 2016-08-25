@@ -10,18 +10,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.Role;
+import com.lunarsky.minipos.model.dto.RoleDTO;
 
 public class RoleManager {
 	private static final Logger log = LogManager.getLogger();
 	
-	public static List<Role> getRoles(final EntityManager entityManager) {
+	public static List<RoleDTO> getRoles(final EntityManager entityManager) {
 
 		log.debug("Getting Roles");
 		final Query query = entityManager.createQuery("from RoleDAO");
 		final List<RoleDAO> resultList = query.getResultList();
 
-		final List<Role> roles = new ArrayList<Role>();
+		final List<RoleDTO> roles = new ArrayList<RoleDTO>();
 		for(RoleDAO result: resultList) {
 			roles.add(result.getRole());
 		}
@@ -29,7 +29,7 @@ public class RoleManager {
 		return roles;
 	}
 	
-	public static Role saveRole(final EntityManager entityManager, final Role role) {
+	public static RoleDTO saveRole(final EntityManager entityManager, final RoleDTO role) {
 
 		RoleDAO roleDAO;
 		if(role.hasId()) {
@@ -42,7 +42,7 @@ public class RoleManager {
 			roleDAO = RoleDAO.create(entityManager,role);
 		}
 		
-		final Role updatedRole = roleDAO.getRole();
+		final RoleDTO updatedRole = roleDAO.getRole();
 		return updatedRole;
 	}
 

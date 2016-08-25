@@ -4,9 +4,9 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.model.Account;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.dto.UserDTO;
 
 import javafx.concurrent.Task;
 import javafx.scene.Parent;
@@ -129,7 +129,7 @@ public class ViewManager {
 		showSplashView();
 	}
 
-	private void showAccountView(final Account account) {
+	private void showAccountView(final AccountDTO account) {
 		final Stage stage = getPrimaryStage();
 		AccountView accountView = new AccountView(appData,account);
 		setScene(accountView);
@@ -141,11 +141,11 @@ public class ViewManager {
 		showAccountOverviewView();
 	}
 	
-	public void accountSelected (final Account account) {
+	public void accountSelected (final AccountDTO account) {
 		showProductOrderView(account);
 	}
 	
-	private void showProductOrderView(final Account account) {
+	private void showProductOrderView(final AccountDTO account) {
 		final Stage stage = getPrimaryStage();
 		ProductOrderView view = new ProductOrderView(appData,account);
 		setScene(view);
@@ -178,7 +178,7 @@ public class ViewManager {
         setStyleSheets(scene);
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
-        final User user = loginDialog.getUser();
+        final UserDTO user = loginDialog.getUser();
         if(null != user) {
         	log.debug(String.format("User Login: %s",user));
         	appData.setActiveUser(user);

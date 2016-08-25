@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.Role;
+import com.lunarsky.minipos.model.dto.RoleDTO;
 import com.lunarsky.minipos.util.ErrorMessage;
 
 import javafx.beans.value.ChangeListener;
@@ -42,13 +42,13 @@ public class RoleOverviewDialog extends BorderPane {
 	private final AppData appData;
 	private final Stage stage;
 	
-	private ObservableList<Role> roleList;
-	private Role selectedRole;
-	private ChangeListener<Role> selectedItemChangeListener;
+	private ObservableList<RoleDTO> roleList;
+	private RoleDTO selectedRole;
+	private ChangeListener<RoleDTO> selectedItemChangeListener;
 	
 	
 	@FXML
-	private ListView<Role> roleListView;
+	private ListView<RoleDTO> roleListView;
 	@FXML
 	private TextField nameTextField;
 	@FXML
@@ -105,9 +105,9 @@ public class RoleOverviewDialog extends BorderPane {
 	private void initializeControls() {
 		
 		roleListView.setCellFactory((listCell) -> {
-			ListCell<Role> cell = new ListCell<Role>() {
+			ListCell<RoleDTO> cell = new ListCell<RoleDTO>() {
 				@Override
-				protected void updateItem(Role role, boolean empty) {
+				protected void updateItem(RoleDTO role, boolean empty) {
 					super.updateItem(role,empty);
 					if(null!=role) {
 						setText(role.getName());
@@ -132,9 +132,9 @@ public class RoleOverviewDialog extends BorderPane {
 		
 		getStage().setOnCloseRequest((event) -> { close(); });
 		
-		selectedItemChangeListener = new ChangeListener<Role>() {
+		selectedItemChangeListener = new ChangeListener<RoleDTO>() {
 			@Override
-			public void changed(ObservableValue<? extends Role> observable, Role oldValue, Role newValue) {
+			public void changed(ObservableValue<? extends RoleDTO> observable, RoleDTO oldValue, RoleDTO newValue) {
 				setSelectedRole(newValue);
 			}
 		};
@@ -154,10 +154,10 @@ public class RoleOverviewDialog extends BorderPane {
 	}
 	
 	private void initializeAsync() {
-		Task<List<Role>> task = new Task<List<Role>>() {
+		Task<List<RoleDTO>> task = new Task<List<RoleDTO>>() {
 			@Override
-			protected List<Role> call() {
-				List<Role> roles = appData.getServerConnector().getRoles();
+			protected List<RoleDTO> call() {
+				List<RoleDTO> roles = appData.getServerConnector().getRoles();
 				return roles;
 			}
 			@Override
@@ -189,18 +189,18 @@ public class RoleOverviewDialog extends BorderPane {
 	
 	@FXML
 	private void handleEdit() {
-		final Role role = getSelectedRole();
+		final RoleDTO role = getSelectedRole();
 		updateRole(role);
 	}
 
 	@FXML
 	private void handleDuplicate() {		
-		final Role role = getSelectedRole().duplicate();
+		final RoleDTO role = getSelectedRole().duplicate();
 		log.debug("Duplicate Role {}",role);
 		updateRole(role);
 	}
 	
-	private void updateRole(final Role role) {
+	private void updateRole(final RoleDTO role) {
 		log.debug("Update role {}",role);
 		
 		RoleUpdateDialog dialog = null;
@@ -212,7 +212,7 @@ public class RoleOverviewDialog extends BorderPane {
 		}
 		
 		dialog.showAndWait();
-		final Role updatedRole = dialog.getRole();
+		final RoleDTO updatedRole = dialog.getRole();
 		
 		//The role was updated
 		if(updatedRole != role) {
@@ -227,7 +227,7 @@ public class RoleOverviewDialog extends BorderPane {
 	private void handleDelete() {
 
 		Task<Void> task = new Task<Void>() {
-			private final Role role = getSelectedRole();
+			private final RoleDTO role = getSelectedRole();
 			@Override
 			protected Void call() throws EntityNotFoundException {
 				appData.getServerConnector().deleteRole(role.getId());
@@ -269,7 +269,7 @@ public class RoleOverviewDialog extends BorderPane {
 		
 	}
 	
-	private void setSelectedRole(Role role) {
+	private void setSelectedRole(RoleDTO role) {
 		this.selectedRole = role;
 		if(null==role) {
 			nameTextField.setText("");
@@ -282,7 +282,7 @@ public class RoleOverviewDialog extends BorderPane {
 		}
 	}
 
-	private Role getSelectedRole() {
+	private RoleDTO getSelectedRole() {
 		return selectedRole;
 	}
 	

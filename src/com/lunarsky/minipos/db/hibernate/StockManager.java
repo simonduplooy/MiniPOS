@@ -10,18 +10,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.StockItem;
+import com.lunarsky.minipos.model.dto.StockItemDTO;
 
 public class StockManager {
 	private static final Logger log = LogManager.getLogger();
 	
-	public static List<StockItem> getStock(final EntityManager entityManager) {
+	public static List<StockItemDTO> getStock(final EntityManager entityManager) {
 
 		log.debug("Getting StockItems");
 		final Query query = entityManager.createQuery("from StockItemDAO");
 		final List<StockItemDAO> resultList = query.getResultList();
 
-		final List<StockItem> stockItems = new ArrayList<StockItem>();
+		final List<StockItemDTO> stockItems = new ArrayList<StockItemDTO>();
 		for(StockItemDAO result: resultList) {
 			stockItems.add(result.getStockItem());
 		}
@@ -29,7 +29,7 @@ public class StockManager {
 		return stockItems;
 	}
 	
-	public static StockItem save(final EntityManager entityManager, final StockItem stockItem) {
+	public static StockItemDTO save(final EntityManager entityManager, final StockItemDTO stockItem) {
 		log.debug("Save StockItem {}",stockItem.getName());
 		
 		final StockItemDAO stockItemDAO;
@@ -40,7 +40,7 @@ public class StockManager {
 			stockItemDAO = StockItemDAO.create(entityManager,stockItem);
 		}
 		
-		final StockItem updatedStockItem = stockItemDAO.getStockItem();		
+		final StockItemDTO updatedStockItem = stockItemDAO.getStockItem();		
 		return updatedStockItem;
 	}
 

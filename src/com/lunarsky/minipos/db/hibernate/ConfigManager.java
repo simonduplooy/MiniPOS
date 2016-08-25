@@ -10,7 +10,7 @@ import javax.persistence.Persistence;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.model.PersistenceConfig;
+import com.lunarsky.minipos.model.dto.PersistenceConfigDTO;
 
 public class ConfigManager {
 	private static final Logger log = LogManager.getLogger();
@@ -32,7 +32,7 @@ public class ConfigManager {
 	private ConfigManager() {
 	}
 	
-	public static synchronized PersistenceConfig getConfig() {
+	public static synchronized PersistenceConfigDTO getConfig() {
 		//On Windows HKEY_CURRENT_USER/Software/Javasoft/Prefs/com/lunarsky/minipos/db/hibernate
 		Preferences configPref = Preferences.userNodeForPackage(ConfigManager.class);
 		String server = configPref.get(DB_SERVER_PROPERTY, DB_SERVER_DEFAULT);
@@ -41,11 +41,11 @@ public class ConfigManager {
 		String username = configPref.get(DB_USERNAME_PROPERTY, DB_USERNAME_DEFAULT);
 		String password = configPref.get(DB_PASSWORD_PROPERTY, DB_PASSWORD_DEFAULT);
 
-		PersistenceConfig config = new PersistenceConfig(server,port,database,username,password);
+		PersistenceConfigDTO config = new PersistenceConfigDTO(server,port,database,username,password);
 		return config;
 	}
 	
-	public static synchronized void setConfig(PersistenceConfig config) {
+	public static synchronized void setConfig(PersistenceConfigDTO config) {
 		
 		Preferences configPref = Preferences.userNodeForPackage(ConfigManager.class);
 		configPref.put(DB_SERVER_PROPERTY, config.getServer());

@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.UserDTO;
 import com.lunarsky.minipos.ui.validator.IntegerTextFieldValidator;
 
 import javafx.concurrent.Task;
@@ -44,7 +44,7 @@ public class LoginDialog extends VBox {
 	private final AppData appData;
 	private final Stage stage;
 	private final IntegerTextFieldValidator passwordValidator;
-	private User user;
+	private UserDTO user;
 	
 	public LoginDialog(final AppData appData, final Stage parentStage, final Stage dialogStage) {
 		assert(null != appData);
@@ -106,16 +106,16 @@ public class LoginDialog extends VBox {
 
 			final String password = passwordField.getText();
 			
-			Task<User> task = new Task<User>() {
+			Task<UserDTO> task = new Task<UserDTO>() {
 				@Override
-				protected User call() {
-					final User user = appData.getServerConnector().getUserWithPassword(password);
+				protected UserDTO call() {
+					final UserDTO user = appData.getServerConnector().getUserWithPassword(password);
 					return user;
 				}
 				
 				@Override
 				protected void succeeded() {
-					final User user = getValue();
+					final UserDTO user = getValue();
 					setUser(user);
 					close();
 				}
@@ -139,11 +139,11 @@ public class LoginDialog extends VBox {
 		}
 	}
 	
-	public User getUser() {
+	public UserDTO getUser() {
 		return user;
 	}
 
-	private void setUser(final User user) {
+	private void setUser(final UserDTO user) {
 		assert(null != user);
 		this.user = user;
 	}

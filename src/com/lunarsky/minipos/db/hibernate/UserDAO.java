@@ -15,9 +15,9 @@ import javax.persistence.UniqueConstraint;
 
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.Account;
-import com.lunarsky.minipos.model.Role;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.dto.RoleDTO;
+import com.lunarsky.minipos.model.dto.UserDTO;
 
 @Entity
 @Table(
@@ -57,7 +57,7 @@ public class UserDAO extends HibernateDAO {
 		return userDAO;
 	}
 	
-	public static UserDAO create(final EntityManager entityManager, final User user) {
+	public static UserDAO create(final EntityManager entityManager, final UserDTO user) {
 		assert(null != entityManager);
 		assert(null != user);
 		
@@ -67,11 +67,11 @@ public class UserDAO extends HibernateDAO {
 		return userDAO;
 	}
 
-	public User getUser() {
-		return new User(getId(),getName(),getPassword(),getRole());
+	public UserDTO getUser() {
+		return new UserDTO(getId(),getName(),getPassword(),getRole());
 	}
 
-	public void setUser(final User user) {
+	public void setUser(final UserDTO user) {
 		assert(null != user);
 		
 		setId(user.getId());
@@ -80,7 +80,7 @@ public class UserDAO extends HibernateDAO {
 		setRole(user.getRole());
 	}
 		
-	private UserDAO(final EntityManager entityManager, final User user) {
+	private UserDAO(final EntityManager entityManager, final UserDTO user) {
 		super(entityManager);
 		setUser(user);
 	}
@@ -105,18 +105,18 @@ public class UserDAO extends HibernateDAO {
 		this.password = password; 
 		}
 	
-	private Role getRole() {
+	private RoleDTO getRole() {
 		assert(null != role);
 		return role.getRole(); 
 		}
 	
-	public void setRole(Role role) { 
+	public void setRole(RoleDTO role) { 
 		assert(null != role);
 		this.role = RoleDAO.load(getEntityManager(),(HibernatePersistenceId)role.getId()); 
 	}
 
-	public List<Account> getAccounts() {
-		final List<Account> accounts = new ArrayList<Account>();
+	public List<AccountDTO> getAccounts() {
+		final List<AccountDTO> accounts = new ArrayList<AccountDTO>();
 		
 		if(null != accounts) {
 			for(AccountDAO account: this.accounts){

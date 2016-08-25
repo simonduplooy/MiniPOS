@@ -17,15 +17,15 @@ import com.lunarsky.minipos.common.exception.PasswordInUseException;
 import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.interfaces.PersistenceProvider;
 import com.lunarsky.minipos.interfaces.Transaction;
-import com.lunarsky.minipos.model.Account;
-import com.lunarsky.minipos.model.PersistenceConfig;
-import com.lunarsky.minipos.model.ProductButtonConfig;
-import com.lunarsky.minipos.model.ProductButtonGroupConfig;
-import com.lunarsky.minipos.model.Role;
-import com.lunarsky.minipos.model.StockItem;
-import com.lunarsky.minipos.model.User;
+import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.dto.PersistenceConfigDTO;
+import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.dto.RoleDTO;
+import com.lunarsky.minipos.model.dto.StockItemDTO;
+import com.lunarsky.minipos.model.dto.UserDTO;
 
 public class HibernatePersistenceProvider implements PersistenceProvider {
 	private static final Logger log = LogManager.getLogger();
@@ -41,11 +41,11 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	/******************************************
 	 * Config
 	 ******************************************/
-	public synchronized PersistenceConfig getConfig() {
+	public synchronized PersistenceConfigDTO getConfig() {
 		return ConfigManager.getConfig();
 	}
 	
-	public synchronized void setConfig(PersistenceConfig config) {
+	public synchronized void setConfig(PersistenceConfigDTO config) {
 		ConfigManager.setConfig(config);
 	}
 	
@@ -57,12 +57,12 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		assert(null == entityManagerFactory);
 		
 		//Create the EntityManagerFactory 
-		PersistenceConfig config = ConfigManager.getConfig();
+		PersistenceConfigDTO config = ConfigManager.getConfig();
 		Map<String,String> properties = getPersistenceProperties(config);
 		entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTANCE_UNIT_NAME,properties);
 	}
 	
-	public void testConnection(PersistenceConfig config) {
+	public void testConnection(PersistenceConfigDTO config) {
 
 		Map<String,String> properties = getPersistenceProperties(config);
 		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(PERSISTANCE_UNIT_NAME,properties);
@@ -77,27 +77,27 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	/*****************************************************************************
 	 * Users
 	 *****************************************************************************/
-	public List<User> getUsers(final Transaction transaction) {
+	public List<UserDTO> getUsers(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<User> users = UserManager.getUsers(entityManager);
+		final List<UserDTO> users = UserManager.getUsers(entityManager);
 		return users;
 	}
 
-	public User getUser(final Transaction transaction, final PersistenceId id) throws EntityNotFoundException {
+	public UserDTO getUser(final Transaction transaction, final PersistenceId id) throws EntityNotFoundException {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		User user = UserManager.getUser(entityManager,(HibernatePersistenceId)id);
+		UserDTO user = UserManager.getUser(entityManager,(HibernatePersistenceId)id);
 		return user;
 	}
 	
-	public User getUserWithPassword(final Transaction transaction, final String password)  throws EntityNotFoundException {
+	public UserDTO getUserWithPassword(final Transaction transaction, final String password)  throws EntityNotFoundException {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final User user = UserManager.getUserWithPassword(entityManager,password);
+		final UserDTO user = UserManager.getUserWithPassword(entityManager,password);
 		return user;
 	}
 	
-	public User saveUser(final Transaction transaction , final User user) throws NameInUseException, PasswordInUseException, EntityNotFoundException {
+	public UserDTO saveUser(final Transaction transaction , final UserDTO user) throws NameInUseException, PasswordInUseException, EntityNotFoundException {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final User updatedUser = UserManager.saveUser(entityManager, user);
+		final UserDTO updatedUser = UserManager.saveUser(entityManager, user);
 		return updatedUser;
 	}
 	
@@ -109,15 +109,15 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	/*****************************************************************************
 	 * Roles
 	 *****************************************************************************/
-	public List<Role> getRoles(final Transaction transaction) {
+	public List<RoleDTO> getRoles(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<Role>roles = RoleManager.getRoles(entityManager);
+		final List<RoleDTO>roles = RoleManager.getRoles(entityManager);
 		return roles;
 	}
 	
-	public Role saveRole(final Transaction transaction, final Role role)  throws EntityNotFoundException {
+	public RoleDTO saveRole(final Transaction transaction, final RoleDTO role)  throws EntityNotFoundException {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final Role updatedRole = RoleManager.saveRole(entityManager, role);
+		final RoleDTO updatedRole = RoleManager.saveRole(entityManager, role);
 		return updatedRole;
 	}
 	
@@ -129,15 +129,15 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	/*****************************************************************************
 	 * Stock
 	 *****************************************************************************/
-	public List<StockItem> getStock(final Transaction transaction) {
+	public List<StockItemDTO> getStock(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<StockItem> stockList = StockManager.getStock(entityManager);
+		final List<StockItemDTO> stockList = StockManager.getStock(entityManager);
 		return stockList;
 	}
 	
-	public StockItem saveStockItem(final Transaction transaction, final StockItem stockItem) throws EntityNotFoundException {
+	public StockItemDTO saveStockItem(final Transaction transaction, final StockItemDTO stockItem) throws EntityNotFoundException {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final StockItem updatedStockItem = StockManager.save(entityManager,stockItem);
+		final StockItemDTO updatedStockItem = StockManager.save(entityManager,stockItem);
 		return updatedStockItem;
 	}
 	
@@ -150,25 +150,25 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	/*****************************************************************************
 	 * Accounts
 	 *****************************************************************************/
-	public List<Account> getAccounts(final Transaction transaction) {
+	public List<AccountDTO> getAccounts(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<Account> accounts = AccountManager.getAccounts(entityManager);
+		final List<AccountDTO> accounts = AccountManager.getAccounts(entityManager);
 		return accounts;		
 	}
 	
-	public List<Account> getAccounts(final Transaction transaction, final PersistenceId userId) {
+	public List<AccountDTO> getAccounts(final Transaction transaction, final PersistenceId userId) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<Account> accounts = AccountManager.getAccounts(entityManager,(HibernatePersistenceId)userId);
+		final List<AccountDTO> accounts = AccountManager.getAccounts(entityManager,(HibernatePersistenceId)userId);
 		return accounts;		
 	}
 	
-	public Account createAccount(final Transaction transaction, final PersistenceId userId, final Account account) {
+	public AccountDTO createAccount(final Transaction transaction, final PersistenceId userId, final AccountDTO account) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final Account updatedAccount = AccountManager.create(entityManager,(HibernatePersistenceId)userId,account);
+		final AccountDTO updatedAccount = AccountManager.create(entityManager,(HibernatePersistenceId)userId,account);
 		return updatedAccount;
 	}
 
-	public void updateAccount(final Transaction transaction, final Account account) {
+	public void updateAccount(final Transaction transaction, final AccountDTO account) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
 		AccountManager.update(entityManager,account);
 	}
@@ -216,15 +216,15 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 	/*****************************************************************************
 	 * Product Buttons
 	 *****************************************************************************/
-	public List<ProductButtonConfig> getProductButtons(final Transaction transaction) {
+	public List<ProductButtonConfigDTO> getProductButtons(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<ProductButtonConfig> buttonConfigs = ProductButtonManager.getConfigs(entityManager);
+		final List<ProductButtonConfigDTO> buttonConfigs = ProductButtonManager.getConfigs(entityManager);
 		return buttonConfigs;	
 	}
 	
-	public ProductButtonConfig saveProductButton(final Transaction transaction, final ProductButtonConfig config) {
+	public ProductButtonConfigDTO saveProductButton(final Transaction transaction, final ProductButtonConfigDTO config) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final ProductButtonConfig updatedConfig = ProductButtonManager.save(entityManager,config);
+		final ProductButtonConfigDTO updatedConfig = ProductButtonManager.save(entityManager,config);
 		return updatedConfig;
 	}
 	
@@ -233,15 +233,15 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		ProductButtonManager.delete(entityManager,(HibernatePersistenceId)id);
 	}
 	
-	public List<ProductButtonGroupConfig> getProductButtonGroups(final Transaction transaction) {
+	public List<ProductGroupButtonConfigDTO> getProductButtonGroups(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<ProductButtonGroupConfig> buttonConfigs = ProductButtonGroupManager.getConfigs(entityManager);
+		final List<ProductGroupButtonConfigDTO> buttonConfigs = ProductButtonGroupManager.getConfigs(entityManager);
 		return buttonConfigs;	
 	}
 	
-	public ProductButtonGroupConfig saveProductButtonGroup(final Transaction transaction, final ProductButtonGroupConfig config) {
+	public ProductGroupButtonConfigDTO saveProductButtonGroup(final Transaction transaction, final ProductGroupButtonConfigDTO config) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final ProductButtonGroupConfig updatedConfig = ProductButtonGroupManager.save(entityManager,config);
+		final ProductGroupButtonConfigDTO updatedConfig = ProductButtonGroupManager.save(entityManager,config);
 		return updatedConfig;
 	}
 	
@@ -259,7 +259,7 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		}
 	}
 	
-	private Map<String,String> getPersistenceProperties(PersistenceConfig config) {
+	private Map<String,String> getPersistenceProperties(PersistenceConfigDTO config) {
 
 		//TODO MAGIC STRINGS
 		Map<String,String> properties = new HashMap<String,String>();
