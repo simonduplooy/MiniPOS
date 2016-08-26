@@ -19,13 +19,15 @@ public class ViewManager {
 	
 	private static final String STYLESHEET_RESOURCE = "/resources/stylesheets/application.css";
 	
-	private AppData appData;
-	private Stage primaryStage;
+	private final Stage primaryStage;
 	
 	//TODO Add customizable external stylesheet
 	private final String styleSheet;
 	
-	public ViewManager() {
+	public ViewManager(final Stage primaryStage) {
+		assert(null != primaryStage);
+
+		this.primaryStage = primaryStage;
 		styleSheet = getClass().getResource(STYLESHEET_RESOURCE).toExternalForm();
 		initialize();
 	}
@@ -74,6 +76,12 @@ public class ViewManager {
 
 	}
 	
+	private Stage getPrimaryStage() {
+		assert(null != primaryStage);
+		return primaryStage;
+	}
+	
+	//TODO use global stylesheets
 	public void setStyleSheets(final Scene scene) {
 		assert(null != styleSheet);
 		scene.getStylesheets().add(styleSheet);
@@ -170,7 +178,7 @@ public class ViewManager {
         final UserDTO user = loginDialog.getUser();
         if(null != user) {
         	log.debug(String.format("User Login: %s",user));
-        	appData.setActiveUser(user);
+        	AppData.getInstance().setActiveUser(user);
         } else {
         	//TODO close application
         	//primaryStage.close();

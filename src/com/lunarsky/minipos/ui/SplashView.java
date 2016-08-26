@@ -16,8 +16,6 @@ import javafx.scene.layout.StackPane;
 
 public class SplashView extends StackPane {
 	private static final Logger log = LogManager.getLogger();
-
-	private final AppData appData;
 	
 	@FXML
 	private ProgressIndicator progressIndicator;
@@ -25,9 +23,6 @@ public class SplashView extends StackPane {
 	private FlowPane itemFlowPane;
 	
 	public SplashView() {
-
-		this.appData = AppData.getInstance();
-		
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("SplashView.fxml"));
         loader.setRoot(this);
@@ -48,49 +43,49 @@ public class SplashView extends StackPane {
 		Button button = new Button("Database Config");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
-		button.setOnAction((event) -> appData.getViewManager().showDatabaseConfigDialog());
+		button.setOnAction((event) -> AppData.getInstance().getViewManager().showDatabaseConfigDialog());
 		itemFlowPane.getChildren().add(button);
 
 		button = new Button("Login");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
-		button.setOnAction((event) -> appData.getViewManager().showLoginDialog());
+		button.setOnAction((event) -> AppData.getInstance().getViewManager().showLoginDialog());
 		itemFlowPane.getChildren().add(button);
 
 		button = new Button("Accounts");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
-		button.setOnAction((event) -> appData.getViewManager().showAccountOverviewView());
+		button.setOnAction((event) -> AppData.getInstance().getViewManager().showAccountOverviewView());
 		itemFlowPane.getChildren().add(button);
 		
 		button = new Button("Users");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
-		button.setOnAction((event) -> appData.getViewManager().showUserOverviewDialog());
+		button.setOnAction((event) -> AppData.getInstance().getViewManager().showUserOverviewDialog());
 		itemFlowPane.getChildren().add(button);
 
 		button = new Button("Roles");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
-		button.setOnAction((event) -> appData.getViewManager().showRoleOverviewDialog());
+		button.setOnAction((event) -> AppData.getInstance().getViewManager().showRoleOverviewDialog());
 		itemFlowPane.getChildren().add(button);
 
 		button = new Button("Stock");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
-		button.setOnAction((event) -> appData.getViewManager().showStockOverviewDialog());
+		button.setOnAction((event) -> AppData.getInstance().getViewManager().showStockOverviewDialog());
 		itemFlowPane.getChildren().add(button);
 
 		button = new Button("Products");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
-		button.setOnAction((event) -> appData.getViewManager().showProductOverviewDialog());
+		button.setOnAction((event) -> AppData.getInstance().getViewManager().showProductOverviewDialog());
 		itemFlowPane.getChildren().add(button);
 		
 		button = new Button("Product Configure");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);
-		button.setOnAction((event) -> appData.getViewManager().showProductConfigureView());
+		button.setOnAction((event) -> AppData.getInstance().getViewManager().showProductConfigureView());
 		itemFlowPane.getChildren().add(button);
 		
 		progressIndicator.visibleProperty().bind(itemFlowPane.disabledProperty());

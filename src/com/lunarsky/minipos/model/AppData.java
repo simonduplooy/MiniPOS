@@ -15,38 +15,38 @@ import javafx.stage.Stage;
 public class AppData {
 	private static final Logger log = LogManager.getLogger();
 	
-	//Singleton
+	//Singleton(ish)
 	private static AppData instance;
 	
-	private static Stage primaryStage;
-	private static ViewManager viewManager;
-	private static ServerConnector serverConnector;
+	private Stage primaryStage;
+	private ViewManager viewManager;
+	private ServerConnector serverConnector;
 	
 	private static UserDTO activeUser;
 
 	
 	public static AppData getInstance() {
-		if(null == instance) {
-			instance = new AppData();
-			viewManager.initialize();
-		}
+		assert(null != instance);
 		return instance;
 	}
 	
-	private AppData() {
+	//Use createInstance as ViewManager needs primary stage during initialization
+	public static AppData createInstance(final Stage primaryStage) {
+		assert(null == instance);		
+		instance = new AppData(primaryStage);
+		return instance; 
+	}
+	
+	private AppData(final Stage primaryStage) {
+		assert(null != primaryStage);
+		this.primaryStage = primaryStage;
 		serverConnector = ServerConnectorFactory.createServerConnector();
-		viewManager = new ViewManager();
+		viewManager = new ViewManager(primaryStage);
 	}	
 	
 	public Stage getPrimaryStage() {
 		assert(null != primaryStage);
 		return primaryStage;
-	}
-	
-	public void setPrimaryStage(final Stage primaryStage) {
-		assert(null != primaryStage);
-		assert(null != AppData.primaryStage);
-		AppData.primaryStage = primaryStage;
 	}
 	
 	public ServerConnector getServerConnector() {
