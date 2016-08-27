@@ -18,7 +18,7 @@
          </children>
       </HBox>
    </bottom>
-   <center>
+   <right>
       <VBox spacing="5.0" BorderPane.alignment="CENTER">
          <children>
             <TextField fx:id="nameTextField" disable="true" editable="false" />
@@ -40,8 +40,8 @@
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </VBox>
-   </center>
-   <left>
+   </right>
+   <center>
       <ScrollPane fx:id="productScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER" />
-   </left>
+   </center>
 </fx:root>
