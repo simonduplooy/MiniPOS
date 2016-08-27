@@ -1,7 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,8 +14,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -25,7 +23,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class LoginDialog extends VBox {
@@ -42,34 +39,21 @@ public class LoginDialog extends VBox {
 	
 	//TODO is there a way to get the stage without holding a reference?
 	private final AppData appData;
-	private final Stage stage;
 	private final IntegerTextFieldValidator passwordValidator;
 	private UserDTO user;
 	
-	public LoginDialog(final Stage parentStage, final Stage dialogStage) {
+	public LoginDialog(final Stage parentStage) {
 		assert(null != parentStage);
-		assert(null != dialogStage);
 		
 		this.appData = AppData.getInstance();
-		this.stage = dialogStage;
 		
-		dialogStage.setTitle(WINDOW_TITLE); 
-		dialogStage.initModality(Modality.WINDOW_MODAL);
-		dialogStage.initOwner(parentStage);
-		dialogStage.setResizable(false);
+		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
+		Scene scene = new Scene(this);
+		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"LoginDialog.fxml");
 		
-		dialogStage.setOnCloseRequest((event) -> close());
+		stage.setOnCloseRequest((event) -> close());
 		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("LoginDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-
         errorLabel.setVisible(false);
         
         passwordField.textProperty().addListener((observable,oldValue,newValue) -> handlePasswordChanged(newValue));
@@ -93,6 +77,10 @@ public class LoginDialog extends VBox {
         keypadGridPane.add(new KeypadButton(passwordField,"<",KeyCode.BACK_SPACE),2,3);
 	}
 
+	public Stage getStage() {
+		return (Stage)getScene().getWindow();
+	}
+	
 	private void handlePasswordChanged(final String text) {
 		if(text.length() > 0) {
 			errorLabel.setVisible(false);			
@@ -149,7 +137,7 @@ public class LoginDialog extends VBox {
 	
 	private void close() {
 		log.debug("Closing Dialog");
-		stage.close();
+		getStage().close();
 		//TODO unbind
 	}
 	

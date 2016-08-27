@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,7 +24,6 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -46,9 +44,7 @@ public class UserUpdateDialog extends BorderPane {
 	private static String WINDOW_TITLE_UPDATE_USER = "Update User";
 
 	private final AppData appData;
-	private final Stage stage;
 	private UserDTO user;
-	
 	private ObservableList<RoleDTO> roleList;
 	
 	@FXML
@@ -74,28 +70,16 @@ public class UserUpdateDialog extends BorderPane {
 		this.appData = AppData.getInstance();
 		this.user = user;
 
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.setTitle((null == user) ? WINDOW_TITLE_ADD_USER : WINDOW_TITLE_UPDATE_USER); 
-				
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("UserUpdateDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-		
-		Scene scene = new Scene(this);
-		stage.setScene(scene);
+		final String title = (null == user) ? WINDOW_TITLE_ADD_USER : WINDOW_TITLE_UPDATE_USER;
+		final Stage stage = UiUtil.createDialogStage(parentStage,title); 
+		final Scene scene = new Scene(this);
+		stage.setScene(scene);	
+		UiUtil.loadRootConstructNode(this,"UserUpdateDialog.fxml");
 
 	}
 	
-	public void showAndWait() {
-		stage.showAndWait();
+	public Stage getStage() {
+		return (Stage)getScene().getWindow();
 	}
 	
 	//Can be null if canceled
@@ -225,11 +209,11 @@ public class UserUpdateDialog extends BorderPane {
 				
 				if(t instanceof NameInUseException) {
 					nameErrorLabel.setVisible(true);
-					stage.sizeToScene();
+					getStage().sizeToScene();
 					
 				} else if(t instanceof PasswordInUseException) {
 					passwordErrorLabel.setVisible(true);
-					stage.sizeToScene();
+					getStage().sizeToScene();
 				} else {
 					log.catching(Level.ERROR,t);
 					throw new RuntimeException(t);
@@ -266,11 +250,6 @@ public class UserUpdateDialog extends BorderPane {
 	
 	private void setUser(final UserDTO user) {
 		this.user = user;
-	}
-	
-	private Stage getStage() {
-		assert(stage!=null);
-		return stage;
 	}
 	
 }

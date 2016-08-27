@@ -1,7 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,7 +8,6 @@ import com.lunarsky.minipos.model.dto.AccountDTO;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
@@ -29,15 +26,7 @@ public class AccountView extends BorderPane {
 		this.appData = AppData.getInstance();
 		this.account = account;
 		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("AccountView.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
+		UiUtil.loadRootConstructNode(this,"AccountView.fxml");
 	}
 		
 	@FXML

@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +15,6 @@ import com.lunarsky.minipos.model.ui.Product;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
@@ -43,15 +41,8 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		this.appData = AppData.getInstance();
 		this.stage = stage;
 
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("ProductConfigureView.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
+		UiUtil.loadRootConstructNode(this,"ProductConfigureView.fxml");
+
 	}
 		
 	@FXML

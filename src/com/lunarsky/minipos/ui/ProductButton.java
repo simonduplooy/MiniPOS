@@ -1,7 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,7 +8,6 @@ import com.lunarsky.minipos.model.ui.Product;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 
@@ -27,15 +24,7 @@ public class ProductButton extends Button {
 		this.observer = observer;
 		this.config = config;
 		
-	    FXMLLoader loader = new FXMLLoader();
-	    loader.setLocation(getClass().getResource("ProductButton.fxml"));
-	    loader.setRoot(this);
-	    loader.setController(this);
-	    try {
-	    	loader.load();
-	    } catch (IOException e) {
-	    	throw new RuntimeException(e);
-	    }
+	    UiUtil.loadRootConstructNode(this,"ProductButton.fxml");
 	    
 	    GridPane.setColumnIndex(this,config.getColumnIndex());
 	    GridPane.setRowIndex(this,config.getRowIndex());

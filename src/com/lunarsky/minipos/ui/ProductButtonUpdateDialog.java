@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,19 +20,19 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
 public class ProductButtonUpdateDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
-
+	
+	private static final String WINDOW_TITLE = "Product";
+	
 	private final AppData appData;
 	
 	private final PersistenceId id;
@@ -75,28 +74,14 @@ public class ProductButtonUpdateDialog extends BorderPane {
 		this.columnIdx = columnIdx;
 		this.rowIdx = rowIdx;
 
-		final Stage stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL); 
-				
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("ProductButtonUpdateDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-		
+		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
 		Scene scene = new Scene(this);
 		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"ProductButtonUpdateDialog.fxml");
 	}
 	
 	public Stage getStage() {
-		final Scene scene = getScene();
-		final Stage stage = (Stage)scene.getWindow();
-		return stage;
+		return (Stage)getScene().getWindow();
 	}
 	
 	//Can be null if canceled

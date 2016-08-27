@@ -1,7 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,7 +20,6 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -34,6 +31,8 @@ import javafx.util.converter.NumberStringConverter;
 
 public class ProductUpdateDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
+	
+	private static final String WINDOW_TITLE = "Product";
 	
 	private final AppData appData;
 	
@@ -50,8 +49,6 @@ public class ProductUpdateDialog extends BorderPane {
 	private CurrencyTextFieldValidator priceValidator;
 	
 	private Service<ProductDTO> saveService;
-	
-	private final Stage stage;
 	private Product product;
 	 
 	public ProductUpdateDialog(final Stage parentStage, final Product product) {
@@ -61,22 +58,10 @@ public class ProductUpdateDialog extends BorderPane {
 		this.appData = AppData.getInstance();
 		setProduct(product);
 
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("ProductUpdateDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-		
-		Scene scene = new Scene(this);
+		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
+		final Scene scene = new Scene(this);
 		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"ProductUpdateDialog.fxml");
 
 	}
 	
@@ -162,8 +147,7 @@ public class ProductUpdateDialog extends BorderPane {
 	}
 	
 	public Stage getStage() {
-		assert(stage!=null);
-		return stage;
+		return (Stage)getScene().getWindow();
 	}
 	
 	private void clearErrorMessages() {

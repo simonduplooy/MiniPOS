@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +14,6 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
@@ -38,16 +36,8 @@ public class AccountOverviewView extends BorderPane {
 		this.appData = AppData.getInstance();
 		this.stage = stage;
 		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("AccountOverviewView.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-        
+		UiUtil.loadRootConstructNode(this,"AccountOverviewView.fxml");
+		
 		loadService = new Service<List<AccountDTO>>() {
 			@Override
 			protected Task<List<AccountDTO>> createTask() {

@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,6 @@ import com.lunarsky.minipos.model.ui.Product;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -54,15 +52,8 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		
         productSales = new ArrayList<ProductSaleDTO>();
 		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("ProductOrderView.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }        
+        UiUtil.loadRootConstructNode(this,"ProductOrderView.fxml");
+
 	}
 		
 	@FXML

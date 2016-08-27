@@ -1,7 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,14 +14,11 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class AccountUpdateDialog extends BorderPane {
@@ -33,11 +28,10 @@ public class AccountUpdateDialog extends BorderPane {
 	private static final String WINDOW_TITLE_UPDATE_ACCOUNT = "Update Account";
 	
 	private final AppData appData;
-	private final Stage stage;
 	private AccountDTO account;
 	private StringTextFieldValidator nameValidator; 
 	
-	private final Service<AccountDTO> saveService; 
+	private Service<AccountDTO> saveService; 
 	
 	@FXML
 	private Label nameErrorLabel;
@@ -55,6 +49,23 @@ public class AccountUpdateDialog extends BorderPane {
 			
 		this.appData = AppData.getInstance();
 		this.account = account;
+		
+		final String title = (null == account)?WINDOW_TITLE_NEW_ACCOUNT:WINDOW_TITLE_UPDATE_ACCOUNT;
+		final Stage stage = UiUtil.createDialogStage(parentStage,title); 
+		Scene scene = new Scene(this);
+		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"AccountUpdateDialog.fxml");
+	}
+		
+	@FXML
+	public void initialize() {
+
+		initializeService();
+		initializeControls();
+
+	}
+	
+	private void initializeService() {
 		
 		saveService = new Service<AccountDTO>() {
 			@Override
@@ -86,30 +97,9 @@ public class AccountUpdateDialog extends BorderPane {
 				};
 			}
 		};
-		
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.setTitle((null == account) ? WINDOW_TITLE_NEW_ACCOUNT : WINDOW_TITLE_UPDATE_ACCOUNT); 
-				
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("AccountUpdateDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-		
-		Scene scene = new Scene(this);
-		stage.setScene(scene);
-
 	}
-		
-	@FXML
-	public void initialize() {
-
+	
+	private void initializeControls() {
 		nameTextField.requestFocus();
 		nameValidator = new StringTextFieldValidator(nameTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
 		nameErrorLabel.setVisible(false);
@@ -122,8 +112,7 @@ public class AccountUpdateDialog extends BorderPane {
 	}
 	
 	public Stage getStage() {
-		assert(null != stage);
-		return stage;
+		return (Stage)getScene().getWindow();
 	}
 	
 	private void setAccount(final AccountDTO account) {
@@ -136,7 +125,7 @@ public class AccountUpdateDialog extends BorderPane {
 	}
 	
 	private void close() {
-		stage.close();
+		getStage().close();
 		saveService.cancel();
 	}
 	

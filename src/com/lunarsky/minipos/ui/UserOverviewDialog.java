@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.UserDTO;
-import com.lunarsky.minipos.util.ErrorMessage;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,7 +17,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -36,8 +33,6 @@ public class UserOverviewDialog extends BorderPane {
 	private static final String WINDOW_TITLE = "Users";
 	
 	private final AppData appData;
-	private final Stage stage;
-	
 	private ObservableList<UserDTO> userList;
 	private UserDTO selectedUser;
 	private ChangeListener<UserDTO> selectedItemChangeListener;
@@ -64,27 +59,14 @@ public class UserOverviewDialog extends BorderPane {
 		
 		this.appData = AppData.getInstance();
 		
-		stage = new Stage();
-		//stage.initOwner(parentStage);
-		//stage.initModality(Modality.WINDOW_MODAL);
-		stage.setTitle(WINDOW_TITLE); 
-		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("UserOverviewDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-		
-		Scene scene = new Scene(this);
+		final Scene scene = new Scene(this);
+		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE);
 		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"UserOverviewDialog.fxml");
 	}
 	
-	public void showAndWait() {
-		getStage().showAndWait();
+	public Stage getStage() {
+		return (Stage)getScene().getWindow();
 	}
 	
 	@FXML
@@ -205,7 +187,7 @@ public class UserOverviewDialog extends BorderPane {
 		log.debug("Update user {}",user);
 		
 		UserUpdateDialog dialog = new UserUpdateDialog(getStage(),user);
-		dialog.showAndWait();
+		dialog.getStage().showAndWait();
 		
 		final UserDTO updatedUser = dialog.getUser();
 	
@@ -282,11 +264,6 @@ public class UserOverviewDialog extends BorderPane {
 
 	private UserDTO getSelectedUser() {
 		return selectedUser;
-	}
-	
-	private Stage getStage() {
-		assert(null!=stage);
-		return stage;
 	}
 	
 }

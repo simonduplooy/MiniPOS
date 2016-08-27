@@ -1,7 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,17 +9,13 @@ import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.common.exception.NameInUseException;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
-import com.lunarsky.minipos.model.dto.ProductGroupDTO;
-import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.model.ui.ProductGroup;
-import com.lunarsky.minipos.ui.validator.CurrencyTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -33,23 +27,20 @@ import javafx.stage.Stage;
 public class ProductGroupUpdateDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 	
+	private static final String WINDOW_TITLE = "Product Group";
+	
 	private final AppData appData;
+	private StringTextFieldValidator nameValidator;
+	private Service<ProductGroupDTO> saveService;
+	private ProductGroup group;
 	
 	@FXML
 	private Label nameErrorLabel;
 	@FXML
 	private TextField nameTextField;
-
 	@FXML
 	private Button saveButton;
 	
-	private StringTextFieldValidator nameValidator;
-	
-	private Service<ProductGroupDTO> saveService;
-	
-	private final Stage stage;
-	private ProductGroup group;
-	 
 	public ProductGroupUpdateDialog(final Stage parentStage, final ProductGroup group) {
 		assert(null != parentStage);
 		assert(null != group);
@@ -57,22 +48,10 @@ public class ProductGroupUpdateDialog extends BorderPane {
 		this.appData = AppData.getInstance();
 		setGroup(group);
 
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("ProductGroupUpdateDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-		
-		Scene scene = new Scene(this);
+		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
+		final Scene scene = new Scene(this);
 		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"ProductGroupUpdateDialog.fxml");
 
 	}
 	
@@ -148,8 +127,7 @@ public class ProductGroupUpdateDialog extends BorderPane {
 	}
 	
 	public Stage getStage() {
-		assert(stage!=null);
-		return stage;
+		return (Stage)getScene().getWindow();
 	}
 	
 	private void clearErrorMessages() {

@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,7 +15,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -28,10 +26,10 @@ import javafx.stage.Stage;
 
 public class ProductOverviewDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
-		
-	private final AppData appData;
-	private final Stage stage;
 	
+	private static final String WINDOW_TITLE = "Products";
+	
+	private final AppData appData;
 	private ObjectProperty<TreeItem<ProductBase>> selectedTreeItemProperty;
 	private ObservableList<ProductBase> productList;
 	private ProductTreeView productTreeView;
@@ -55,22 +53,11 @@ public class ProductOverviewDialog extends BorderPane {
 		
 		this.appData = AppData.getInstance();
 		
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("ProductOverviewDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-        
-        final Scene scene = new Scene(this);
+		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
+		final Scene scene = new Scene(this);
 		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"ProductOverviewDialog.fxml");
+
 	}
 	
 	@FXML
@@ -137,8 +124,7 @@ public class ProductOverviewDialog extends BorderPane {
 	
 
 	public Stage getStage() {
-		assert(null!=stage);
-		return stage;
+		return (Stage)getScene().getWindow();
 	}
 	
 	private List<ProductBase> getProductList() {

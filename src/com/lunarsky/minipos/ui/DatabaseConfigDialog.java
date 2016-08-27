@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.logging.log4j.Level;
@@ -17,20 +16,19 @@ import com.lunarsky.minipos.ui.virtualkeyboards.VirtualKeyboard;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class DatabaseConfigDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
+	
+	private static final String WINDOW_TITLE = "Database Config";
 
 	private final AppData appData;
-	private final Stage stage;
 	
 	private StringTextFieldValidator serverValidator;
 	private IntegerTextFieldValidator portValidator;
@@ -60,27 +58,14 @@ public class DatabaseConfigDialog extends BorderPane {
 		
 		this.appData = AppData.getInstance();
 		
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("DatabaseConfigDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-        
-        final Scene scene = new Scene(this);
+		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
+		Scene scene = new Scene(this);
 		stage.setScene(scene);
+        UiUtil.loadRootConstructNode(this,"DatabaseConfigDialog.fxml");
 	}
 	
 	public Stage getStage() {
-		assert(null != stage);
-		return stage;
+		return (Stage)getScene().getWindow();
 	}
 	
 	@FXML

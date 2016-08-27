@@ -1,7 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +14,6 @@ import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -26,9 +23,10 @@ import javafx.stage.Stage;
 
 public class ProductButtonGroupUpdateDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
+	
+	private final static String WINDOW_TITLE = "Product Group";
 
 	private final AppData appData;
-	private final Stage stage;
 
 	private ProductGroupButtonConfigDTO buttonConfig;
 
@@ -45,27 +43,15 @@ public class ProductButtonGroupUpdateDialog extends BorderPane {
 		this.appData = AppData.getInstance();
 		this.buttonConfig = buttonConfig;
 
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL); 
-				
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("ProductButtonGroupUpdateDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-		
+		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
 		Scene scene = new Scene(this);
 		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"ProductButtonGroupUpdateDialog.fxml");
+
 	}
 	
 	public Stage getStage() {
-		assert(null != stage);
-		return stage;
+		return (Stage)getScene().getWindow();
 	}
 	
 	//Can be null if canceled
@@ -153,7 +139,7 @@ public class ProductButtonGroupUpdateDialog extends BorderPane {
 	}
 	
 	private void close() {
-		stage.close();
+		getStage().close();
 	}
 	
 }

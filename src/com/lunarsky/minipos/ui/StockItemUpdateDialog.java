@@ -1,7 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,14 +15,12 @@ import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class StockItemUpdateDialog extends VBox {
@@ -46,9 +42,6 @@ public class StockItemUpdateDialog extends VBox {
 	
 	private StringTextFieldValidator nameValidator;
 	private DoubleTextFieldValidator stockLevelValidator;
-	
-	
-	private final Stage stage;
 	private StockItemDTO stockItem;
 	
 	// stockItem can be null to create a new StockItem
@@ -59,28 +52,16 @@ public class StockItemUpdateDialog extends VBox {
 		this.appData = AppData.getInstance();
 		this.stockItem = stockItem;
 
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.setTitle((null == stockItem) ? WINDOW_TITLE_ADD_STOCK_ITEM : WINDOW_TITLE_UPDATE_STOCK_ITEM); 
-				
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("StockItemUpdateDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-		
-		Scene scene = new Scene(this);
+		final String title = (null == stockItem) ? WINDOW_TITLE_ADD_STOCK_ITEM : WINDOW_TITLE_UPDATE_STOCK_ITEM;
+		final Stage stage = UiUtil.createDialogStage(parentStage,title); 
+		final Scene scene = new Scene(this);
 		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"StockItemUpdateDialog.fxml");
 
 	}
 	
-	public void showAndWait() {
-		stage.showAndWait();
+	public Stage getStage() {
+		return (Stage)getScene().getWindow();
 	}
 	
 	//Can be null if canceled
@@ -165,11 +146,6 @@ public class StockItemUpdateDialog extends VBox {
 	
 	private void setStockItem(final StockItemDTO stockItem) {
 		this.stockItem = stockItem;
-	}
-	
-	private Stage getStage() {
-		assert(stage!=null);
-		return stage;
 	}
 	
 }

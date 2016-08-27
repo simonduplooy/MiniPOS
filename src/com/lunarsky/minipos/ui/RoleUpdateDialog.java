@@ -1,7 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,13 +12,11 @@ import com.lunarsky.minipos.model.dto.RoleDTO;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class RoleUpdateDialog extends VBox {
@@ -38,8 +34,6 @@ public class RoleUpdateDialog extends VBox {
 	@FXML
 	private CheckBox canManageUsersCheckBox;
 
-	
-	private final Stage stage;
 	private RoleDTO role;
 	
 	// role can be null to create a new Role
@@ -49,28 +43,15 @@ public class RoleUpdateDialog extends VBox {
 		this.appData = AppData.getInstance();
 		this.role = role;
 
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.setTitle((null == role) ? WINDOW_TITLE_ADD_ROLE : WINDOW_TITLE_UPDATE_ROLE); 
-				
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("RoleUpdateDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-		
-		Scene scene = new Scene(this);
+		final String title = (null == role) ? WINDOW_TITLE_ADD_ROLE : WINDOW_TITLE_UPDATE_ROLE;
+		final Stage stage = UiUtil.createDialogStage(parentStage,title); 
+		final Scene scene = new Scene(this);
 		stage.setScene(scene);
-
+		UiUtil.loadRootConstructNode(this,"RoleUpdateDialog.fxml");
 	}
 	
-	public void showAndWait() {
-		stage.showAndWait();
+	public Stage getStage() {
+		return (Stage)getScene().getWindow();
 	}
 	
 	//Can be null if canceled
@@ -144,11 +125,6 @@ public class RoleUpdateDialog extends VBox {
 	
 	private void setRole(final RoleDTO role) {
 		this.role = role;
-	}
-	
-	private Stage getStage() {
-		assert(stage!=null);
-		return stage;
 	}
 	
 }

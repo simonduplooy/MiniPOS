@@ -1,17 +1,11 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.model.dto.ProductDTO;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
-import javafx.scene.control.Control;
 import javafx.scene.layout.GridPane;
 
 public class ProductButtonBlank extends Button {
@@ -30,15 +24,8 @@ public class ProductButtonBlank extends Button {
 		this.columnIdx = columnIdx;
 		this.rowIdx = rowIdx;
 		
-	    FXMLLoader loader = new FXMLLoader();
-	    loader.setLocation(getClass().getResource("ProductButtonBlank.fxml"));
-	    loader.setRoot(this);
-	    loader.setController(this);
-	    try {
-	    	loader.load();
-	    } catch (IOException e) {
-	    	throw new RuntimeException(e);
-	    }
+		UiUtil.loadRootConstructNode(this,"ProductButtonBlank.fxml");
+
 	}
 	
 	@FXML

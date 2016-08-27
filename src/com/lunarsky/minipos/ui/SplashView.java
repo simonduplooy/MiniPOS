@@ -1,14 +1,11 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.model.AppData;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.FlowPane;
@@ -23,16 +20,9 @@ public class SplashView extends StackPane {
 	private FlowPane itemFlowPane;
 	
 	public SplashView() {
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("SplashView.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
 		
+		UiUtil.loadRootConstructNode(this,"SplashView.fxml");
+
 		initialize();
 
 	}

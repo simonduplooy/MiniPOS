@@ -102,8 +102,8 @@ public class ViewManager {
 	private SplashView showSplashView() {
 
 		SplashView splashView = new SplashView();
-		setScene(splashView);
 		setDefaultLayout(splashView);
+		setScene(splashView);
 
 		return splashView;
 	}
@@ -135,8 +135,8 @@ public class ViewManager {
 	
 	private void showProductOrderView(final AccountDTO account) {
 		ProductOrderView view = new ProductOrderView(account);
-		setScene(view);
 		setDefaultLayout(view);	
+		setScene(view);
 	}
 	
 	public void closeProductOrderView() {
@@ -156,12 +156,9 @@ public class ViewManager {
 	
 	public void showLoginDialog() {
 
-		// Create the dialog Stage.
-        final Stage dialogStage = new Stage();
-        LoginDialog loginDialog = new LoginDialog(getPrimaryStage(),dialogStage);
-        Scene scene = new Scene(loginDialog);
-        dialogStage.setScene(scene);
-        dialogStage.showAndWait();
+        LoginDialog loginDialog = new LoginDialog(getPrimaryStage());
+        loginDialog.getStage().showAndWait();
+
         final UserDTO user = loginDialog.getUser();
         if(null != user) {
         	log.debug(String.format("User Login: %s",user));
@@ -170,36 +167,34 @@ public class ViewManager {
         	//TODO close application
         	//primaryStage.close();
         }
-        
-
 	}
 	
 	public void showDatabaseConfigDialog() {
         DatabaseConfigDialog dialog = new DatabaseConfigDialog(getPrimaryStage());
-        dialog.getStage().showAndWait();
+        dialog.getStage().show();
         //TODO Try to Open Connection if it fails show the Dialog again
 
 	}	
 
 	public void showUserOverviewDialog() {
 		UserOverviewDialog dialog = new UserOverviewDialog(getPrimaryStage());
-	    dialog.showAndWait();
+	    dialog.getStage().show();
 	}	
 	
 	
 	public void showRoleOverviewDialog() {
 		RoleOverviewDialog dialog = new RoleOverviewDialog(getPrimaryStage());
-	    dialog.showAndWait();
+	    dialog.getStage().show();
 	}
 	
 	public void showStockOverviewDialog() {
 		StockOverviewDialog dialog = new StockOverviewDialog(getPrimaryStage());
-	    dialog.showAndWait();
+	    dialog.getStage().show();
 	}
 	
 	public void showProductOverviewDialog() {
 		ProductOverviewDialog dialog = new ProductOverviewDialog(getPrimaryStage());
-	    dialog.getStage().showAndWait();
+	    dialog.getStage().show();
 	}
 	
 }

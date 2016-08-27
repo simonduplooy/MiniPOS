@@ -1,11 +1,7 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +18,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -40,8 +35,6 @@ public class RoleOverviewDialog extends BorderPane {
 	private static final String WINDOW_TITLE = "Roles";
 	
 	private final AppData appData;
-	private final Stage stage;
-	
 	private ObservableList<RoleDTO> roleList;
 	private RoleDTO selectedRole;
 	private ChangeListener<RoleDTO> selectedItemChangeListener;
@@ -68,27 +61,15 @@ public class RoleOverviewDialog extends BorderPane {
 		
 		this.appData = AppData.getInstance();
 		
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.setTitle(WINDOW_TITLE); 
-		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("RoleOverviewDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-        
+		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
 		Scene scene = new Scene(this);
 		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"RoleOverviewDialog.fxml");
+
 	}
 	
-	public void showAndWait() {
-		getStage().showAndWait();
+	public Stage getStage() {
+		return (Stage)getScene().getWindow();
 	}
 	
 	@FXML
@@ -202,15 +183,8 @@ public class RoleOverviewDialog extends BorderPane {
 	private void updateRole(final RoleDTO role) {
 		log.debug("Update role {}",role);
 		
-		RoleUpdateDialog dialog = null;
-		try {
-			dialog = new RoleUpdateDialog(getStage(),role);
-		} catch (Exception e) {
-			log.catching(Level.ERROR, e);
-			ExceptionDialog.create(AlertType.ERROR, ErrorMessage.ERROR_CREATING_DIALOG_TEXT, e).show();
-		}
-		
-		dialog.showAndWait();
+		final RoleUpdateDialog dialog = new RoleUpdateDialog(getStage(),role);
+		dialog.getStage().showAndWait();
 		final RoleDTO updatedRole = dialog.getRole();
 		
 		//The role was updated
@@ -283,11 +257,6 @@ public class RoleOverviewDialog extends BorderPane {
 
 	private RoleDTO getSelectedRole() {
 		return selectedRole;
-	}
-	
-	private Stage getStage() {
-		assert(null!=stage);
-		return stage;
 	}
 	
 }

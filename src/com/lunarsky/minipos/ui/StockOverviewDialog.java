@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -28,7 +26,6 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class StockOverviewDialog extends BorderPane {
@@ -37,8 +34,6 @@ public class StockOverviewDialog extends BorderPane {
 	private static final String WINDOW_TITLE = "Stock";
 	
 	private final AppData appData;
-	private final Stage stage;
-	
 	private ObservableList<StockItemDTO> stockItemList;
 	private StockItemDTO selectedStockItem;
 	private ChangeListener<StockItemDTO> selectedItemChangeListener;
@@ -65,27 +60,14 @@ public class StockOverviewDialog extends BorderPane {
 		
 		this.appData = AppData.getInstance();
 		
-		stage = new Stage();
-		stage.initOwner(parentStage);
-		stage.initModality(Modality.WINDOW_MODAL);
-		stage.setTitle(WINDOW_TITLE); 
-		
-        FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource("StockOverviewDialog.fxml"));
-        loader.setRoot(this);
-        loader.setController(this);
-        try {
-        	loader.load();
-        } catch (IOException e) {
-        	throw new RuntimeException(e);
-        }
-        
-		Scene scene = new Scene(this);
+		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
+		final Scene scene = new Scene(this);
 		stage.setScene(scene);
+		UiUtil.loadRootConstructNode(this,"StockOverviewDialog.fxml");
 	}
 	
-	public void showAndWait() {
-		getStage().showAndWait();
+	public Stage getStage() {
+		return (Stage)getScene().getWindow();
 	}
 	
 	@FXML
@@ -199,15 +181,8 @@ public class StockOverviewDialog extends BorderPane {
 	private void updateStockItem(final StockItemDTO StockItem) {
 		log.debug("Update StockItem {}",StockItem);
 		
-		StockItemUpdateDialog dialog = null;
-		try {
-			dialog = new StockItemUpdateDialog(getStage(),StockItem);
-		} catch (Exception e) {
-			log.catching(Level.ERROR, e);
-			ExceptionDialog.create(AlertType.ERROR, ErrorMessage.ERROR_CREATING_DIALOG_TEXT, e).show();
-		}
-		
-		dialog.showAndWait();
+		final StockItemUpdateDialog dialog = new StockItemUpdateDialog(getStage(),StockItem);
+		dialog.getStage().showAndWait();
 		final StockItemDTO updatedStockItem = dialog.getStockItem();
 		
 		//The StockItem was updated
@@ -281,11 +256,6 @@ public class StockOverviewDialog extends BorderPane {
 
 	private StockItemDTO getSelectedStockItem() {
 		return selectedStockItem;
-	}
-	
-	private Stage getStage() {
-		assert(null!=stage);
-		return stage;
 	}
 	
 }
