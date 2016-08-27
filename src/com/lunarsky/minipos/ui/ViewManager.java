@@ -7,7 +7,9 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.AccountDTO;
 import com.lunarsky.minipos.model.dto.UserDTO;
+import com.sun.javafx.css.StyleManager;
 
+import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,18 +23,18 @@ public class ViewManager {
 	
 	private final Stage primaryStage;
 	
-	//TODO Add customizable external stylesheet
-	private final String styleSheet;
-	
 	public ViewManager(final Stage primaryStage) {
 		assert(null != primaryStage);
 
 		this.primaryStage = primaryStage;
-		styleSheet = getClass().getResource(STYLESHEET_RESOURCE).toExternalForm();
 		initialize();
 	}
 		
 	public void initialize() {
+		
+		//TODO Add customizable external stylesheet
+		Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+		StyleManager.getInstance().addUserAgentStylesheet(STYLESHEET_RESOURCE);
 		
 		final SplashView splashView = showSplashView();
 		
@@ -80,15 +82,8 @@ public class ViewManager {
 		assert(null != primaryStage);
 		return primaryStage;
 	}
-	
-	//TODO use global stylesheets
-	public void setStyleSheets(final Scene scene) {
-		assert(null != styleSheet);
-		scene.getStylesheets().add(styleSheet);
-	}
-	
-	private void setDefaultLayout(final Scene scene, final Region region) {
-		setStyleSheets(scene);
+		
+	private void setDefaultLayout(final Region region) {
 		region.setPrefSize(UiConst.PREF_LAYOUT_WIDTH,UiConst.PREF_LAYOUT_HEIGHT);
 	}
 	
@@ -108,18 +103,16 @@ public class ViewManager {
 
 		SplashView splashView = new SplashView();
 		setScene(splashView);
-		final Scene scene = getPrimaryStage().getScene();
-		setDefaultLayout(scene,splashView);
+		setDefaultLayout(splashView);
 
 		return splashView;
 	}
 	
 	public void showAccountOverviewView() {
 		final Stage stage = getPrimaryStage();
-		AccountOverviewView accountView = new AccountOverviewView(stage);
+		final AccountOverviewView accountView = new AccountOverviewView(stage);
 		setScene(accountView);
-		final Scene scene = stage.getScene();
-		setDefaultLayout(scene,accountView);
+		setDefaultLayout(accountView);
 	}
 	
 	public void closeAccountOverviewView() {
@@ -127,11 +120,9 @@ public class ViewManager {
 	}
 
 	private void showAccountView(final AccountDTO account) {
-		final Stage stage = getPrimaryStage();
 		AccountView accountView = new AccountView(account);
 		setScene(accountView);
-		final Scene scene = stage.getScene();
-		setDefaultLayout(scene,accountView);		
+		setDefaultLayout(accountView);		
 	}
 
 	public void closeAccountView() {
@@ -143,11 +134,9 @@ public class ViewManager {
 	}
 	
 	private void showProductOrderView(final AccountDTO account) {
-		final Stage stage = getPrimaryStage();
 		ProductOrderView view = new ProductOrderView(account);
 		setScene(view);
-		final Scene scene = stage.getScene();
-		setDefaultLayout(scene,view);	
+		setDefaultLayout(view);	
 	}
 	
 	public void closeProductOrderView() {
@@ -158,8 +147,7 @@ public class ViewManager {
 		final Stage stage = getPrimaryStage();
 		final ProductConfigureView view = new ProductConfigureView(stage);
 		setScene(view);
-		final Scene scene = stage.getScene();
-		setDefaultLayout(scene,view);	
+		setDefaultLayout(view);	
 	}
 	
 	public void closeProductConfigureView() {
@@ -169,10 +157,9 @@ public class ViewManager {
 	public void showLoginDialog() {
 
 		// Create the dialog Stage.
-        Stage dialogStage = new Stage();
+        final Stage dialogStage = new Stage();
         LoginDialog loginDialog = new LoginDialog(getPrimaryStage(),dialogStage);
         Scene scene = new Scene(loginDialog);
-        setStyleSheets(scene);
         dialogStage.setScene(scene);
         dialogStage.showAndWait();
         final UserDTO user = loginDialog.getUser();

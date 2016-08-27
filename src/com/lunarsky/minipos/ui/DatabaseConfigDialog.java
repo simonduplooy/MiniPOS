@@ -75,7 +75,6 @@ public class DatabaseConfigDialog extends BorderPane {
         }
         
         final Scene scene = new Scene(this);
-		appData.getViewManager().setStyleSheets(scene);
 		stage.setScene(scene);
 	}
 	

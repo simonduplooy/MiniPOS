@@ -90,7 +90,6 @@ public class UserUpdateDialog extends BorderPane {
         }
 		
 		Scene scene = new Scene(this);
-		scene.getStylesheets().add(getClass().getResource("/resources/stylesheets/application.css").toExternalForm());
 		stage.setScene(scene);
 
 	}

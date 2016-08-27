@@ -35,7 +35,6 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 
 	private final AppData appData;
-	private final Stage stage;
 	
 	private final PersistenceId id;
 	private final PersistenceId parentId;
@@ -76,7 +75,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 		this.columnIdx = columnIdx;
 		this.rowIdx = rowIdx;
 
-		stage = new Stage();
+		final Stage stage = new Stage();
 		stage.initOwner(parentStage);
 		stage.initModality(Modality.WINDOW_MODAL); 
 				
@@ -91,12 +90,12 @@ public class ProductButtonUpdateDialog extends BorderPane {
         }
 		
 		Scene scene = new Scene(this);
-		appData.getViewManager().setStyleSheets(scene);
 		stage.setScene(scene);
 	}
 	
 	public Stage getStage() {
-		assert(null != stage);
+		final Scene scene = getScene();
+		final Stage stage = (Stage)scene.getWindow();
 		return stage;
 	}
 	
@@ -177,7 +176,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 				} else {
 					productComboBox.getSelectionModel().select(product);
 				}
-				stage.sizeToScene();
+				getStage().sizeToScene();
 			}
 			@Override
 			protected void failed() {
@@ -238,7 +237,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	}
 	
 	private void close() {
-		stage.close();
+		getStage().close();
 	}
 	
 }

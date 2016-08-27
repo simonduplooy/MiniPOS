@@ -103,7 +103,6 @@ public class AccountUpdateDialog extends BorderPane {
         }
 		
 		Scene scene = new Scene(this);
-		appData.getViewManager().setStyleSheets(scene);
 		stage.setScene(scene);
 
 	}
