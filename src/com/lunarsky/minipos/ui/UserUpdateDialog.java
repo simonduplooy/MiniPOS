@@ -71,10 +71,7 @@ public class UserUpdateDialog extends BorderPane {
 		this.user = user;
 
 		final String title = (null == user) ? WINDOW_TITLE_ADD_USER : WINDOW_TITLE_UPDATE_USER;
-		final Stage stage = UiUtil.createDialogStage(parentStage,title); 
-		final Scene scene = new Scene(this);
-		stage.setScene(scene);	
-		UiUtil.loadRootConstructNode(this,"UserUpdateDialog.fxml");
+		UiUtil.createDialog(parentStage,title,this,"UserUpdateDialog.fxml");
 
 	}
 	

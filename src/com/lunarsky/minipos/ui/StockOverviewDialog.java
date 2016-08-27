@@ -60,10 +60,7 @@ public class StockOverviewDialog extends BorderPane {
 		
 		this.appData = AppData.getInstance();
 		
-		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
-		final Scene scene = new Scene(this);
-		stage.setScene(scene);
-		UiUtil.loadRootConstructNode(this,"StockOverviewDialog.fxml");
+		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"StockOverviewDialog.fxml");
 	}
 	
 	public Stage getStage() {

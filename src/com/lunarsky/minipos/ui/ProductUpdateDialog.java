@@ -58,10 +58,7 @@ public class ProductUpdateDialog extends BorderPane {
 		this.appData = AppData.getInstance();
 		setProduct(product);
 
-		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
-		final Scene scene = new Scene(this);
-		stage.setScene(scene);
-		UiUtil.loadRootConstructNode(this,"ProductUpdateDialog.fxml");
+		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"ProductUpdateDialog.fxml");
 
 	}
 	

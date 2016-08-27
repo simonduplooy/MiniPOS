@@ -51,10 +51,7 @@ public class AccountUpdateDialog extends BorderPane {
 		this.account = account;
 		
 		final String title = (null == account)?WINDOW_TITLE_NEW_ACCOUNT:WINDOW_TITLE_UPDATE_ACCOUNT;
-		final Stage stage = UiUtil.createDialogStage(parentStage,title); 
-		Scene scene = new Scene(this);
-		stage.setScene(scene);
-		UiUtil.loadRootConstructNode(this,"AccountUpdateDialog.fxml");
+		UiUtil.createDialog(parentStage,title,this,"AccountUpdateDialog.fxml");
 	}
 		
 	@FXML

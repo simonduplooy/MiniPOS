@@ -44,10 +44,7 @@ public class RoleUpdateDialog extends VBox {
 		this.role = role;
 
 		final String title = (null == role) ? WINDOW_TITLE_ADD_ROLE : WINDOW_TITLE_UPDATE_ROLE;
-		final Stage stage = UiUtil.createDialogStage(parentStage,title); 
-		final Scene scene = new Scene(this);
-		stage.setScene(scene);
-		UiUtil.loadRootConstructNode(this,"RoleUpdateDialog.fxml");
+		UiUtil.createDialog(parentStage,title,this,"RoleUpdateDialog.fxml");
 	}
 	
 	public Stage getStage() {

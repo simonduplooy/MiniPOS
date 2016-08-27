@@ -58,10 +58,7 @@ public class DatabaseConfigDialog extends BorderPane {
 		
 		this.appData = AppData.getInstance();
 		
-		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
-		Scene scene = new Scene(this);
-		stage.setScene(scene);
-        UiUtil.loadRootConstructNode(this,"DatabaseConfigDialog.fxml");
+		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"DatabaseConfigDialog.fxml");
 	}
 	
 	public Stage getStage() {

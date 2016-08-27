@@ -53,10 +53,7 @@ public class StockItemUpdateDialog extends VBox {
 		this.stockItem = stockItem;
 
 		final String title = (null == stockItem) ? WINDOW_TITLE_ADD_STOCK_ITEM : WINDOW_TITLE_UPDATE_STOCK_ITEM;
-		final Stage stage = UiUtil.createDialogStage(parentStage,title); 
-		final Scene scene = new Scene(this);
-		stage.setScene(scene);
-		UiUtil.loadRootConstructNode(this,"StockItemUpdateDialog.fxml");
+		UiUtil.createDialog(parentStage,title,this,"StockItemUpdateDialog.fxml");
 
 	}
 	

@@ -59,10 +59,7 @@ public class UserOverviewDialog extends BorderPane {
 		
 		this.appData = AppData.getInstance();
 		
-		final Scene scene = new Scene(this);
-		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE);
-		stage.setScene(scene);
-		UiUtil.loadRootConstructNode(this,"UserOverviewDialog.fxml");
+		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"UserOverviewDialog.fxml");
 	}
 	
 	public Stage getStage() {

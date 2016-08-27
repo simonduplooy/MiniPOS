@@ -47,12 +47,8 @@ public class LoginDialog extends VBox {
 		
 		this.appData = AppData.getInstance();
 		
-		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
-		Scene scene = new Scene(this);
-		stage.setScene(scene);
-		UiUtil.loadRootConstructNode(this,"LoginDialog.fxml");
-		
-		stage.setOnCloseRequest((event) -> close());
+		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"LoginDialog.fxml"); 
+		getStage().setOnCloseRequest((event) -> close());
 		
         errorLabel.setVisible(false);
         

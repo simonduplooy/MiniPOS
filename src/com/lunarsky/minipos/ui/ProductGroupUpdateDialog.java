@@ -48,10 +48,7 @@ public class ProductGroupUpdateDialog extends BorderPane {
 		this.appData = AppData.getInstance();
 		setGroup(group);
 
-		final Stage stage = UiUtil.createDialogStage(parentStage,WINDOW_TITLE); 
-		final Scene scene = new Scene(this);
-		stage.setScene(scene);
-		UiUtil.loadRootConstructNode(this,"ProductGroupUpdateDialog.fxml");
+		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"ProductGroupUpdateDialog.fxml");
 
 	}
 	
