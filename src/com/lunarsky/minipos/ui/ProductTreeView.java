@@ -15,8 +15,7 @@ import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.model.ui.ProductBase;
 import com.lunarsky.minipos.model.ui.ProductGroup;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeCell;
@@ -28,7 +27,6 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	private static final Logger log = LogManager.getLogger();
 
 	private final AppData appData;
-	private ObjectProperty<TreeItem<ProductBase>> selectedItemProperty;
 	private Comparator<TreeItem<ProductBase>> productComparator;
 	
 	public ProductTreeView(final AppData appData) {
@@ -50,8 +48,6 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	}
 	
 	private void initializeMembers() {
-		selectedItemProperty = new SimpleObjectProperty<TreeItem<ProductBase>>();
-		selectedItemProperty.bind(getSelectionModel().selectedItemProperty());
 		
 		productComparator = new Comparator<TreeItem<ProductBase>>() {
 			@Override
@@ -97,8 +93,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		rootItem.setExpanded(true);
 		setRoot(rootItem);
 		setShowRoot(true);
-		//TODO
-		getSelectionModel().select(rootItem);
+
 	}
 	
 	private void initializeAsync() {
@@ -121,11 +116,12 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		}
 		
 		addChildren(getRoot(),treeList);
+		
+
 	}
 	
-	public ObjectProperty<TreeItem<ProductBase>> selectedItemProperty() {
-		assert(null != selectedItemProperty);
-		return selectedItemProperty;
+	public ReadOnlyObjectProperty<TreeItem<ProductBase>> selectedItemProperty() {
+		return getSelectionModel().selectedItemProperty();
 	}
 	
 	private void addChildren(TreeItem<ProductBase> parent, final List<TreeItem<ProductBase>> itemList) {
