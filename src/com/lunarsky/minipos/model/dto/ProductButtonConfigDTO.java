@@ -14,6 +14,7 @@ public class ProductButtonConfigDTO extends PersistenceObjectDTO {
 	final Integer columnIdx;
 	final Integer rowIdx;
 	
+	//TODO product should not be a DTO
 	public ProductButtonConfigDTO(final PersistenceId parentId, final ProductDTO product, final Integer columnIdx, final Integer rowIdx) {
 		this(null,parentId,product,columnIdx,rowIdx);
 	}

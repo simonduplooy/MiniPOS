@@ -10,23 +10,22 @@ import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class ProductGroup extends ProductBase implements Comparable<ProductGroup> {
+public class ProductGroup extends ProductBase {
 	private static final Logger log = LogManager.getLogger();
-	
-	private PersistenceId parentId;
-	private final StringProperty nameProperty;
 
-	public ProductGroup() {
-		nameProperty = new SimpleStringProperty("");
+	public ProductGroup(final PersistenceId id, final PersistenceId parentId, final String name) {
+		super(id,parentId,name);
 	}
 	
-	public ProductGroup(final PersistenceId parentId) {
-		this();
-		setParentId(parentId);
+	public ProductGroup(final ProductGroup group) {
+		this(group.getId(),group.getParentId(),group.getName());
 	}
-		
+	
 	public ProductGroup(final ProductGroupDTO group) {
-		this();
+		this(group.getId(),group.getParentId(),group.getName());
+	}
+
+	public void set(final ProductGroupDTO group) {
 		assert(null != group);
 
 		setId(group.getId());
@@ -39,29 +38,6 @@ public class ProductGroup extends ProductBase implements Comparable<ProductGroup
 		return groupDTO;
 	}
 	
-	public PersistenceId getParentId() {
-		return parentId;
-	}
-	
-	public void setParentId(final PersistenceId parentId) {
-		assert(null == this.parentId);
-		this.parentId = parentId;
-	}
-	
-	public StringProperty nameProperty() {
-		assert(null != nameProperty);
-		return nameProperty;
-	}
-	
-	public String getName() {
-		return nameProperty().getValue();
-	}
-	
-	public void setName(final String name) {
-		assert(null != name);
-		nameProperty().set(name);
-	}
-
 	//TODO
 	/*
 	public ProductGroup duplicate() {
@@ -73,8 +49,4 @@ public class ProductGroup extends ProductBase implements Comparable<ProductGroup
 	public String toString() {
 		return String.format("name:[%s] id:[%s] parentId:[%s]",getName(),getId(),getParentId());
 	}
-
-	//Implements Comparable
-	public int compareTo(ProductGroup group) {
-		return getName().compareToIgnoreCase(group.getName());
-	}}
+}

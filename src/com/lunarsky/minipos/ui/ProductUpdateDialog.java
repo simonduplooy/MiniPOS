@@ -35,6 +35,11 @@ public class ProductUpdateDialog extends BorderPane {
 	private static final String WINDOW_TITLE = "Product";
 	
 	private final AppData appData;
+	private StringTextFieldValidator nameValidator;
+	private CurrencyTextFieldValidator priceValidator;
+	private Service<ProductDTO> saveService;
+	private final Product product;
+	private boolean wasSaved;
 	
 	@FXML
 	private Label nameErrorLabel;
@@ -44,69 +49,58 @@ public class ProductUpdateDialog extends BorderPane {
 	private TextField priceTextField;
 	@FXML
 	private Button saveButton;
-	
-	private StringTextFieldValidator nameValidator;
-	private CurrencyTextFieldValidator priceValidator;
-	
-	private Service<ProductDTO> saveService;
-	private Product product;
 	 
 	public ProductUpdateDialog(final Stage parentStage, final Product product) {
 		assert(null != parentStage);
 		assert(null != product);
 		
 		this.appData = AppData.getInstance();
-		setProduct(product);
+		//Create a copy so that the original product is not updated in case the dialog is cancelled
+		this.product = new Product(product);
 
 		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"ProductUpdateDialog.fxml");
-
 	}
 	
 	public Product getProduct() {
 		assert(null != product);
 		return product;
 	}
-	private void setProduct(final Product product) {
-		assert(null != product);
-		this.product = product;
-	}
 	
 	@FXML
 	private void initialize() {
-		createSaveService();
 		initializeMembers();
 		initializeControls();
+		initializeBindings();
+		initializeListeners();
 	}
 	
 	private void initializeMembers() {
+		createSaveService();
+		nameValidator = new StringTextFieldValidator(nameTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
+		priceValidator = new CurrencyTextFieldValidator(priceTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
 	}
 	
 	private void initializeControls() {
+		clearErrorMessages();
+	}
+
+	private void initializeBindings() {
+		nameErrorLabel.managedProperty().bind(nameErrorLabel.visibleProperty());
 		
 		final Product product = getProduct();
-
-		nameErrorLabel.managedProperty().bind(nameErrorLabel.visibleProperty());
-		clearErrorMessages();
-		
-		nameValidator = new StringTextFieldValidator(nameTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
-		priceValidator = new CurrencyTextFieldValidator(priceTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
-		
 		nameTextField.textProperty().bindBidirectional(product.nameProperty());
 		NumberStringConverter converter = new NumberStringConverter(UiConst.CURRENCY_FORMAT);
 		final StringProperty priceTextProperty = priceTextField.textProperty();
 		final DoubleProperty priceDoubleProperty = product.priceProperty();
-		
-		log.debug("priceTextProperty [{}]",priceTextProperty.getValue());
-		log.debug("priceDoubleProperty [{}]",priceDoubleProperty.getValue());
-		
 		Bindings.bindBidirectional(priceTextProperty,priceDoubleProperty,converter);
-		
-		log.debug("priceTextProperty [{}]",priceTextProperty.getValue());
-		log.debug("priceDoubleProperty [{}]",priceDoubleProperty.getValue());
 		
 		saveButton.disableProperty().bind(nameValidator.validProperty().and(priceValidator.validProperty()).not().or(saveService.runningProperty()));
 	}
-
+	
+	private void initializeListeners() {
+		getStage().setOnCloseRequest((event) -> close());
+	}
+	
 	public void createSaveService() {
 		saveService = new Service<ProductDTO>() {
 			@Override
@@ -121,8 +115,8 @@ public class ProductUpdateDialog extends BorderPane {
 					protected void succeeded() {
 						log.debug("saveProduct() Succeeded");
 						final ProductDTO productDTO = getValue();
-						final Product product = new Product(productDTO);
-						setProduct(product);
+						getProduct().set(productDTO);
+						wasSaved = true;
 						close();
 					}
 					@Override
@@ -145,6 +139,10 @@ public class ProductUpdateDialog extends BorderPane {
 	
 	public Stage getStage() {
 		return (Stage)getScene().getWindow();
+	}
+	
+	public boolean wasSaved() {
+		return wasSaved;
 	}
 	
 	private void clearErrorMessages() {

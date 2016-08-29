@@ -9,6 +9,7 @@ import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.common.exception.NameInUseException;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.model.ui.ProductGroup;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 
@@ -33,6 +34,7 @@ public class ProductGroupUpdateDialog extends BorderPane {
 	private StringTextFieldValidator nameValidator;
 	private Service<ProductGroupDTO> saveService;
 	private ProductGroup group;
+	private boolean wasSaved;
 	
 	@FXML
 	private Label nameErrorLabel;
@@ -46,7 +48,8 @@ public class ProductGroupUpdateDialog extends BorderPane {
 		assert(null != group);
 		
 		this.appData = AppData.getInstance();
-		setGroup(group);
+		//Create a copy so that the original product is not updated in case the dialog is cancelled
+		this.group = new ProductGroup(group);
 
 		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"ProductGroupUpdateDialog.fxml");
 
@@ -55,11 +58,6 @@ public class ProductGroupUpdateDialog extends BorderPane {
 	public ProductGroup getGroup() {
 		assert(null != group);
 		return group;
-	}
-	
-	private void setGroup(final ProductGroup group) {
-		assert(null != group);
-		this.group = group;
 	}
 	
 	@FXML
@@ -101,8 +99,8 @@ public class ProductGroupUpdateDialog extends BorderPane {
 					protected void succeeded() {
 						log.debug("saveProductGroup() Succeeded");
 						final ProductGroupDTO groupDTO = getValue();
-						final ProductGroup group = new ProductGroup(groupDTO);
-						setGroup(group);
+						getGroup().set(groupDTO);
+						wasSaved = true;
 						close();
 					}
 					@Override
@@ -125,6 +123,10 @@ public class ProductGroupUpdateDialog extends BorderPane {
 	
 	public Stage getStage() {
 		return (Stage)getScene().getWindow();
+	}
+	
+	public boolean wasSaved() {
+		return wasSaved;
 	}
 	
 	private void clearErrorMessages() {

@@ -14,6 +14,7 @@ import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductSaleDTO;
 import com.lunarsky.minipos.model.ui.Product;
+import com.lunarsky.minipos.model.ui.ProductButtonConfig;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -154,7 +155,8 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		assert(null == productButtonList);
 		
 		productButtonList = new ArrayList<ProductButton>();
-		for(ProductButtonConfigDTO buttonConfig: buttonConfigList) {
+		for(ProductButtonConfigDTO configDTO: buttonConfigList) {
+			final ProductButtonConfig buttonConfig = new ProductButtonConfig(configDTO);
 			final ProductButton button = new ProductButton(this,buttonConfig);
 			productButtonList.add(button);
 		}

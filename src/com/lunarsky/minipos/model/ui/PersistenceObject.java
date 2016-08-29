@@ -27,7 +27,6 @@ public class PersistenceObject {
 	}
 	
 	public void setId(final PersistenceId id) {
-		assert(null == this.id);
 		this.id = id;
 	}
 	

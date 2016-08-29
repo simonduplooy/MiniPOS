@@ -1,9 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,19 +10,22 @@ import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.ui.Product;
+import com.lunarsky.minipos.model.ui.ProductBase;
+import com.lunarsky.minipos.model.ui.ProductButtonConfig;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 public class ProductButtonUpdateDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
@@ -34,45 +33,24 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	private static final String WINDOW_TITLE = "Product";
 	
 	private final AppData appData;
-	
-	private final PersistenceId id;
-	private final PersistenceId parentId;
-	private final Integer columnIdx;
-	private final Integer rowIdx;
-	private final Product product;
 
-	private ProductButtonConfigDTO buttonConfig;
+	private final ProductButtonConfig buttonConfig;
+	private ProductTreeView productTreeView;
+	private ChangeListener<TreeItem<ProductBase>> selectedItemChangeListener;
+	private boolean wasSaved;
 	
-	private ObservableList<Product> productList;
-
 	@FXML
-	private ComboBox<Product> productComboBox;
+	private ScrollPane productScrollPane;
 	@FXML
 	private Button saveButton;
 
-	public ProductButtonUpdateDialog(final Stage parentStage, final ProductButtonConfigDTO buttonConfig) {
-		this(parentStage,buttonConfig.getId(),buttonConfig.getParentId(),null,buttonConfig.getColumnIndex(),buttonConfig.getRowIndex());
-	}
 	
-	public ProductButtonUpdateDialog(final Stage parentStage, final PersistenceId parentId, final Integer columnIdx, final Integer rowIdx) {
-		this(parentStage,null,parentId,null,columnIdx,rowIdx);
-	}
-	
-	public ProductButtonUpdateDialog(final Stage parentStage, final PersistenceId id, final PersistenceId parentId, final Product product, final Integer columnIdx, final Integer rowIdx) {
+	public ProductButtonUpdateDialog(final Stage parentStage, final ProductButtonConfig buttonConfig) {
 		assert(null != parentStage);
-		//id can be null
-		//parentId can be null
-		//product can be null
-		assert(null != columnIdx);
-		assert(null != rowIdx);
-
+		assert(null != buttonConfig);
 		
 		this.appData = AppData.getInstance();
-		this.id = id;
-		this.parentId = parentId;
-		this.product = product;
-		this.columnIdx = columnIdx;
-		this.rowIdx = rowIdx;
+		this.buttonConfig = buttonConfig;
 
 		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"ProductButtonUpdateDialog.fxml");
 	}
@@ -82,95 +60,74 @@ public class ProductButtonUpdateDialog extends BorderPane {
 	}
 	
 	//Can be null if canceled
-	public ProductButtonConfigDTO getButtonConfig() {
+	public ProductButtonConfig getButtonConfig() {
 		return buttonConfig;
 	}
 	
 	@FXML
 	private void initialize() {
+		initializeMembers();
 		initializeControls();
-		initializeServices();
+		initializeBindings();
+		initializeListeners();
 		initializeAsync();
 	}
 	
+	private void initializeMembers() {
+		productTreeView = new ProductTreeView(appData);
+	}
+	
 	private void initializeControls() {
-		
-		productComboBox.setCellFactory((listCell) -> {
-			ListCell<Product> cell = new ListCell<Product>() {
-				@Override
-				protected void updateItem(Product product, boolean empty) {
-					super.updateItem(product,empty);
-					if(null != product) {
-						setText(product.getName());
-					} else {
-						setText("");
-					}
-				}
-			};
-			return cell;
-		});
-		
-		final StringConverter<Product> converter = new StringConverter<Product>() {
-			@Override
-			public String toString(final Product product) {
-				return product.getName();
-			}
-			@Override
-			public Product fromString(final String productName) {
-				return null;
-			}
-		};
-		
-		productComboBox.setConverter(converter);
-		
-		//TODO Bind Save Service
-		//saveButton.disableProperty().bind(saveService.runningProperty());
+	
+		productScrollPane.setContent(productTreeView);
+	}
+	
+	private void initializeBindings() {
+		//TODO bind to SaveService
+		saveButton.disableProperty().bind(Bindings.isNull(getButtonConfig().productProperty()));
 	}
 	
 	private void initializeServices() {
 		
 	}
 	
-	private void initializeAsync() {
+	private void initializeListeners() {
 		
-		Task<List<ProductDTO>> task = new Task<List<ProductDTO>>() {
+		getStage().setOnCloseRequest((event) -> close());
+		
+		selectedItemChangeListener = new ChangeListener<TreeItem<ProductBase>>() {
 			@Override
-			protected List<ProductDTO> call() {
-				final List<ProductDTO> products = appData.getServerConnector().getProducts();
-				return products;
-			}
-			@Override 
-			protected void succeeded() {
-				log.debug("GetProducts() Succeeded");
-
-				final List<ProductDTO> productDTOList = getValue();
-				final List<Product> list = new ArrayList<Product>();
-				for(ProductDTO productDTO: productDTOList) {
-					final Product product = new Product(productDTO);
-					list.add(product);
-				}
-				productList = FXCollections.observableList(list);
-				Collections.sort(productList);
-				productComboBox.setItems(productList);
-				
-				if(null == product) {
-					productComboBox.getSelectionModel().selectFirst();					
-				} else {
-					productComboBox.getSelectionModel().select(product);
-				}
-				getStage().sizeToScene();
-			}
-			@Override
-			protected void failed() {
-				final Throwable t = getException();
-				log.catching(Level.ERROR, t);
-				throw new RuntimeException(t);
+			public void changed(ObservableValue<? extends TreeItem<ProductBase>> observable, TreeItem<ProductBase> oldValue, TreeItem<ProductBase> newValue) {
+				handleSelectedProductChanged(newValue);
 			}
 		};
 		
-		Thread thread = new Thread(task);
-		log.debug("Starting Task GetProducts() {}",thread);
-		thread.start();
+		productTreeView.selectedItemProperty().addListener(selectedItemChangeListener);
+	}
+	
+	private void initializeAsync() {
+	
+	}
+	
+	private void handleSelectedProductChanged(TreeItem<ProductBase> productTreeItem) {
+		log.debug("handleSelectedProductChanged() {}", productTreeItem);
+		
+		final ProductBase productBase = productTreeItem.getValue();
+		if(productBase instanceof Product) {
+			final Product product = (Product)productBase;
+			setProduct(product);
+		} else {
+			setProduct(null);
+		}
+		
+	}
+	
+	private Product getProduct() {
+		return buttonConfig.getProduct();
+	}
+	
+	private void setProduct(final Product product) {
+		buttonConfig.setProduct(product);
 	}
 	
 	@FXML
@@ -178,15 +135,17 @@ public class ProductButtonUpdateDialog extends BorderPane {
 		
 		//TODO Service
 		Task<ProductButtonConfigDTO> task = new Task<ProductButtonConfigDTO>() {
-			final ProductButtonConfigDTO buttonConfig = createButtonConfigFromControls();
+			final ProductButtonConfigDTO buttonConfig = getButtonConfig().createDTO();
 			@Override
 			protected ProductButtonConfigDTO call() throws EntityNotFoundException {
 				return appData.getServerConnector().saveProductButton(buttonConfig);
 			}
 			@Override
 			protected void succeeded() {
-				setButtonConfig(getValue());
 				log.debug("SaveProductButton() Succeeded");
+				final ProductButtonConfigDTO configDTO = getValue();
+				getButtonConfig().set(configDTO);
+				wasSaved = true;
 				close();
 			}
 			@Override
@@ -200,6 +159,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 		Thread thread = new Thread(task);
 		log.debug("Creating SaveProductButton() Task {}",thread);
 		thread.start();
+		
 	}
 
 	@FXML
@@ -207,15 +167,8 @@ public class ProductButtonUpdateDialog extends BorderPane {
 		close();
 	}
 	
-	private ProductButtonConfigDTO createButtonConfigFromControls() {
-		final Product product = productComboBox.getValue();
-		final ProductButtonConfigDTO buttonConfig = new ProductButtonConfigDTO(id,parentId,product.createDTO(),columnIdx,rowIdx);
-		return buttonConfig;
-	}
-	
-	private void setButtonConfig(final ProductButtonConfigDTO buttonConfig) {
-		assert(null != buttonConfig);
-		this.buttonConfig = buttonConfig;
+	public boolean wasSaved() {
+		return wasSaved;
 	}
 	
 	private void close() {

@@ -11,6 +11,7 @@ import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.ui.Product;
+import com.lunarsky.minipos.model.ui.ProductButtonConfig;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -157,7 +158,8 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		
 		productButtonList = new ArrayList<ProductButton>();
 		for(ProductButtonConfigDTO buttonConfig: buttonConfigList) {
-			final ProductButton button = new ProductButton(this,buttonConfig);
+			final ProductButtonConfig config = new ProductButtonConfig(buttonConfig);
+			final ProductButton button = new ProductButton(this,config);
 			productButtonList.add(button);
 		}
 	}
@@ -213,12 +215,13 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
 		log.debug("createProductButton()");
 		
-		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(stage,parentId,columnIdx,rowIdx);
+		final Product product = new Product(null,null,"",0.0);
+		ProductButtonConfig buttonConfig = new ProductButtonConfig(null,parentId,product,columnIdx,rowIdx);
+		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(stage,buttonConfig);
 		dialog.getStage().showAndWait();
-		final ProductButtonConfigDTO config = dialog.getButtonConfig();
-		
-		if(null != config) {
-			final ProductButton button = new ProductButton(this,config);
+		if(dialog.wasSaved()) {
+			buttonConfig = dialog.getButtonConfig();
+			final ProductButton button = new ProductButton(this,buttonConfig);
 			productButtonList.add(button);
 			productGridPane.getChildren().add(button);
 		}
@@ -226,12 +229,12 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	
 	public void updateProductButton(final ProductButton button) {
 		log.debug("updateProductButton()");
-		final ProductButtonConfigDTO config = button.getConfig();
+		ProductButtonConfig config = button.getConfig();
 		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(stage,config);
 		dialog.getStage().showAndWait();
-		final ProductButtonConfigDTO updatedConfig = dialog.getButtonConfig();
-		if(null != updatedConfig) {
-			button.setConfig(updatedConfig);
+		if(dialog.wasSaved()) {
+			config = dialog.getButtonConfig();
+			button.getConfig().set(config);
 		}
 	}
 	

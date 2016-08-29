@@ -1,6 +1,7 @@
 package com.lunarsky.minipos.ui;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -28,6 +29,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 
 	private final AppData appData;
 	private ObjectProperty<TreeItem<ProductBase>> selectedItemProperty;
+	private Comparator<TreeItem<ProductBase>> productComparator;
 	
 	public ProductTreeView(final AppData appData) {
 		assert(null != appData);
@@ -50,17 +52,17 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	private void initializeMembers() {
 		selectedItemProperty = new SimpleObjectProperty<TreeItem<ProductBase>>();
 		selectedItemProperty.bind(getSelectionModel().selectedItemProperty());
+		
+		productComparator = new Comparator<TreeItem<ProductBase>>() {
+			@Override
+			public int compare(TreeItem<ProductBase> item1, TreeItem<ProductBase> item2) {
+				final int result = item1.getValue().compareTo(item2.getValue());
+				return result;
+			}
+		};
 	}
 	
 	private void initializeControls() {
-		
-		final ContextMenu menu = new ContextMenu();
-		final MenuItem addGroupItem = new MenuItem("Add Root Group");
-		addGroupItem.setOnAction((event) -> handleAddRootGroup());
-		final MenuItem addProductItem = new MenuItem("Add Root Product");
-		addProductItem.setOnAction((event) -> handleAddRootProduct());
-		menu.getItems().addAll(addProductItem,addGroupItem);
-		setContextMenu(menu);
 		
 		setCellFactory((treeView) -> {
 			final TreeCell<ProductBase> cell = new TreeCell<ProductBase>() {
@@ -69,13 +71,17 @@ public class ProductTreeView extends TreeView<ProductBase> {
 					super.updateItem(product,empty);
 					if(null!=product) {
 						setText(product.getName());
+						final ContextMenu contextMenu;
 						if(product instanceof ProductGroup) {
-							final ContextMenu contextMenu = createGroupContextMenu();
-							setContextMenu(contextMenu);
+							contextMenu = createGroupContextMenu();
 						} else if (product instanceof Product){
-							final ContextMenu contextMenu = createProductContextMenu();
-							setContextMenu(contextMenu);
+							contextMenu = createProductContextMenu();
+						} else if(product instanceof ProductRoot) {
+							contextMenu = createRootContextMenu();
+						} else {
+							contextMenu = null;
 						}
+						setContextMenu(contextMenu);
 						
 					} else {
 						setText("");
@@ -86,11 +92,11 @@ public class ProductTreeView extends TreeView<ProductBase> {
 			return cell;
 		});
 
-		final ProductRoot root = new ProductRoot("root");
+		final ProductRoot root = new ProductRoot("Base");
 		final TreeItem<ProductBase> rootItem = new TreeItem<ProductBase>(root);
 		rootItem.setExpanded(true);
 		setRoot(rootItem);
-		setShowRoot(false);
+		setShowRoot(true);
 		//TODO
 		getSelectionModel().select(rootItem);
 	}
@@ -139,6 +145,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 				}
 			}
 		}
+		parent.getChildren().sort(getComparator());
 	}
 	
 	private ContextMenu createProductContextMenu() {
@@ -152,20 +159,25 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	}
 
 	private ContextMenu createGroupContextMenu() {
+		final ContextMenu contextMenu = createRootContextMenu();
+		final MenuItem updateItem = new MenuItem("Update");
+		updateItem.setOnAction((event) -> handleUpdateGroup());
+		final MenuItem deleteItem = new MenuItem("Delete");
+		deleteItem.setOnAction((event) -> handleDeleteGroup());
+		contextMenu.getItems().addAll(updateItem,deleteItem);
+		return contextMenu;
+	}
+
+	private ContextMenu createRootContextMenu() {
 		final ContextMenu contextMenu = new ContextMenu();
 		final MenuItem addGroupItem = new MenuItem("Add Group");
 		addGroupItem.setOnAction((event) -> handleAddGroup());
 		final MenuItem addProductItem = new MenuItem("Add Product");
 		addProductItem.setOnAction((event) -> handleAddProduct());
-		final MenuItem updateItem = new MenuItem("Update");
-		updateItem.setOnAction((event) -> handleUpdateGroup());
-		final MenuItem deleteItem = new MenuItem("Delete");
-		deleteItem.setOnAction((event) -> handleDeleteGroup());
-		contextMenu.getItems().addAll(addGroupItem,addProductItem,updateItem,deleteItem);
+		contextMenu.getItems().addAll(addGroupItem,addProductItem);
 		return contextMenu;
 	}
-
-	//TODO alot of duplicate code here
+	
 	private void handleAddRootGroup() {
 		log.debug("handleAddRootGroup()");
 		final TreeItem<ProductBase> rootItem = getRoot();
@@ -179,11 +191,15 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	}
 	
 	private void handleAddGroup(final TreeItem<ProductBase> parentTreeItem) {
-		final ProductGroup group = new ProductGroup(parentTreeItem.getValue().getId());
+		final PersistenceId parentId = parentTreeItem.getValue().getId();
+		final ProductGroup group = new ProductGroup(null,parentId,"");
 		final ProductGroup updatedGroup = handleUpdateGroup(group);
 		if(updatedGroup != group) {
 			final TreeItem<ProductBase> newTreeItem = new TreeItem<ProductBase>(updatedGroup);
-			parentTreeItem.getChildren().add(newTreeItem);			
+			final List<TreeItem<ProductBase>> children = parentTreeItem.getChildren();
+			children.add(newTreeItem);
+			children.sort(getComparator());
+			getSelectionModel().select(newTreeItem);
 		}
 	}
 	
@@ -192,8 +208,9 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
 		final ProductGroup group = (ProductGroup)selectedTreeItem.getValue();
 		final ProductGroup updatedGroup = handleUpdateGroup(group);
-		if(updatedGroup != group) {
+		if(null != updatedGroup) {
 			selectedTreeItem.setValue(updatedGroup);
+			selectedTreeItem.getParent().getChildren().sort(getComparator());
 		}
 	}
 	
@@ -201,8 +218,12 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final Stage stage = (Stage)getScene().getWindow();
 		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(stage,group);
 		dialog.getStage().showAndWait();
-		final ProductGroup updatedGroup = dialog.getGroup();
-		return updatedGroup;
+		if(dialog.wasSaved()) {
+			final ProductGroup updatedGroup = dialog.getGroup();
+			return updatedGroup;
+		}
+
+		return null;
 	}
 	
 	private void handleDeleteGroup() {
@@ -214,12 +235,6 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		selectedTreeItem.getParent().getChildren().remove(selectedTreeItem);
 	}
 	
-	private void handleAddRootProduct() {
-		log.debug("handleAddRootProduct()");
-		final TreeItem<ProductBase> rootItem = getRoot();
-		handleAddProduct(rootItem);
-	}
-	
 	private void handleAddProduct() {
 		log.debug("handleAddProduct()");
 		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
@@ -227,12 +242,15 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	}
 	
 	private void handleAddProduct(final TreeItem<ProductBase>  parentTreeItem) {
-
-		final Product product = new Product(parentTreeItem.getValue().getId());
+		final PersistenceId parentId = parentTreeItem.getValue().getId();
+		final Product product = new Product(null,parentId,"",0.0);
 		final Product updatedProduct = handleUpdateProduct(product);
-		if(updatedProduct != product) {
+		if(null != updatedProduct) {
 			final TreeItem<ProductBase> newTreeItem = new TreeItem<ProductBase>(updatedProduct);
-			parentTreeItem.getChildren().add(newTreeItem);
+			final List<TreeItem<ProductBase>> children = parentTreeItem.getChildren();
+			children.add(newTreeItem);
+			children.sort(getComparator());
+			getSelectionModel().select(newTreeItem);
 		}
 	}
 	
@@ -241,7 +259,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
 		final Product product = (Product)selectedTreeItem.getValue();
 		final Product updatedProduct = handleUpdateProduct(product);
-		if(updatedProduct != product) {
+		if(null != updatedProduct) {
 			selectedTreeItem.setValue(updatedProduct);
 		}
 
@@ -251,8 +269,12 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final Stage stage = (Stage)getScene().getWindow();
 		final ProductUpdateDialog dialog = new ProductUpdateDialog(stage,product);
 		dialog.getStage().showAndWait();
-		final Product updatedProduct = dialog.getProduct();
-		return updatedProduct;
+		if(dialog.wasSaved()) {
+			final Product updatedProduct = dialog.getProduct();
+			return updatedProduct;
+		}
+		
+		return null;
 	}
 	
 	private void handleDeleteProduct() {
@@ -264,23 +286,16 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		selectedTreeItem.getParent().getChildren().remove(selectedTreeItem);
 	}
 	
-	private class ProductRoot extends ProductBase {
+	private Comparator<TreeItem<ProductBase>> getComparator() {
+		assert(null != productComparator);
+		return productComparator;
+	}
+	
 
-		private final String name;
+	private class ProductRoot extends ProductBase {
 		
 		private ProductRoot(final String name) {
-			assert(null != name);
-			this.name = name;
+			super(null,null,name);
 		}
-		
-		public String getName() {
-			assert(null != name);
-			return name;
-		}
-		
-		public PersistenceId getParentId() {
-			return null;
-		}
-		
 	}
 }

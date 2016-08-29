@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root styleClass="root" type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="600.0" prefWidth="800.0" styleClass="root" type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
 	<bottom>
 	   <HBox alignment="BOTTOM_RIGHT" spacing="5.0" BorderPane.alignment="BOTTOM_RIGHT">
 	      <children>
@@ -18,26 +18,13 @@
 	      </BorderPane.margin>
 	   </HBox>
 	</bottom>
-	<center>
-	   <GridPane hgap="5.0" vgap="5.0" BorderPane.alignment="CENTER">
-	     <columnConstraints>
-	       <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="-Infinity" />
-	       <ColumnConstraints hgrow="SOMETIMES" />
-	     </columnConstraints>
-	     <rowConstraints>
-	       <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
-	     </rowConstraints>
-	      <children>
-	         <Label text="Product" GridPane.valignment="CENTER" />
-            <ComboBox fx:id="productComboBox" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" />
-	      </children>
-	   </GridPane>
-	</center>
 	<VBox.margin>
 	   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 	</VBox.margin>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
+   <center>
+      <ScrollPane fx:id="productScrollPane" fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER" />
+   </center>
 </fx:root>

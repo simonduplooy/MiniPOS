@@ -1,5 +1,6 @@
 package com.lunarsky.minipos.ui;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,16 +13,16 @@ import com.lunarsky.minipos.model.ui.ProductBase;
 import com.lunarsky.minipos.model.ui.ProductGroup;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ProductOverviewDialog extends BorderPane {
@@ -30,9 +31,9 @@ public class ProductOverviewDialog extends BorderPane {
 	private static final String WINDOW_TITLE = "Products";
 	
 	private final AppData appData;
-	private ObjectProperty<TreeItem<ProductBase>> selectedTreeItemProperty;
 	private ObservableList<ProductBase> productList;
 	private ProductTreeView productTreeView;
+	private ChangeListener<TreeItem<ProductBase>> selectedItemChangeListener;
 	
 	@FXML
 	private ScrollPane productScrollPane;
@@ -81,8 +82,6 @@ public class ProductOverviewDialog extends BorderPane {
 	
 	private void initializeBindings() {
 		
-		selectedTreeItemProperty =  productTreeView.selectedItemProperty();
-		
 		/*
 		editButton.disableProperty().bind(productListView.getSelectionModel().selectedItemProperty().isNull());
 		duplicateButton.disableProperty().bind(productListView.getSelectionModel().selectedItemProperty().isNull());
@@ -93,15 +92,15 @@ public class ProductOverviewDialog extends BorderPane {
 	private void initializeListeners() {
 		
 		getStage().setOnCloseRequest((event) -> close());
-		/*
-		selectedItemChangeListener = new ChangeListener<ProductDTO>() {
+		
+		selectedItemChangeListener = new ChangeListener<TreeItem<ProductBase>>() {
 			@Override
-			public void changed(ObservableValue<? extends ProductDTO> observable, ProductDTO oldValue, ProductDTO newValue) {
-				setSelectedProduct(newValue);
+			public void changed(ObservableValue<? extends TreeItem<ProductBase>> observable, TreeItem<ProductBase> oldValue, TreeItem<ProductBase> newValue) {
+				handleSelectedProductChanged(newValue);
 			}
 		};
-		*/
-		//productListView.getSelectionModel().selectedItemProperty().addListener(selectedItemChangeListener);
+		
+		productTreeView.selectedItemProperty().addListener(selectedItemChangeListener);
 		
 	}
 	
@@ -129,95 +128,17 @@ public class ProductOverviewDialog extends BorderPane {
 		return productList;
 	}
 	
-	@FXML
-	private void handleAdd() {
-		final ProductBase base = selectedTreeItemProperty.getValue().getValue();
-		if(base instanceof ProductGroup) {
-			final ProductGroup group = (ProductGroup)base;
-			final PersistenceId parentId = group.getId();
-			final ProductGroup newGroup = new ProductGroup(parentId);
-			updateProductGroup(newGroup);
+	private void handleSelectedProductChanged(final TreeItem<ProductBase> selectedTreeItem) {
+		assert(null != selectedTreeItem);
+		final ProductBase productBase = selectedTreeItem.getValue();
+		log.debug("handleSelectedProductCanged() {}",productBase);
+		nameTextField.setText(productBase.getName());
+		if(productBase instanceof Product) {
+			final Product product = (Product)productBase;
+			final Double price = product.getPrice();
+			final String priceText = NumberFormat.getCurrencyInstance().format(price);
+			priceTextField.setText(priceText);
 		}
-	}	
-	
-	@FXML
-	private void handleEdit() {
-		final ProductBase base = selectedTreeItemProperty.getValue().getValue();
-		if(base instanceof ProductGroup) {
-			final ProductGroup group = (ProductGroup)base;
-			updateProductGroup(group);
-		}
-	}
-
-	@FXML
-	private void handleDuplicate() {
-		/*
-		final ProductDTO product = getSelectedProduct().duplicate();
-		log.debug("Duplicate Product {}",product);
-		updateProduct(product);
-		*/
-	}
-	
-	private void updateProduct(final Product product) {
-		log.debug("updateProduct() {}",product);
-
-		final ProductUpdateDialog dialog = new ProductUpdateDialog(getStage(),product);
-		dialog.getStage().showAndWait();
-		
-		final Product updatedProduct = dialog.getProduct();
-		
-		//The Product was updated
-		if(updatedProduct != product) {
-			//productTreeView.getSelectionModel().select();
-		}
-	}
-
-	private void updateProductGroup(final ProductGroup group) {
-		log.debug("updateProductGroup() {}",group);
-
-		final ProductGroupUpdateDialog dialog = new ProductGroupUpdateDialog(getStage(),group);
-		dialog.getStage().showAndWait();
-		
-		final ProductGroup updatedGroup = dialog.getGroup();
-		
-		//The Product was updated
-		/*
-		if(updatedProduct != product) {
-			//productListView.getSelectionModel().select(updatedProduct);
-		}
-		*/
-	}
-	@FXML
-	private void handleDelete() {
-		/*
-		Task<Void> task = new Task<Void>() {
-			private final ProductDTO product = getSelectedProduct();
-			@Override
-			protected Void call() throws EntityNotFoundException {
-				appData.getServerConnector().deleteProduct(product.getId());
-				return null;
-			}
-			@Override
-			protected void succeeded() {
-				log.debug("DeleteProduct() Succeeded");
-				productList.remove(product);
-			}
-			@Override
-			protected void failed() {
-				final Throwable t = getException();
-				log.error("DeleteProduct() Failed");
-				log.catching(Level.ERROR, t);
-				ExceptionDialog.create(AlertType.ERROR, "Could not Delete Product", t).show();
-			}
-			
-		};
-		
-		//productListView.getSelectionModel().clearSelection();
-		
-		Thread thread = new Thread(task);
-		log.debug("Starting DeleteProduct() Task {}",thread);
-		thread.start();
-		*/
 	}
 	
 	@FXML

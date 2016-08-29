@@ -1,7 +1,5 @@
 package com.lunarsky.minipos.model.ui;
 
-import java.text.DecimalFormat;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,31 +11,41 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Product extends ProductBase implements Comparable<Product>{
+public class Product extends ProductBase {
 	private static final Logger log = LogManager.getLogger();
 	
-	private PersistenceId parentId;
-	private final StringProperty nameProperty;
 	private final DoubleProperty priceProperty;
 
-	public Product() {
-		nameProperty = new SimpleStringProperty("");
-		priceProperty = new SimpleDoubleProperty(0.0);
+	public Product(final PersistenceId id, final PersistenceId parentId, final String name, final Double price) {
+		super(id,parentId,name);
+		
+		//id can be null
+		//parentId can be null
+		assert(null != name);
+		assert(null != price);
+		
+		priceProperty = new SimpleDoubleProperty(price);
+		
+		setId(id);
+		setParentId(parentId);
+		setName(name);
+		setPrice(price);
 	}
 	
-	public Product(final PersistenceId parentId) {
-		this();
-		setParentId(parentId);
+	public Product(final Product product) {
+		this(product.getId(),product.getParentId(),product.getName(),product.getPrice());
 	}
-		
-	public Product(final ProductDTO product) {
-		this();
-		assert(null != product);
 
-		setId(product.getId());
-		setParentId(product.getParentId());
-		setName(product.getName());
-		setPrice(product.getPrice());
+	public Product(final ProductDTO productDTO) {
+		this(productDTO.getId(),productDTO.getParentId(),productDTO.getName(),productDTO.getPrice());
+	}
+	
+	public void set(final ProductDTO productDTO) {
+		assert(null != productDTO);
+		setId(productDTO.getId());
+		setParentId(productDTO.getParentId());
+		setName(productDTO.getName());
+		setPrice(productDTO.getPrice());
 	}
 	
 	public ProductDTO createDTO() {
@@ -45,29 +53,7 @@ public class Product extends ProductBase implements Comparable<Product>{
 		return productDTO;
 	}
 	
-	public PersistenceId getParentId() {
-		return parentId;
-	}
-	
-	public void setParentId(final PersistenceId parentId) {
-		assert(null == this.parentId);
-		this.parentId = parentId;
-	}
-	
-	public StringProperty nameProperty() {
-		assert(null != nameProperty);
-		return nameProperty;
-	}
-	
-	public String getName() {
-		return nameProperty().getValue();
-	}
-	
-	public void setName(final String name) {
-		assert(null != name);
-		nameProperty().set(name);
-	}
-	
+
 	public DoubleProperty priceProperty() {
 		assert(null != priceProperty);
 		return priceProperty;
@@ -82,20 +68,14 @@ public class Product extends ProductBase implements Comparable<Product>{
 		priceProperty.set(price);
 	}
 	
-	//TODO
-	/*
 	public Product duplicate() {
-		final Product product = new Product(getName(),getProduct().getPrice());
+		//Do not duplicate the ID
+		final Product product = new Product(null,getParentId(),getName(),getPrice());
 		return product;
 	}
-	*/
 	
 	public String toString() {
 		return String.format("name:[%s] id:[%s] parentId:[%s] price:[%s]",getName(),getId(),getParentId(),getPrice());
 	}
 
-	//Implements Comparable
-	public int compareTo(Product product) {
-		return getName().compareToIgnoreCase(product.getName());
-	}
 }

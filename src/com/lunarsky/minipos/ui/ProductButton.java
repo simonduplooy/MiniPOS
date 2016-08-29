@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.ui.Product;
+import com.lunarsky.minipos.model.ui.ProductButtonConfig;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,9 +16,9 @@ public class ProductButton extends Button {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final ProductButtonObserver observer;
-	private ProductButtonConfigDTO config;
+	private final ProductButtonConfig config;
 	
-	public ProductButton(final ProductButtonObserver observer, final ProductButtonConfigDTO config) {
+	public ProductButton(final ProductButtonObserver observer, final ProductButtonConfig config) {
 		assert(null != observer);
 		assert(null != config);
 		
@@ -31,18 +32,12 @@ public class ProductButton extends Button {
 	    
 	}
 	
-	public ProductButtonConfigDTO getConfig() {
+	public ProductButtonConfig getConfig() {
 		log.debug("getConfig()");
 		assert(null != config);
 		return config;
 	}
 	
-	public void setConfig(final ProductButtonConfigDTO config) {
-		assert(null != config);
-		this.config = config;
-		
-		initializeControls();
-	}
 	
 	@FXML
 	private void initialize() {

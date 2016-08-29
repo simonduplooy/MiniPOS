@@ -10,38 +10,46 @@
    <bottom>
       <HBox alignment="BOTTOM_RIGHT" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#handleAdd" text="Add" />
-            <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
-            <Button fx:id="duplicateButton" mnemonicParsing="false" onAction="#handleDuplicate" text="Duplicate" />
-            <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
             <Button defaultButton="true" mnemonicParsing="false" onAction="#handleBack" text="Back" />
          </children>
+         <padding>
+            <Insets top="5.0" />
+         </padding>
       </HBox>
    </bottom>
-   <right>
-      <VBox spacing="5.0" BorderPane.alignment="CENTER">
+   <center>
+      <ScrollPane fx:id="productScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER" />
+   </center>
+   <top>
+      <GridPane hgap="5.0" vgap="5.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" minWidth="-Infinity" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <TextField fx:id="nameTextField" disable="true" editable="false" />
-            <HBox alignment="CENTER_LEFT" spacing="5.0">
+            <TextField fx:id="priceTextField" disable="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.rowIndex="1">
                <children>
                   <Label text="Price">
                      <HBox.margin>
                         <Insets />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="priceTextField" disable="true" />
                </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
             </HBox>
+            <TextField fx:id="nameTextField" disable="true" editable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" GridPane.columnIndex="1" />
+            <Label text="Name" />
          </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
-      </VBox>
-   </right>
-   <center>
-      <ScrollPane fx:id="productScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER" />
-   </center>
+         <BorderPane.margin>
+            <Insets bottom="5.0" />
+         </BorderPane.margin>
+      </GridPane>
+   </top>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
 </fx:root>
