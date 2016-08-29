@@ -40,10 +40,16 @@
          <bottom>
             <BorderPane BorderPane.alignment="CENTER">
                <left>
-                  <Label text="Total" BorderPane.alignment="CENTER" />
+                  <Label text="Total" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets />
+                     </BorderPane.margin></Label>
                </left>
                <right>
-                  <Label fx:id="costLabel" styleClass="total-text" text="Amount" BorderPane.alignment="CENTER" />
+                  <Label fx:id="costLabel" styleClass="total-text" text="Amount" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets left="5.0" right="5.0" />
+                     </BorderPane.margin></Label>
                </right>
                <BorderPane.margin>
                   <Insets top="5.0" />

@@ -1,6 +1,7 @@
 package com.lunarsky.minipos.ui;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -258,8 +259,8 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 			cost += sale.getCost();
 		}
 		
-		final DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
-		final String costText = decimalFormat.format(cost);
+		NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
+		final String costText = currencyFormat.format(cost);
 		costLabel.setText(costText);
 	}
 	

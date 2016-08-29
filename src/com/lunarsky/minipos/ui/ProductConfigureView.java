@@ -215,8 +215,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
 		log.debug("createProductButton()");
 		
-		final Product product = new Product(null,null,"",0.0);
-		ProductButtonConfig buttonConfig = new ProductButtonConfig(null,parentId,product,columnIdx,rowIdx);
+		ProductButtonConfig buttonConfig = new ProductButtonConfig(null,parentId,null,columnIdx,rowIdx);
 		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(stage,buttonConfig);
 		dialog.getStage().showAndWait();
 		if(dialog.wasSaved()) {
@@ -274,7 +273,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	public void createProductButtonGroup(final Integer columnIdx, final Integer rowIdx) {
 		log.debug("createProductButtonGroup()");
 		
-		final ProductGroupButtonConfigDTO config = new ProductGroupButtonConfigDTO(parentId,"",columnIdx,rowIdx);
+		final ProductGroupButtonConfigDTO config = new ProductGroupButtonConfigDTO(parentId,null,columnIdx,rowIdx);
 		final ProductButtonGroupUpdateDialog dialog = new ProductButtonGroupUpdateDialog(stage,config);
 		dialog.getStage().showAndWait();
 		final ProductGroupButtonConfigDTO updatedConfig = dialog.getButtonConfig();
