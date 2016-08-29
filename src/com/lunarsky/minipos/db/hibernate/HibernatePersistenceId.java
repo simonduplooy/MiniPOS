@@ -29,7 +29,7 @@ public class HibernatePersistenceId implements PersistenceId {
 	
 	@Override
 	public String toString() {
-		return String.format("id:[%s]",id);
+		return String.format("%s",id);
 	}
 	
 }

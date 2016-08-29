@@ -234,7 +234,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		dialog.getStage().showAndWait();
 		if(dialog.wasSaved()) {
 			config = dialog.getButtonConfig();
-			button.getConfig().set(config);
+			button.setConfig(config);
 		}
 	}
 	
