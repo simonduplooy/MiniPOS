@@ -104,7 +104,7 @@ public class AccountUpdateDialog extends BorderPane {
 		saveButton.disableProperty().bind(nameValidator.validProperty().not().or(saveService.runningProperty()));
 		cancelButton.disableProperty().bind(saveService.runningProperty());
 
-		final VirtualKeyboard keyboard = new VirtualKeyboard(true);
+		final VirtualKeyboard keyboard = new VirtualKeyboard();
 		setBottom(keyboard);
 	}
 	
