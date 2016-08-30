@@ -1,5 +1,8 @@
 package com.lunarsky.minipos.ui.virtualkeyboards;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.StringBinding;
 import javafx.beans.property.BooleanProperty;
@@ -14,6 +17,7 @@ import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
@@ -21,21 +25,40 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Polygon;
 
 public class VirtualKeyboardBase extends BorderPane {
+	private static final Logger log = LogManager.getLogger();
 	
-	
+	private static final String KEYPAD_BUTTON_TEXT = "Keyboard";
+
 	private final Modifiers modifiers;
+	private final ToggleButton keyboardButton;
 	
 
 	public VirtualKeyboardBase() {
-			
+					
+		modifiers = new Modifiers();
+	
+		//build the layout
 		setPadding(new Insets(5));
 		getStyleClass().add("virtual-keyboard");
 		
-		modifiers = new Modifiers();
+		createButtons();
+		
+		keyboardButton = new ToggleButton(KEYPAD_BUTTON_TEXT);
+		BorderPane.setAlignment(keyboardButton,Pos.CENTER_RIGHT);
+		setBottom(keyboardButton);
+		
+		final Node centerNode = getCenter();
+		centerNode.managedProperty().bind(centerNode.visibleProperty());
+		centerNode.visibleProperty().bind(keyboardButton.selectedProperty());
+
+	}
 	
+	protected void createButtons() {
+		
 	}
 	
 	protected Modifiers getModifiers() {
