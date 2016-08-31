@@ -13,6 +13,7 @@ public class PersistenceObject {
 	protected PersistenceObject() {
 		this(null);
 	}
+	
 	//id can be null, must be assigned by persistence provider
 	protected PersistenceObject(final PersistenceId id) { 
 		setId(id); 

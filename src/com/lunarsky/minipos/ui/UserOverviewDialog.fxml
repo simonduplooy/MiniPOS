@@ -6,45 +6,43 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.VBox?>
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="800.0" type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <bottom>
       <HBox alignment="BOTTOM_RIGHT" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#handleAdd" text="Add" />
-            <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEdit" text="Edit" />
-            <Button fx:id="duplicateButton" mnemonicParsing="false" onAction="#handleDuplicate" text="Duplicate" />
-            <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
-            <Button mnemonicParsing="false" onAction="#handleOK" text="OK" />
+            <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAdd" text="Add" />
+            <Button defaultButton="true" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#handleBack" text="Back" />
          </children>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
       </HBox>
    </bottom>
-   <left>
-      <ListView fx:id="userListView" BorderPane.alignment="CENTER" />
-   </left>
-   <center>
-      <VBox spacing="5.0" BorderPane.alignment="CENTER">
+   <top>
+      <GridPane hgap="5.0" vgap="5.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="-Infinity" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="-Infinity" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" />
+            <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <TextField fx:id="nameTextField" disable="true" />
-            <GridPane>
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints vgrow="SOMETIMES" />
-                <RowConstraints vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Label text="User ID" />
-                  <Label text="Role" GridPane.rowIndex="1" />
-                  <PasswordField fx:id="passwordPasswordField" disable="true" GridPane.columnIndex="1" />
-                  <TextField fx:id="roleTextField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-               </children>
-            </GridPane>
+            <Label minHeight="-Infinity" minWidth="-Infinity" text="Password" GridPane.rowIndex="1" />
+            <PasswordField fx:id="passwordPasswordField" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="nameTextField" disable="true" GridPane.columnIndex="1" />
+            <Label text="Name" />
          </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
-      </VBox>
+      </GridPane>
+   </top>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+   <center>
+      <ListView fx:id="userListView" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="5.0" top="5.0" />
+         </BorderPane.margin></ListView>
    </center>
 </fx:root>

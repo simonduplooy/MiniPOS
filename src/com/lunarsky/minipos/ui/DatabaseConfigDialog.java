@@ -17,6 +17,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -27,6 +28,8 @@ public class DatabaseConfigDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final String WINDOW_TITLE = "Database Config";
+	private static final String ERROR_TEXT_TEST_PASSED = "Test Passed";
+	private static final String ERROR_TEXT_TEST_FAILED = "Test Failed";
 
 	private final AppData appData;
 	
@@ -131,21 +134,15 @@ public class DatabaseConfigDialog extends BorderPane {
 			@Override
 			protected void succeeded() {
 				log.debug("TestPersistenceConfig Succeeded");
-				final List<String> styles = testButton.getStyleClass();
-				styles.remove("button-fail");
-				styles.add("button-pass");
-				//TODO
+				final Alert alert = new Alert(AlertType.INFORMATION,ERROR_TEXT_TEST_PASSED);
+				alert.showAndWait();
 			}
 			@Override
 			protected void failed() {
-				final List<String> styles = testButton.getStyleClass();
-				styles.remove("button-pass");
-				styles.add("button-fail");
 				Throwable throwable = getException();
 				log.catching(Level.DEBUG,throwable);
-				//TODO
-				ExceptionDialog.create(AlertType.INFORMATION,"Test Failed",throwable).showAndWait();
-				
+				final ExceptionAlert alert = new ExceptionAlert(AlertType.ERROR,ERROR_TEXT_TEST_FAILED,throwable);
+				alert.showAndWait();
 			}
 		};
 		

@@ -4,28 +4,23 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
-public class ExceptionDialog {
+public class ExceptionAlert extends Alert {
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final String TITLE_TEXT = "";
 	private static final String DETAIL_LABEL_TEXT = "Detail:";
 
-	//Prevent instantiation
-	private ExceptionDialog() {
-	}
-	
-	public static Alert create(AlertType alertType, String message, Throwable throwable) {
+	public ExceptionAlert (AlertType alertType, String message, Throwable throwable) {
+		super(alertType);
 		
-		Alert alert = new Alert(alertType);
-		alert.setTitle(TITLE_TEXT);
-		alert.setHeaderText(null);
-		alert.setContentText(message);
+		setTitle(TITLE_TEXT);
+		setHeaderText(null);
+		setContentText(message);
 		
 		// Create expandable Exception.
 		/*
@@ -60,8 +55,6 @@ public class ExceptionDialog {
 		expContent.add(textArea, 0, 1);
 
 		// Set expandable Exception into the dialog pane.
-		alert.getDialogPane().setExpandableContent(expContent);
-		
-		return alert;
+		getDialogPane().setExpandableContent(expContent);
 	}
 }

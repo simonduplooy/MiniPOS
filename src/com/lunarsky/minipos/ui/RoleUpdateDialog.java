@@ -92,10 +92,10 @@ public class RoleUpdateDialog extends VBox {
 			}
 			@Override
 			protected void failed() {
-				final Throwable t = getException();
 				log.debug("SaveRole() Failed");
-				log.catching(Level.ERROR, t);
-				ExceptionDialog.create(AlertType.ERROR, "Could not Save Role", t).show();
+				final Throwable throwable = getException();
+				log.catching(Level.ERROR, throwable);
+				throw new RuntimeException(throwable);
 			}
 		};
 		

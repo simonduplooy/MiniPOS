@@ -1,5 +1,6 @@
 package com.lunarsky.minipos.ui;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -7,21 +8,24 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.UserDTO;
+import com.lunarsky.minipos.model.ui.User;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.beans.value.WeakChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -31,27 +35,22 @@ public class UserOverviewDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final String WINDOW_TITLE = "Users";
+	private static final String ERROR_TEXT_USER_NOT_FOUND = "User does not exist";
 	
 	private final AppData appData;
-	private ObservableList<UserDTO> userList;
-	private UserDTO selectedUser;
-	private ChangeListener<UserDTO> selectedItemChangeListener;
+	private ObservableList<User> userList;
+	private User selectedUser;
+	private WeakChangeListener selectedUserChangeListener;
 	
 	
 	@FXML
-	private ListView<UserDTO> userListView;
+	private ListView<User> userListView;
 	@FXML
 	private TextField nameTextField;
 	@FXML
 	private PasswordField passwordPasswordField;
 	@FXML
-	private TextField roleTextField;
-	@FXML
-	private Button editButton;
-	@FXML
-	private Button duplicateButton;
-	@FXML
-	private Button deleteButton;
+	private Button addButton;
 	
 	
 	public UserOverviewDialog(final Stage parentStage) {
@@ -61,14 +60,14 @@ public class UserOverviewDialog extends BorderPane {
 		
 		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"UserOverviewDialog.fxml");
 	}
+
 	
-	public Stage getStage() {
-		return (Stage)getScene().getWindow();
-	}
-	
+	/**************************************************************************
+	 * Initialize
+	 **************************************************************************/
 	@FXML
 	private void initialize() {
-		
+		initializeMembers();
 		initializeControls();
 		initializeBindings();
 		initializeListeners();
@@ -76,15 +75,31 @@ public class UserOverviewDialog extends BorderPane {
 		
 	}
 
+	private void initializeMembers() {
+		
+		selectedUser = new User("","");
+		
+		final ChangeListener<User> changeListener = new ChangeListener<User>() {
+			@Override
+			public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
+				setSelectedUser(newValue);
+			}
+		};
+		
+		selectedUserChangeListener = new WeakChangeListener<User>(changeListener);
+	}
+	
 	private void initializeControls() {
 		
 		userListView.setCellFactory((listCell) -> {
-			ListCell<UserDTO> cell = new ListCell<UserDTO>() {
+			ListCell<User> cell = new ListCell<User>() {
 				@Override
-				protected void updateItem(UserDTO user, boolean empty) {
+				protected void updateItem(User user, boolean empty) {
 					super.updateItem(user,empty);
-					if(null!=user) {
+					if(null != user) {
 						setText(user.getName());
+						final ContextMenu menu = createContextMenu();
+						setContextMenu(menu);
 					} else {
 						setText("");
 					}
@@ -96,37 +111,20 @@ public class UserOverviewDialog extends BorderPane {
 	}
 	
 	private void initializeBindings() {
-		editButton.disableProperty().bind(userListView.getSelectionModel().selectedItemProperty().isNull());
-		duplicateButton.disableProperty().bind(userListView.getSelectionModel().selectedItemProperty().isNull());
-		deleteButton.disableProperty().bind(userListView.getSelectionModel().selectedItemProperty().isNull());
+		nameTextField.textProperty().bind(selectedUser.nameProperty());
+		passwordPasswordField.textProperty().bind(selectedUser.passwordProperty());
 	}
 	
 	private void initializeListeners() {
 		
 		getStage().setOnCloseRequest((event) -> { close(); });
 		
-		selectedItemChangeListener = new ChangeListener<UserDTO>() {
-			@Override
-			public void changed(ObservableValue<? extends UserDTO> observable, UserDTO oldValue, UserDTO newValue) {
-				setSelectedUser(newValue);
-			}
-		};
+		userListView.getSelectionModel().selectedItemProperty().addListener(getSelectedUserChangeListener());
 		
-		userListView.getSelectionModel().selectedItemProperty().addListener(selectedItemChangeListener);
-		
-	}
-	
-	private void releaseListeners() {
-		userListView.getSelectionModel().selectedItemProperty().removeListener(selectedItemChangeListener);		
-	}
-	
-	private void releaseBindings() {
-		editButton.disableProperty().unbind();
-		duplicateButton.disableProperty().unbind();
-		deleteButton.disableProperty().unbind();
 	}
 	
 	private void initializeAsync() {
+		
 		Task<List<UserDTO>> task = new Task<List<UserDTO>>() {
 			@Override
 			protected List<UserDTO> call() {
@@ -135,12 +133,14 @@ public class UserOverviewDialog extends BorderPane {
 			}
 			@Override
 			protected void succeeded() {
-				log.debug("GetUsers() Succeeded");
-				final List<UserDTO> list = getValue();
+				log.debug("getUsers() Succeeded");
+				final List<UserDTO> dtoList = getValue();
 				
-				//TODO REMOVE
-				for(UserDTO user: list) {
+				final List<User> list = new ArrayList<User>();
+				for(UserDTO userDTO: dtoList) {
+					final User user = new User(userDTO); 
 					log.debug("Adding User: {}",user);
+					list.add(user);
 				}
 				
 				userList = FXCollections.observableArrayList(list);
@@ -149,118 +149,155 @@ public class UserOverviewDialog extends BorderPane {
 			}
 			@Override 
 			protected void failed() {
-				log.error("GetUsers() Failed");
+				log.error("getUsers() Failed");
 				final Throwable throwable = getException();
 				log.catching(Level.ERROR,throwable);
-				ExceptionDialog.create(AlertType.ERROR,"Could not retrieve Users",throwable);
-
+				throw new RuntimeException(throwable);
 			}
 		};
 		
 		Thread thread = new Thread(task);
-		log.debug("Starting GetUsers() Task {}",thread);
+		log.debug("Starting getUsers() Task {}",thread);
 		thread.start();		
 	}
+
 	
-	@FXML
-	private void handleAdd() {
-		updateUser(null);
-	}	
+	/**************************************************************************
+	 * Getters & Setters
+	 **************************************************************************/
+	public Stage getStage() {
+		return (Stage)getScene().getWindow();
+	}
 	
-	@FXML
-	private void handleEdit() {
-		final UserDTO user = getSelectedUser();
-		updateUser(user);
+	private void setSelectedUser(final User user) {
+		assert(null != user);
+		log.debug("setSelectedUser() {}",user);
+		selectedUser.set(user);
 	}
 
+	private User getSelectedUser() {
+		assert(null != selectedUser);
+		return selectedUser;
+	}
+	
+	private List<User> getUserList() {
+		assert(null != userList);
+		return userList;
+	}
+	
+	private WeakChangeListener<User> getSelectedUserChangeListener() {
+		assert(null != selectedUserChangeListener);
+		return selectedUserChangeListener;
+	}
+	
+	/**************************************************************************
+	 * Event Handlers
+	 **************************************************************************/
+
 	@FXML
+	private void handleAdd() {
+		final User user = updateUser(null);
+		getUserList().add(user);
+	}	
+	
+	private void handleUpdate() {
+		final User user = getSelectedUser();
+		final User updatedUser = updateUser(user);
+		if(null != updatedUser) {
+			user.set(updatedUser);
+			//TODO the list should be updated
+		}
+	}
+
 	private void handleDuplicate() {		
-		final UserDTO user = getSelectedUser().duplicate();
+		final User user = getSelectedUser().duplicate();
 		log.debug("Duplicate User {}",user);
 		updateUser(user);
 	}
 	
-	private void updateUser(final UserDTO user) {
-		log.debug("Update user {}",user);
-		
-		UserUpdateDialog dialog = new UserUpdateDialog(getStage(),user);
-		dialog.getStage().showAndWait();
-		
-		final UserDTO updatedUser = dialog.getUser();
-	
-		//The user was updated
-		if(updatedUser != user) {
-			userList.remove(user);
-			userList.add(updatedUser);
-			FXCollections.sort(userList);
-			log.debug("Updated User ");
-			userListView.getSelectionModel().select(updatedUser);
-		}
-
-	}
-
-	@FXML
 	private void handleDelete() {
-
+		
+		final User user = getSelectedUser();
+		log.debug("handleDelete() {}",user);
+		
+		
 		Task<Void> task = new Task<Void>() {
-			private final UserDTO user = getSelectedUser();
+			private final User user = getSelectedUser();
 			@Override
-			protected Void call() throws EntityNotFoundException {
+			protected Void call() {
 				appData.getServerConnector().deleteUser(user.getId());
 				return null;
 			}
 			@Override
 			protected void succeeded() {
-				log.debug("DeleteUser() Succeeded");
+				log.debug("deleteUser() Succeeded");
 				userList.remove(user);
+				userListView.getSelectionModel().select(null);
 			}
 			@Override
 			protected void failed() {
-				final Throwable t = getException();
-				log.error("DeleteUser() Failed");
-				log.catching(Level.ERROR, t);
-				ExceptionDialog.create(AlertType.ERROR, "Could not Delete User", t).show();
+				final Throwable throwable = getException();
+				log.error("deleteUser() Failed");
+				log.catching(throwable);
+				final Alert alert = new ExceptionAlert(AlertType.ERROR,ERROR_TEXT_USER_NOT_FOUND,throwable);
+				alert.showAndWait();
 			}
 			
 		};
 		
-		userListView.getSelectionModel().select(null);
-		
 		Thread thread = new Thread(task);
-		log.debug("Starting DeleteUser() Task {}",thread);
+		log.debug("Starting deleteUser() Task {}",thread);
 		thread.start();
 	}
 	
 	@FXML
-	private void handleOK() {
-		log.debug("Closing Dialog");
-		getStage().close();
+	private void handleBack() {
+		log.debug("handleBack");
+		close();
+	}
+	
+	/**************************************************************************
+	 * Event Handlers
+	 **************************************************************************/
+	private User updateUser(final User user) {
+		log.debug("Update user {}",user);
+		
+		UserUpdateDialog dialog = new UserUpdateDialog(getStage(),user);
+		dialog.getStage().showAndWait();
+		
+		if(dialog.wasSaved()) {
+			final User updatedUser = dialog.getUser();
+			return updatedUser;
+		}
+		
+		return null;
+		
+	}
+
+	/**************************************************************************
+	 * Utilities
+	 **************************************************************************/
+	
+	private ContextMenu createContextMenu() {
+		//TODO UI TEXT SHOULD BE STATIC
+		final ContextMenu menu = new ContextMenu();
+		
+		MenuItem item = new MenuItem("Update");
+		item.setOnAction((event) -> handleUpdate());
+		menu.getItems().add(item);
+		item = new MenuItem("Duplicate");
+		item.setOnAction((event) -> handleDuplicate());
+		menu.getItems().add(item);		
+		item = new MenuItem("Delete");
+		item.setOnAction((event) -> handleDelete());
+		menu.getItems().add(item);
+		
+		return menu;
 	}
 	
 	private void close() {
-		
-		releaseBindings();
-		releaseListeners();
-		
-	}
-	
-	private void setSelectedUser(UserDTO user) {
-	
- 		this.selectedUser = user;
-		if(null==user) {
-			nameTextField.setText("");
-			passwordPasswordField.setText("");
-			roleTextField.setText("");					
-			
-		} else {
-			nameTextField.setText(user.getName());
-			passwordPasswordField.setText(user.getPassword());
-			roleTextField.setText(user.getRole().getName());
-		}
-	}
-
-	private UserDTO getSelectedUser() {
-		return selectedUser;
+		log.debug("close()");
+		getStage().close();
 	}
 	
 }

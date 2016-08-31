@@ -111,10 +111,10 @@ public class StockItemUpdateDialog extends VBox {
 			}
 			@Override
 			protected void failed() {
-				final Throwable t = getException();
+				final Throwable throwable = getException();
 				log.debug("SaveStockItem() Failed");
-				log.catching(Level.ERROR, t);
-				ExceptionDialog.create(AlertType.ERROR, "Could not Save Stock Item", t).show();
+				log.catching(Level.ERROR, throwable);
+				throw new RuntimeException(throwable);
 			}
 		};
 		

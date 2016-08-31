@@ -20,6 +20,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListCell;
@@ -32,6 +33,7 @@ public class StockOverviewDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final String WINDOW_TITLE = "Stock";
+	private static final String ERROR_TEXT_STOCK_ITEM_NOT_FOUND = "Stock item does not exist";
 	
 	private final AppData appData;
 	private ObservableList<StockItemDTO> stockItemList;
@@ -147,8 +149,7 @@ public class StockOverviewDialog extends BorderPane {
 				log.error("GetStockItems() Failed");
 				final Throwable throwable = getException();
 				log.catching(Level.ERROR,throwable);
-				ExceptionDialog.create(AlertType.ERROR,"Could not retrieve StockItems",throwable);
-
+				throw new RuntimeException(throwable);
 			}
 		};
 		
@@ -208,10 +209,11 @@ public class StockOverviewDialog extends BorderPane {
 			}
 			@Override
 			protected void failed() {
-				final Throwable t = getException();
 				log.error("DeleteStockItem() Failed");
-				log.catching(Level.ERROR, t);
-				ExceptionDialog.create(AlertType.ERROR, "Could not Delete StockItem", t).show();
+				final Throwable throwable = getException();
+				log.catching(Level.ERROR, throwable);
+				final Alert alert = new ExceptionAlert(AlertType.ERROR,ERROR_TEXT_STOCK_ITEM_NOT_FOUND,throwable);
+				alert.showAndWait();
 			}
 			
 		};

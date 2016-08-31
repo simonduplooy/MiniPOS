@@ -35,9 +35,6 @@ public class UserDAO extends HibernateDAO {
 	@Column(nullable = false, length = Const.PASSWORD_LENGTH)
 	private String password;
 
-	@OneToOne
-	private RoleDAO role;
-	
 	@ManyToMany(mappedBy="users")
 	private Set<AccountDAO> accounts; 
 
@@ -68,7 +65,7 @@ public class UserDAO extends HibernateDAO {
 	}
 
 	public UserDTO getUser() {
-		return new UserDTO(getId(),getName(),getPassword(),getRole());
+		return new UserDTO(getId(),getName(),getPassword());
 	}
 
 	public void setUser(final UserDTO user) {
@@ -77,7 +74,6 @@ public class UserDAO extends HibernateDAO {
 		setId(user.getId());
 		setName(user.getName());
 		setPassword(user.getPassword());
-		setRole(user.getRole());
 	}
 		
 	private UserDAO(final EntityManager entityManager, final UserDTO user) {
@@ -105,26 +101,14 @@ public class UserDAO extends HibernateDAO {
 		this.password = password; 
 		}
 	
-	private RoleDTO getRole() {
-		assert(null != role);
-		return role.getRole(); 
-		}
-	
-	public void setRole(RoleDTO role) { 
-		assert(null != role);
-		this.role = RoleDAO.load(getEntityManager(),(HibernatePersistenceId)role.getId()); 
-	}
-
 	public List<AccountDTO> getAccounts() {
-		final List<AccountDTO> accounts = new ArrayList<AccountDTO>();
+		final List<AccountDTO> accountList = new ArrayList<AccountDTO>();
 		
-		if(null != accounts) {
-			for(AccountDAO account: this.accounts){
-				accounts.add(account.getAccount());
-			}
+		for(AccountDAO account: this.accounts) {
+			accountList.add(account.getAccount());
 		}
 		
-		return accounts;
+		return accountList;
 	}
 	
 }

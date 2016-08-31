@@ -25,22 +25,15 @@
 	       <ColumnConstraints hgrow="SOMETIMES" />
 	     </columnConstraints>
 	     <rowConstraints>
-            <RowConstraints vgrow="NEVER" />
-	       <RowConstraints vgrow="NEVER" />
-            <RowConstraints vgrow="NEVER" />
 	       <RowConstraints vgrow="NEVER" />
 	       <RowConstraints vgrow="NEVER" />
             <RowConstraints vgrow="NEVER" />
 	     </rowConstraints>
 	      <children>
-	         <Label text="Name" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-	         <Label text="Password" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-	         <Label text="Role" GridPane.rowIndex="4" GridPane.valignment="BOTTOM" />
-	         <ComboBox fx:id="roleComboBox" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-	               <Label fx:id="nameErrorLabel" styleClass="error-text" text="User already exists" GridPane.columnIndex="1" />
-	               <TextField fx:id="nameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-	               <Label fx:id="passwordErrorLabel" styleClass="error-text" text="Already in use" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-	               <PasswordField fx:id="passwordPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+	         <Label text="Name" GridPane.valignment="CENTER" />
+	         <Label text="Password" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+	               <TextField fx:id="nameTextField" GridPane.columnIndex="1" />
+	               <PasswordField fx:id="passwordPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 	      </children>
 	   </GridPane>
 	</center>

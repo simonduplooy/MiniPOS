@@ -33,6 +33,7 @@ public class RoleOverviewDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final String WINDOW_TITLE = "Roles";
+	private static final String ERROR_TEXT_ROLE_NOT_FOUND = "Role does not exist";
 	
 	private final AppData appData;
 	private ObservableList<RoleDTO> roleList;
@@ -149,7 +150,7 @@ public class RoleOverviewDialog extends BorderPane {
 				log.error("GetRoles() Failed");
 				final Throwable throwable = getException();
 				log.catching(Level.ERROR,throwable);
-				ExceptionDialog.create(AlertType.ERROR,"Could not retrieve Roles",throwable);
+				throw new RuntimeException(throwable);
 
 			}
 		};
@@ -210,10 +211,11 @@ public class RoleOverviewDialog extends BorderPane {
 			}
 			@Override
 			protected void failed() {
-				final Throwable t = getException();
-				log.error("DeleteRole() Failed");
-				log.catching(Level.ERROR, t);
-				ExceptionDialog.create(AlertType.ERROR, "Could not Delete Role", t).show();
+				final Throwable throwable = getException();
+				log.error("deleteRole() Failed");
+				log.catching(Level.ERROR, throwable);
+				final ExceptionAlert alert = new ExceptionAlert(AlertType.ERROR,ERROR_TEXT_ROLE_NOT_FOUND,throwable);
+				alert.showAndWait();
 			}
 			
 		};
