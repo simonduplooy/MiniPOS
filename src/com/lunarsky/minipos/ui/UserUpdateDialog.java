@@ -14,6 +14,7 @@ import com.lunarsky.minipos.ui.validator.IntegerTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.TextFieldValidator;
 
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -37,6 +38,7 @@ public class UserUpdateDialog extends BorderPane {
 	private final User user;
 	private TextFieldValidator nameValidator;
 	private TextFieldValidator passwordValidator;
+	private Service<UserDTO> saveService;
 	private boolean wasSaved; 
 	
 	@FXML
@@ -78,6 +80,8 @@ public class UserUpdateDialog extends BorderPane {
 	private void initializeMembers() {
 		nameValidator = new StringTextFieldValidator(nameTextField,Const.MIN_REQUIRED_TEXTFIELD_LENGTH,Const.MAX_TEXTFIELD_LENGTH);
 		passwordValidator = new IntegerTextFieldValidator(passwordPasswordField,Const.PASSWORD_LENGTH,Const.PASSWORD_LENGTH);
+		
+		createSaveService();
 	}
 	
 	private void initializeControls() {
@@ -85,12 +89,11 @@ public class UserUpdateDialog extends BorderPane {
 	}
 
 	private void initializeBindings() {
-		final User user = getUser();
-		user.nameProperty().bindBidirectional(nameTextField.textProperty());
-		user.passwordProperty().bindBidirectional(passwordPasswordField.textProperty());
+
+		nameTextField.textProperty().bindBidirectional(user.nameProperty());
+		passwordPasswordField.textProperty().bindBidirectional(user.passwordProperty());
 		
-		//TODO bind to service
-		saveButton.disableProperty().bind(nameValidator.validProperty().and(passwordValidator.validProperty()).not());
+		saveButton.disableProperty().bind(nameValidator.validProperty().and(passwordValidator.validProperty()).not().or(saveService.runningProperty()));
 	}
 	
 	private void initializeAsync() {
@@ -119,43 +122,8 @@ public class UserUpdateDialog extends BorderPane {
 	@FXML
 	private void handleSave(ActionEvent event) {
 		
-		Task<UserDTO> task = new Task<UserDTO>() {
-			final UserDTO user = getUser().createDTO();
-			@Override
-			protected UserDTO call() {
-				return appData.getServerConnector().saveUser(user);
-			}
-			@Override
-			protected void succeeded() {
-				log.debug("SaveUser() Succeeded");
-				final UserDTO dto = getValue();
-				getUser().set(dto);
-				wasSaved = true;
-				close();
-			}
-			@Override
-			protected void failed() {
-				final Throwable throwable = getException();
-				log.debug("SaveUser() Failed");
-				
-				if(throwable instanceof NameInUseException) {
-					log.debug("NameInUseException");
-					final Alert alert = new ExceptionAlert(AlertType.ERROR,ERROR_TEXT_NAME_IN_USE,throwable);
-					alert.showAndWait();
-				} else if(throwable instanceof PasswordInUseException) {
-					log.debug("NameInUseException");
-					final Alert alert = new ExceptionAlert(AlertType.ERROR,ERROR_TEXT_PASSWORD_IN_USE,throwable);
-					alert.showAndWait();
-				} else {
-					log.catching(Level.ERROR,throwable);
-					throw new RuntimeException(throwable);
-				}
-			}
-		};
+		saveService.restart();
 		
-		Thread thread = new Thread(task);
-		log.debug("Creating SaveUser() Task {}",thread);
-		thread.start();
 	}
 
 	@FXML
@@ -166,6 +134,57 @@ public class UserUpdateDialog extends BorderPane {
 	/**************************************************************************
 	 * Utilities
 	 **************************************************************************/
+	private void createSaveService() {
+		
+		saveService = new Service<UserDTO>() {
+			
+			@Override
+			protected Task<UserDTO> createTask() {
+				
+				final Task<UserDTO> task = new Task<UserDTO>() {
+					
+					final UserDTO userDTO = getUser().createDTO();
+					
+					@Override
+					protected UserDTO call() {
+						return appData.getServerConnector().saveUser(userDTO);
+					}
+					
+					@Override
+					protected void succeeded() {
+						log.debug("SaveUser() Succeeded");
+						final UserDTO dto = getValue();
+						user.set(dto);
+						wasSaved = true;
+						close();
+					}
+					
+					@Override
+					protected void failed() {
+						final Throwable throwable = getException();
+						log.debug("SaveUser() Failed");
+						
+						final Alert alert;
+						if(throwable instanceof NameInUseException) {
+							log.debug("NameInUseException");
+							alert = new ExceptionAlert(AlertType.ERROR,ERROR_TEXT_NAME_IN_USE,throwable);
+						} else if(throwable instanceof PasswordInUseException) {
+							log.debug("NameInUseException");
+							alert = new ExceptionAlert(AlertType.ERROR,ERROR_TEXT_PASSWORD_IN_USE,throwable);
+						} else {
+							log.catching(Level.ERROR,throwable);
+							alert = new ExceptionAlert(AlertType.ERROR,UiConst.UNKNOWN_EXCEPTION,throwable);
+						}
+						alert.showAndWait();
+					}
+				};
+				
+				return task;
+			}
+			
+		};
+	}
+	
 	private void close() {
 		getStage().close();
 	}

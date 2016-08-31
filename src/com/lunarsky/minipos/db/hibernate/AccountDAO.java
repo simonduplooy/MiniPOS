@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -24,11 +25,14 @@ import com.lunarsky.minipos.model.dto.AccountDTO;
 		}
 )
 public class AccountDAO extends HibernateDAO {
-	@Column(length = Const.MAX_TEXTFIELD_LENGTH)
+	@Column(nullable = false, length = Const.MAX_TEXTFIELD_LENGTH)
 	private String name;
 	
 	@ManyToMany  
-	@JoinTable(joinColumns=@JoinColumn(name="account_id"), inverseJoinColumns=@JoinColumn(name="user_id"))  
+	@JoinTable(joinColumns=@JoinColumn(name="account_id")
+		, inverseForeignKey = @ForeignKey(name="FK_Users_Accounts")
+		, inverseJoinColumns=@JoinColumn(name="user_id")
+		, foreignKey = @ForeignKey(name = "FK_Accounts_Users"))  
 	private Set<UserDAO> users;
 	
 	//used by Hibernate

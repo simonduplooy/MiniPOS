@@ -8,6 +8,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.lunarsky.minipos.common.exception.EntityInUseException;
+import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.UserDTO;
 import com.lunarsky.minipos.model.ui.User;
@@ -36,11 +38,10 @@ public class UserOverviewDialog extends BorderPane {
 	
 	private static final String WINDOW_TITLE = "Users";
 	private static final String ERROR_TEXT_USER_NOT_FOUND = "User does not exist";
+	private static final String ERROR_TEXT_USER_IN_USE = "User still in use by something";
 	
 	private final AppData appData;
 	private ObservableList<User> userList;
-	private User selectedUser;
-	private WeakChangeListener selectedUserChangeListener;
 	
 	
 	@FXML
@@ -67,6 +68,7 @@ public class UserOverviewDialog extends BorderPane {
 	 **************************************************************************/
 	@FXML
 	private void initialize() {
+		
 		initializeMembers();
 		initializeControls();
 		initializeBindings();
@@ -77,19 +79,12 @@ public class UserOverviewDialog extends BorderPane {
 
 	private void initializeMembers() {
 		
-		selectedUser = new User("","");
-		
-		final ChangeListener<User> changeListener = new ChangeListener<User>() {
-			@Override
-			public void changed(ObservableValue<? extends User> observable, User oldValue, User newValue) {
-				setSelectedUser(newValue);
-			}
-		};
-		
-		selectedUserChangeListener = new WeakChangeListener<User>(changeListener);
 	}
 	
 	private void initializeControls() {
+		
+		nameTextField.setText("");
+		passwordPasswordField.setText("");	
 		
 		userListView.setCellFactory((listCell) -> {
 			ListCell<User> cell = new ListCell<User>() {
@@ -102,6 +97,7 @@ public class UserOverviewDialog extends BorderPane {
 						setContextMenu(menu);
 					} else {
 						setText("");
+						setContextMenu(null);
 					}
 				}
 			};
@@ -111,15 +107,14 @@ public class UserOverviewDialog extends BorderPane {
 	}
 	
 	private void initializeBindings() {
-		nameTextField.textProperty().bind(selectedUser.nameProperty());
-		passwordPasswordField.textProperty().bind(selectedUser.passwordProperty());
+
 	}
 	
 	private void initializeListeners() {
 		
 		getStage().setOnCloseRequest((event) -> { close(); });
 		
-		userListView.getSelectionModel().selectedItemProperty().addListener(getSelectedUserChangeListener());
+		userListView.getSelectionModel().selectedItemProperty().addListener((observable,oldValue,newValue) -> handleSelectedUserChanged(newValue));
 		
 	}
 	
@@ -169,57 +164,67 @@ public class UserOverviewDialog extends BorderPane {
 		return (Stage)getScene().getWindow();
 	}
 	
-	private void setSelectedUser(final User user) {
-		assert(null != user);
-		log.debug("setSelectedUser() {}",user);
-		selectedUser.set(user);
-	}
-
 	private User getSelectedUser() {
-		assert(null != selectedUser);
-		return selectedUser;
+		return userListView.getSelectionModel().getSelectedItem();
 	}
 	
-	private List<User> getUserList() {
-		assert(null != userList);
-		return userList;
-	}
-	
-	private WeakChangeListener<User> getSelectedUserChangeListener() {
-		assert(null != selectedUserChangeListener);
-		return selectedUserChangeListener;
+	private void setSelectedUser(final User user) {
+		if(null != user) {
+			userListView.getSelectionModel().select(user);			
+		} else {
+			userListView.getSelectionModel().clearSelection();
+		}
 	}
 	
 	/**************************************************************************
 	 * Event Handlers
 	 **************************************************************************/
 
+	private void handleSelectedUserChanged(final User user) {
+		log.debug("handleSelectedUserChanged() {}",user);
+
+		if(null != user) {
+			nameTextField.setText(user.getName());
+			passwordPasswordField.setText(user.getPassword());
+		} else {
+			nameTextField.setText("");
+			passwordPasswordField.setText("");			
+		}
+	}
+	
 	@FXML
 	private void handleAdd() {
 		final User user = updateUser(null);
-		getUserList().add(user);
+		if(null != user) {
+			userList.add(user);
+			setSelectedUser(user);
+			FXCollections.sort(userList);
+		}
 	}	
 	
 	private void handleUpdate() {
 		final User user = getSelectedUser();
 		final User updatedUser = updateUser(user);
 		if(null != updatedUser) {
-			user.set(updatedUser);
-			//TODO the list should be updated
+			userList.remove(user);
+			userList.add(updatedUser);
+			FXCollections.sort(userList);
+			setSelectedUser(updatedUser);
 		}
 	}
 
 	private void handleDuplicate() {		
 		final User user = getSelectedUser().duplicate();
 		log.debug("Duplicate User {}",user);
-		updateUser(user);
+		final User updatedUser = updateUser(user);
+		if(null != updatedUser) {
+			userList.add(updatedUser);
+			FXCollections.sort(userList);
+			setSelectedUser(updatedUser);
+		}
 	}
 	
 	private void handleDelete() {
-		
-		final User user = getSelectedUser();
-		log.debug("handleDelete() {}",user);
-		
 		
 		Task<Void> task = new Task<Void>() {
 			private final User user = getSelectedUser();
@@ -232,17 +237,23 @@ public class UserOverviewDialog extends BorderPane {
 			protected void succeeded() {
 				log.debug("deleteUser() Succeeded");
 				userList.remove(user);
-				userListView.getSelectionModel().select(null);
+				setSelectedUser(null);
 			}
 			@Override
 			protected void failed() {
 				final Throwable throwable = getException();
-				log.error("deleteUser() Failed");
-				log.catching(throwable);
-				final Alert alert = new ExceptionAlert(AlertType.ERROR,ERROR_TEXT_USER_NOT_FOUND,throwable);
+				log.debug("deleteUser() Failed {}",throwable);
+				final Alert alert;
+				if(throwable instanceof EntityInUseException) {
+					alert = new ExceptionAlert(AlertType.INFORMATION,ERROR_TEXT_USER_IN_USE,throwable);
+				} else if(throwable instanceof EntityNotFoundException) {
+					alert = new ExceptionAlert(AlertType.ERROR,ERROR_TEXT_USER_NOT_FOUND,throwable);
+				} else {
+					log.catching(throwable);
+					alert = new ExceptionAlert(AlertType.ERROR,UiConst.UNKNOWN_EXCEPTION,throwable);
+				}
 				alert.showAndWait();
 			}
-			
 		};
 		
 		Thread thread = new Thread(task);
@@ -256,8 +267,9 @@ public class UserOverviewDialog extends BorderPane {
 		close();
 	}
 	
+
 	/**************************************************************************
-	 * Event Handlers
+	 * Utilities
 	 **************************************************************************/
 	private User updateUser(final User user) {
 		log.debug("Update user {}",user);
@@ -270,25 +282,21 @@ public class UserOverviewDialog extends BorderPane {
 			return updatedUser;
 		}
 		
-		return null;
-		
+		return null;		
 	}
 
-	/**************************************************************************
-	 * Utilities
-	 **************************************************************************/
 	
 	private ContextMenu createContextMenu() {
-		//TODO UI TEXT SHOULD BE STATIC
+		
 		final ContextMenu menu = new ContextMenu();
 		
-		MenuItem item = new MenuItem("Update");
+		MenuItem item = new MenuItem(UiConst.CONTEXT_MENU_TEXT_UPDATE);
 		item.setOnAction((event) -> handleUpdate());
 		menu.getItems().add(item);
-		item = new MenuItem("Duplicate");
+		item = new MenuItem(UiConst.CONTEXT_MENU_TEXT_DUPLICATE);
 		item.setOnAction((event) -> handleDuplicate());
 		menu.getItems().add(item);		
-		item = new MenuItem("Delete");
+		item = new MenuItem(UiConst.CONTEXT_MENU_TEXT_DELETE);
 		item.setOnAction((event) -> handleDelete());
 		menu.getItems().add(item);
 		
