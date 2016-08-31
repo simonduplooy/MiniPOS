@@ -27,7 +27,7 @@ public class User extends PersistenceObject implements Comparable<User> {
 	public User(final String name, final String password) {
 		this(null,name,password);		
 	}
-		
+	
 	public User(final User user) {
 		this(user.getId(),user.getName(),user.getPassword());
 	}
@@ -53,12 +53,6 @@ public class User extends PersistenceObject implements Comparable<User> {
 	/**************************************************************************
 	 * Getters & Setters
 	 **************************************************************************/
-	public void set(final User user) {
-		setId(user.getId());
-		setName(user.getName());
-		setPassword(user.getPassword());
-	}
-	
 	public void set(final UserDTO dto) {
 		setId(dto.getId());
 		setName(dto.getName());
