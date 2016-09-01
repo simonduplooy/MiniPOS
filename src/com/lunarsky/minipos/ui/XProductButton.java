@@ -13,13 +13,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 
-public class ProductButton extends Button {
+public class XProductButton extends Button {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final ProductButtonObserver observer;
 	private final ObjectProperty<ProductButtonConfig> configProperty;
 	
-	public ProductButton(final ProductButtonObserver observer, final ProductButtonConfig config) {
+	public XProductButton(final ProductButtonObserver observer, final ProductButtonConfig config) {
 		assert(null != observer);
 		assert(null != config);
 		

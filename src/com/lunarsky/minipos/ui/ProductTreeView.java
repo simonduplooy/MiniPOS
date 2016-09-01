@@ -72,8 +72,6 @@ public class ProductTreeView extends TreeView<ProductBase> {
 							contextMenu = createGroupContextMenu();
 						} else if (product instanceof Product){
 							contextMenu = createProductContextMenu();
-						} else if(product instanceof ProductRoot) {
-							contextMenu = createRootContextMenu();
 						} else {
 							contextMenu = null;
 						}
@@ -92,7 +90,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		final TreeItem<ProductBase> rootItem = new TreeItem<ProductBase>(root);
 		rootItem.setExpanded(true);
 		setRoot(rootItem);
-		setShowRoot(true);
+		setShowRoot(false);
 
 	}
 	
@@ -155,26 +153,20 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	}
 
 	private ContextMenu createGroupContextMenu() {
-		final ContextMenu contextMenu = createRootContextMenu();
-		final MenuItem updateItem = new MenuItem("Update");
-		updateItem.setOnAction((event) -> handleUpdateGroup());
-		final MenuItem deleteItem = new MenuItem("Delete");
-		deleteItem.setOnAction((event) -> handleDeleteGroup());
-		contextMenu.getItems().addAll(updateItem,deleteItem);
-		return contextMenu;
-	}
-
-	private ContextMenu createRootContextMenu() {
 		final ContextMenu contextMenu = new ContextMenu();
 		final MenuItem addGroupItem = new MenuItem("Add Group");
 		addGroupItem.setOnAction((event) -> handleAddGroup());
 		final MenuItem addProductItem = new MenuItem("Add Product");
-		addProductItem.setOnAction((event) -> handleAddProduct());
-		contextMenu.getItems().addAll(addGroupItem,addProductItem);
+		addGroupItem.setOnAction((event) -> handleAddProduct());
+		final MenuItem updateItem = new MenuItem("Update");
+		updateItem.setOnAction((event) -> handleUpdateGroup());
+		final MenuItem deleteItem = new MenuItem("Delete");
+		deleteItem.setOnAction((event) -> handleDeleteGroup());
+		contextMenu.getItems().addAll(addGroupItem,addProductItem,updateItem,deleteItem);
 		return contextMenu;
 	}
 	
-	private void handleAddRootGroup() {
+	public void handleAddRootGroup() {
 		log.debug("handleAddRootGroup()");
 		final TreeItem<ProductBase> rootItem = getRoot();
 		handleAddGroup(rootItem);

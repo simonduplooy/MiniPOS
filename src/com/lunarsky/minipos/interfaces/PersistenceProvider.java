@@ -11,7 +11,7 @@ import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 import com.lunarsky.minipos.model.dto.RoleDTO;
 import com.lunarsky.minipos.model.dto.StockItemDTO;
 import com.lunarsky.minipos.model.dto.UserDTO;
-import com.lunarsky.minipos.ui.ProductButtonGroup;
+import com.lunarsky.minipos.ui.XProductButtonGroup;
 
 public interface PersistenceProvider {
 	

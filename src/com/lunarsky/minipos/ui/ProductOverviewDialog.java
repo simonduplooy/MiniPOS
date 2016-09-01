@@ -33,7 +33,6 @@ public class ProductOverviewDialog extends BorderPane {
 	private final AppData appData;
 	private ObservableList<ProductBase> productList;
 	private ProductTreeView productTreeView;
-	private ChangeListener<TreeItem<ProductBase>> selectedItemChangeListener;
 	
 	@FXML
 	private ScrollPane productScrollPane;
@@ -41,12 +40,6 @@ public class ProductOverviewDialog extends BorderPane {
 	private TextField nameTextField;
 	@FXML
 	private TextField priceTextField;
-	@FXML
-	private Button editButton;
-	@FXML
-	private Button duplicateButton;
-	@FXML
-	private Button deleteButton;
 	
 	
 	public ProductOverviewDialog(final Stage parentStage) {
@@ -76,31 +69,17 @@ public class ProductOverviewDialog extends BorderPane {
 		productTreeView = new ProductTreeView(appData);
 		productScrollPane.setContent(productTreeView);
 		
-
-
 	}
 	
 	private void initializeBindings() {
-		
-		/*
-		editButton.disableProperty().bind(productListView.getSelectionModel().selectedItemProperty().isNull());
-		duplicateButton.disableProperty().bind(productListView.getSelectionModel().selectedItemProperty().isNull());
-		deleteButton.disableProperty().bind(productListView.getSelectionModel().selectedItemProperty().isNull());
-		*/
+
 	}
 	
 	private void initializeListeners() {
 		
 		getStage().setOnCloseRequest((event) -> close());
-		
-		selectedItemChangeListener = new ChangeListener<TreeItem<ProductBase>>() {
-			@Override
-			public void changed(ObservableValue<? extends TreeItem<ProductBase>> observable, TreeItem<ProductBase> oldValue, TreeItem<ProductBase> newValue) {
-				handleSelectedProductChanged(newValue);
-			}
-		};
-		
-		productTreeView.selectedItemProperty().addListener(selectedItemChangeListener);
+
+		productTreeView.selectedItemProperty().addListener((observable,oldValue,newValue)->handleSelectedProductChanged(newValue));
 		
 	}
 	
@@ -109,13 +88,11 @@ public class ProductOverviewDialog extends BorderPane {
 	}
 
 	private void releaseListeners() {
-		//productListView.getSelectionModel().selectedItemProperty().removeListener(selectedItemChangeListener);		
+
 	}
 	
 	private void releaseBindings() {
-		editButton.disableProperty().unbind();
-		duplicateButton.disableProperty().unbind();
-		deleteButton.disableProperty().unbind();
+
 	}
 	
 
@@ -138,7 +115,14 @@ public class ProductOverviewDialog extends BorderPane {
 			final Double price = product.getPrice();
 			final String priceText = NumberFormat.getCurrencyInstance().format(price);
 			priceTextField.setText(priceText);
+		} else {
+			priceTextField.setText("");
 		}
+	}
+	
+	@FXML
+	private void handleAddRootGroup() {
+		productTreeView.handleAddRootGroup();
 	}
 	
 	@FXML

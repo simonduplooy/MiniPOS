@@ -15,7 +15,7 @@ public class Product extends ProductBase {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final DoubleProperty priceProperty;
-
+	
 	public Product(final PersistenceId id, final PersistenceId parentId, final String name, final Double price) {
 		super(id,parentId,name);
 		
@@ -30,6 +30,10 @@ public class Product extends ProductBase {
 		setParentId(parentId);
 		setName(name);
 		setPrice(price);
+	}
+	
+	public Product(final PersistenceId parentId, final String name, final Double price) {
+		this(null,parentId,name,price);
 	}
 	
 	public Product(final Product product) {

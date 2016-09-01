@@ -10,6 +10,7 @@
    <bottom>
       <HBox alignment="BOTTOM_RIGHT" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
+            <Button mnemonicParsing="false" onAction="#handleAddRootGroup" text="Add" />
             <Button defaultButton="true" mnemonicParsing="false" onAction="#handleBack" text="Back" />
          </children>
          <padding>

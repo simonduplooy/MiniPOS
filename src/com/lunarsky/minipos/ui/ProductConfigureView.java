@@ -30,8 +30,8 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	private final Stage stage;
 	
 	private PersistenceId parentId;
-	private List<ProductButtonGroup> productButtonGroupList;
-	private List<ProductButton> productButtonList;
+	private List<XProductButtonGroup> productButtonGroupList;
+	private List<XProductButton> productButtonList;
 	
 	@FXML
 	private GridPane productGridPane;
@@ -66,7 +66,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 			final RowConstraints rowConstraints = productGridPane.getRowConstraints().get(rowIdx);
 			for(int columnIdx=0; columnIdx<UiConst.NO_PRODUCT_BUTTON_COLUMNS; columnIdx++) {
 				final ColumnConstraints columnConstraints = productGridPane.getColumnConstraints().get(columnIdx);
-				final ProductButtonBlank button = new ProductButtonBlank(this,columnIdx,rowIdx);
+				final XProductButtonBlank button = new XProductButtonBlank(this,columnIdx,rowIdx);
 				rowConstraints.setPrefHeight(button.getPrefHeight());
 				columnConstraints.setPrefWidth(button.getPrefWidth());
 				nodeList.add(button);
@@ -127,9 +127,9 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	private void createGroupButtons(final List<ProductGroupButtonConfigDTO> buttonGroupConfigList) {
 		assert(null == productButtonGroupList);
 		
-		productButtonGroupList = new ArrayList<ProductButtonGroup>();
+		productButtonGroupList = new ArrayList<XProductButtonGroup>();
 		for(ProductGroupButtonConfigDTO buttonConfig: buttonGroupConfigList) {
-			final ProductButtonGroup button = new ProductButtonGroup(this,buttonConfig);
+			final XProductButtonGroup button = new XProductButtonGroup(this,buttonConfig);
 			productButtonGroupList.add(button);
 		}
 	}
@@ -137,7 +137,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	private void showGroupButtons() {
 		final List<Node> nodeList = productGridPane.getChildren();
 		
-		for(ProductButtonGroup buttonGroup: productButtonGroupList) {
+		for(XProductButtonGroup buttonGroup: productButtonGroupList) {
 			final PersistenceId buttonParentId = buttonGroup.getConfig().getParentId();
 			if(null == parentId) {
 				if(null == buttonParentId) {
@@ -156,10 +156,10 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	private void createProductButtons(final List<ProductButtonConfigDTO> buttonConfigList) {
 		assert(null == productButtonList);
 		
-		productButtonList = new ArrayList<ProductButton>();
+		productButtonList = new ArrayList<XProductButton>();
 		for(ProductButtonConfigDTO buttonConfig: buttonConfigList) {
 			final ProductButtonConfig config = new ProductButtonConfig(buttonConfig);
-			final ProductButton button = new ProductButton(this,config);
+			final XProductButton button = new XProductButton(this,config);
 			productButtonList.add(button);
 		}
 	}
@@ -167,7 +167,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	private void showProductButtons() {
 		final List<Node> nodeList = productGridPane.getChildren();
 		
-		for(ProductButton button: productButtonList) {
+		for(XProductButton button: productButtonList) {
 			final PersistenceId buttonParentId = button.getConfig().getParentId();
 			if(null == parentId) {
 				if(null == buttonParentId) {
@@ -199,7 +199,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		}
 		
 		//Find the parent
-		for(ProductButtonGroup buttonGroup: productButtonGroupList) {
+		for(XProductButtonGroup buttonGroup: productButtonGroupList) {
 			final ProductGroupButtonConfigDTO config = buttonGroup.getConfig();
 			final PersistenceId id = config.getId();
 			if(parentId.equals(id)) {
@@ -220,13 +220,13 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		dialog.getStage().showAndWait();
 		if(dialog.wasSaved()) {
 			buttonConfig = dialog.getButtonConfig();
-			final ProductButton button = new ProductButton(this,buttonConfig);
+			final XProductButton button = new XProductButton(this,buttonConfig);
 			productButtonList.add(button);
 			productGridPane.getChildren().add(button);
 		}
 	}
 	
-	public void updateProductButton(final ProductButton button) {
+	public void updateProductButton(final XProductButton button) {
 		log.debug("updateProductButton()");
 		ProductButtonConfig config = button.getConfig();
 		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(stage,config);
@@ -241,7 +241,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		log.debug("productSelected {}", product);
 	}
 	
-	public void deleteProductButton(final ProductButton button) {
+	public void deleteProductButton(final XProductButton button) {
 		log.debug("deleteProductButton {}",button);
 
 		final Task<Void> task = new Task<Void>() {
@@ -274,7 +274,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		log.debug("createProductButtonGroup()");
 		
 		final ProductGroupButtonConfigDTO config = new ProductGroupButtonConfigDTO(parentId,null,columnIdx,rowIdx);
-		final ProductButtonGroupUpdateDialog dialog = new ProductButtonGroupUpdateDialog(stage,config);
+		final ProductGroupButtonUpdateDialog dialog = new ProductGroupButtonUpdateDialog(stage,config);
 		dialog.getStage().showAndWait();
 		final ProductGroupButtonConfigDTO updatedConfig = dialog.getButtonConfig();
 
@@ -283,16 +283,16 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 			return;
 		}
 		
-		final ProductButtonGroup button = new ProductButtonGroup(this,updatedConfig);
+		final XProductButtonGroup button = new XProductButtonGroup(this,updatedConfig);
 		productButtonGroupList.add(button);
 		productGridPane.getChildren().add(button);
 	}
 	
-	public void updateProductButtonGroup(final ProductButtonGroup buttonGroup) {
+	public void updateProductButtonGroup(final XProductButtonGroup buttonGroup) {
 		log.debug("updateProductButtonGroup()");
 		
 		final ProductGroupButtonConfigDTO config = buttonGroup.getConfig();
-		final ProductButtonGroupUpdateDialog dialog = new ProductButtonGroupUpdateDialog(stage,config);
+		final ProductGroupButtonUpdateDialog dialog = new ProductGroupButtonUpdateDialog(stage,config);
 		dialog.getStage().showAndWait();
 		final ProductGroupButtonConfigDTO updatedConfig = dialog.getButtonConfig();
 		//Cancelled
@@ -310,7 +310,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		refreshButtons();
 	}
 	
-	public void deleteProductButtonGroup(final ProductButtonGroup button) {
+	public void deleteProductButtonGroup(final XProductButtonGroup button) {
 		log.debug("deleteProductButtonGroup {}",button);
 		
 		final Task<Void> task = new Task<Void>() {

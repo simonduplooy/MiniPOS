@@ -34,8 +34,8 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	private final List<ProductSaleDTO> productSales;
 
 	private PersistenceId parentId;
-	private List<ProductButtonGroup> productButtonGroupList;
-	private List<ProductButton> productButtonList;
+	private List<XProductButtonGroup> productButtonGroupList;
+	private List<XProductButton> productButtonList;
 	
 	@FXML
 	private Label accountLabel;
@@ -126,9 +126,9 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	private void createGroupButtons(final List<ProductGroupButtonConfigDTO> buttonGroupConfigList) {
 		assert(null == productButtonGroupList);
 		
-		productButtonGroupList = new ArrayList<ProductButtonGroup>();
+		productButtonGroupList = new ArrayList<XProductButtonGroup>();
 		for(ProductGroupButtonConfigDTO buttonConfig: buttonGroupConfigList) {
-			final ProductButtonGroup button = new ProductButtonGroup(this,buttonConfig);
+			final XProductButtonGroup button = new XProductButtonGroup(this,buttonConfig);
 			productButtonGroupList.add(button);
 		}
 	}
@@ -136,7 +136,7 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	private void showGroupButtons() {
 		final List<Node> nodeList = productGridPane.getChildren();
 		
-		for(ProductButtonGroup buttonGroup: productButtonGroupList) {
+		for(XProductButtonGroup buttonGroup: productButtonGroupList) {
 			final PersistenceId buttonParentId = buttonGroup.getConfig().getParentId();
 			if(null == parentId) {
 				if(null == buttonParentId) {
@@ -155,10 +155,10 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	private void createProductButtons(final List<ProductButtonConfigDTO> buttonConfigList) {
 		assert(null == productButtonList);
 		
-		productButtonList = new ArrayList<ProductButton>();
+		productButtonList = new ArrayList<XProductButton>();
 		for(ProductButtonConfigDTO configDTO: buttonConfigList) {
 			final ProductButtonConfig buttonConfig = new ProductButtonConfig(configDTO);
-			final ProductButton button = new ProductButton(this,buttonConfig);
+			final XProductButton button = new XProductButton(this,buttonConfig);
 			productButtonList.add(button);
 		}
 	}
@@ -166,7 +166,7 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 	private void showProductButtons() {
 		final List<Node> nodeList = productGridPane.getChildren();
 		
-		for(ProductButton button: productButtonList) {
+		for(XProductButton button: productButtonList) {
 			final PersistenceId buttonParentId = button.getConfig().getParentId();
 			if(null == parentId) {
 				if(null == buttonParentId) {
@@ -199,7 +199,7 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		}
 		
 		//Find the parent
-		for(ProductButtonGroup buttonGroup: productButtonGroupList) {
+		for(XProductButtonGroup buttonGroup: productButtonGroupList) {
 			final ProductGroupButtonConfigDTO config = buttonGroup.getConfig();
 			final PersistenceId id = config.getId();
 			if(parentId.equals(id)) {
@@ -231,16 +231,16 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		calculateTotal();
 	}
 	
-	public void updateProductButton(final ProductButton button) {
+	public void updateProductButton(final XProductButton button) {
 	}
 	
-	public void deleteProductButton(final ProductButton button) {
+	public void deleteProductButton(final XProductButton button) {
 	}
 	
 	public void createProductButtonGroup(final Integer columnIdx, final Integer rowIdx) {
 	}
 	
-	public void updateProductButtonGroup(final ProductButtonGroup button) {
+	public void updateProductButtonGroup(final XProductButtonGroup button) {
 	}
 	
 	public void productButtonGroupSelected(final ProductGroupButtonConfigDTO config) {
@@ -250,7 +250,7 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		refreshButtons();
 	}
 	
-	public void deleteProductButtonGroup(final ProductButtonGroup button) {
+	public void deleteProductButtonGroup(final XProductButtonGroup button) {
 	}
 	
 	private void calculateTotal() {

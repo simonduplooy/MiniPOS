@@ -8,14 +8,14 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 
-public class ProductButtonBlank extends Button {
+public class XProductButtonBlank extends Button {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final ProductButtonObserver observer;
 	private final Integer columnIdx;
 	private final Integer rowIdx;
 	
-	public ProductButtonBlank(final ProductButtonObserver observer, final Integer columnIdx, final Integer rowIdx) {
+	public XProductButtonBlank(final ProductButtonObserver observer, final Integer columnIdx, final Integer rowIdx) {
 		assert(null != observer);
 		assert(null != columnIdx);
 		assert(null != rowIdx);

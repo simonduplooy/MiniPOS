@@ -21,7 +21,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class ProductButtonGroupUpdateDialog extends BorderPane {
+public class ProductGroupButtonUpdateDialog extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final static String WINDOW_TITLE = "Product Group";
@@ -36,7 +36,7 @@ public class ProductButtonGroupUpdateDialog extends BorderPane {
 	@FXML
 	private Button saveButton;
 
-	public ProductButtonGroupUpdateDialog(final Stage parentStage, final ProductGroupButtonConfigDTO buttonConfig) {
+	public ProductGroupButtonUpdateDialog(final Stage parentStage, final ProductGroupButtonConfigDTO buttonConfig) {
 		assert(null != parentStage);
 		//buttonConfig can be null
 

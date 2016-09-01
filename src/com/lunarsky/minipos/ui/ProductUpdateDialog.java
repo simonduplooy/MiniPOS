@@ -56,7 +56,7 @@ public class ProductUpdateDialog extends BorderPane {
 		
 		this.appData = AppData.getInstance();
 		//Create a copy so that the original product is not updated in case the dialog is cancelled
-		this.product = new Product(product);
+		this.product = product;
 
 		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"ProductUpdateDialog.fxml");
 	}
