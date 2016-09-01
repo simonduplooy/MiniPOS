@@ -26,6 +26,8 @@ public class ProductButtonGridPane extends GridPane {
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final String BUTTON_TEXT_BLANK_BUTTON = "Empty";
+	private static final Double BUTTON_PREF_WIDTH = 200.0;
+	private static final Double BUTTON_PREF_HEIGHT = 100.0;
 	
 	private final AppData appData;
 	private final boolean editable;
@@ -38,58 +40,43 @@ public class ProductButtonGridPane extends GridPane {
 	 **************************************************************************/
 	public ProductButtonGridPane(final boolean editable) {
 		
-		//TODO Remove
-		//setStyle("-fx-background-color: red;");
-		
 		this.appData = AppData.getInstance();
 		this.editable = editable;
 		
-		UiUtil.loadRootConstructNode(this,"ProductGridPane.fxml");
+		initialize();
 	}
 	
 	/**************************************************************************
 	 * Initialize
 	 **************************************************************************/
-	@FXML
 	private void initialize() {
-		initializeProductPane();
+		initializeControls();
 		initializeAsync();
 	}
 	
-	private void initializeProductPane() {
+	private void initializeControls() {
 		
-		setMaxWidth(Double.MAX_VALUE);
-		setMaxHeight(Double.MAX_VALUE);
-		
-		final List<Node> nodeList = getChildren();
-		nodeList.clear();
-
 		for(int columnIdx=0; columnIdx<UiConst.NO_PRODUCT_BUTTON_COLUMNS; columnIdx++) {
-			final ColumnConstraints constraints = getColumnConstraints().get(columnIdx);
-			constraints.setPrefWidth(200.0);
+			final ColumnConstraints constraints = new ColumnConstraints();
+			constraints.setPrefWidth(BUTTON_PREF_WIDTH);
 			constraints.setMinWidth(USE_PREF_SIZE);
 			constraints.setMaxWidth(Double.MAX_VALUE);
 			constraints.setFillWidth(true);
 			constraints.setHgrow(Priority.ALWAYS);
+			getColumnConstraints().add(constraints);
 		}
 		
 		for(int rowIdx=0; rowIdx< UiConst.NO_PRODUCT_BUTTON_ROWS; rowIdx++) {
-			final RowConstraints constraints = getRowConstraints().get(rowIdx);
-			constraints.setPrefHeight(100.0);
+			final RowConstraints constraints = new RowConstraints();
+			constraints.setPrefHeight(BUTTON_PREF_HEIGHT);
 			constraints.setMinHeight(USE_PREF_SIZE);
 			constraints.setMaxHeight(Double.MAX_VALUE);
 			constraints.setFillHeight(true);
 			constraints.setVgrow(Priority.ALWAYS);
+			getRowConstraints().add(constraints);
 		}
-
-		if(editable) {
-			for(int rowIdx=0; rowIdx< UiConst.NO_PRODUCT_BUTTON_ROWS; rowIdx++) {
-				for(int columnIdx=0; columnIdx<UiConst.NO_PRODUCT_BUTTON_COLUMNS; columnIdx++) {
-						final ProductBlankButton button = new ProductBlankButton(columnIdx,rowIdx);
-						nodeList.add(button);
-				}
-			}
-		}
+		
+		buildProductPane();
 	}
 	
 	private void initializeAsync() {
@@ -203,6 +190,20 @@ public class ProductButtonGridPane extends GridPane {
 		}
 	}
 	
+	private void buildProductPane() {
+		
+		final List<Node> nodeList = getChildren();
+		nodeList.clear();
+
+		if(editable) {
+			for(int rowIdx=0; rowIdx< UiConst.NO_PRODUCT_BUTTON_ROWS; rowIdx++) {
+				for(int columnIdx=0; columnIdx<UiConst.NO_PRODUCT_BUTTON_COLUMNS; columnIdx++) {
+						final ProductBlankButton button = new ProductBlankButton(columnIdx,rowIdx);
+						nodeList.add(button);
+				}
+			}
+		}
+	}
 	/**************************************************************************
 	 * Inner Classes
 	 **************************************************************************/
@@ -213,8 +214,8 @@ public class ProductButtonGridPane extends GridPane {
 			GridPane.setConstraints(this,columnIdx,rowIdx);
 			GridPane.setFillWidth(this,true);
 			GridPane.setFillHeight(this,true);
-			setPrefWidth(200.0);
-			setPrefHeight(100.0);
+			setPrefWidth(BUTTON_PREF_WIDTH);
+			setPrefHeight(BUTTON_PREF_HEIGHT);
 			setMinWidth(USE_PREF_SIZE);
 			setMinHeight(USE_PREF_SIZE);
 			setMaxWidth(Double.MAX_VALUE);
