@@ -19,24 +19,22 @@ import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Polygon;
-import javafx.stage.Stage;
 
-public class VirtualKeyboardBase extends BorderPane {
+public abstract class VirtualKeyboardBase extends VBox {
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final String KEYPAD_BUTTON_TEXT = "Keyboard";
 
 	private final Modifiers modifiers;
-	private final ToggleButton keyboardButton;
-	
+	private Scene targetScene;
 
 	public VirtualKeyboardBase() {
 					
@@ -48,40 +46,29 @@ public class VirtualKeyboardBase extends BorderPane {
 		
 		createButtons();
 		
-		final HBox hbox = new HBox();
-		hbox.setAlignment(Pos.CENTER_RIGHT);
-		BorderPane.setMargin(hbox,new Insets(5,0,0,0));
-		keyboardButton = new ToggleButton(KEYPAD_BUTTON_TEXT);
-		hbox.getChildren().add(keyboardButton);
-		setBottom(hbox);
-		
-		final Node centerNode = getCenter();
-		centerNode.managedProperty().bind(centerNode.visibleProperty());
-		centerNode.visibleProperty().bind(keyboardButton.selectedProperty());
-		keyboardButton.setOnAction((event) -> handleShowKeyboardButton());
-
+		setAlignment(Pos.CENTER_RIGHT);
 	}
 	
-	protected void handleShowKeyboardButton() {
-		final Stage stage = (Stage)getScene().getWindow();
-		if(!stage.isMaximized()) {
-			stage.sizeToScene();
-			stage.centerOnScreen();
-		}
+	public void setTargetScene(final Scene targetScene) {
+		assert(null != targetScene);
+		this.targetScene = targetScene;
 	}
 	
-	protected void createButtons() {
-		
+	private Scene getTargetScene() {
+		assert(null != targetScene);
+		return targetScene;
 	}
+	
+	protected abstract void createButtons();
 	
 	protected Modifiers getModifiers() {
 		assert(null != modifiers);
 		return modifiers;
 	}
   
- 
-  // Creates a "regular" button that has an unshifted and shifted value
-  protected Button createShiftableButton(final String unshifted, final String shifted,
+	
+	// Creates a "regular" button that has an unshifted and shifted value
+	protected Button createShiftableButton(final String unshifted, final String shifted,
 		final KeyCode code, Modifiers modifiers, final ReadOnlyObjectProperty<Node> target) {
 		final ReadOnlyBooleanProperty letter = new SimpleBooleanProperty( unshifted.length() == 1 && Character.isLetter(unshifted.charAt(0)));
 		final StringBinding text = 
@@ -119,7 +106,8 @@ public class VirtualKeyboardBase extends BorderPane {
 				if (target != null) {
 					targetNode = target.get();
 				} else {
-					targetNode = getScene().getFocusOwner();
+					final Scene targetScene = getTargetScene();
+					targetNode = targetScene.getFocusOwner();
 				}
         
 				if (targetNode != null) {

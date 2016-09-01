@@ -17,7 +17,7 @@ public class UiUtil {
 		UiUtil.loadRootConstructNode(parent,resourceLocation);
 	}
 	
-	private static Stage createDialogStage(final Stage parentStage,final String title) {
+	public static Stage createDialogStage(final Stage parentStage,final String title) {
 		final Stage stage = new Stage();
 		stage.initOwner(parentStage);
 		stage.initModality(Modality.WINDOW_MODAL);

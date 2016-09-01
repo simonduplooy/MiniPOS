@@ -14,7 +14,6 @@ public class VirtualKeyboard extends VirtualKeyboardBase {
 
 	public VirtualKeyboard() {
 
-
 	}
 	
 	@Override
@@ -48,13 +47,12 @@ public class VirtualKeyboard extends VirtualKeyboardBase {
 	    
 	    final VirtualKeyboardBase.Modifiers modifiers = getModifiers();
 
-
 	    final VBox vbox = new VBox();
 	    vbox.setPrefWidth(USE_COMPUTED_SIZE);
 	    vbox.setMinWidth(USE_PREF_SIZE);
 	    vbox.setMaxWidth(USE_PREF_SIZE);
 	    BorderPane.setAlignment(vbox,Pos.BOTTOM_CENTER);
-	    setCenter(vbox);
+	    getChildren().add(vbox);
 	    //getButtonPane().getChildren().add(vbox);
 	    
 		// build layout
