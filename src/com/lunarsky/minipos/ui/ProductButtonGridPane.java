@@ -11,12 +11,16 @@ import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.ui.ProductButtonConfig;
+import com.lunarsky.minipos.model.ui.ProductGroupButtonConfig;
 
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 
 public class ProductButtonGridPane extends GridPane {
 	private static final Logger log = LogManager.getLogger();
@@ -24,24 +28,68 @@ public class ProductButtonGridPane extends GridPane {
 	private static final String BUTTON_TEXT_BLANK_BUTTON = "Empty";
 	
 	private final AppData appData;
+	private final boolean editable;
+	private PersistenceId activeParentId;
 	private List<ProductGroupButton> productGroupButtonList;
 	private List<ProductButton> productButtonList;
 	
 	/**************************************************************************
 	 * Constructors
 	 **************************************************************************/
-	public ProductButtonGridPane() {
+	public ProductButtonGridPane(final boolean editable) {
+		
+		//TODO Remove
+		//setStyle("-fx-background-color: red;");
 		
 		this.appData = AppData.getInstance();
+		this.editable = editable;
+		
 		UiUtil.loadRootConstructNode(this,"ProductGridPane.fxml");
 	}
 	
 	/**************************************************************************
-	 * Constructors
+	 * Initialize
 	 **************************************************************************/
 	@FXML
 	private void initialize() {
+		initializeProductPane();
 		initializeAsync();
+	}
+	
+	private void initializeProductPane() {
+		
+		setMaxWidth(Double.MAX_VALUE);
+		setMaxHeight(Double.MAX_VALUE);
+		
+		final List<Node> nodeList = getChildren();
+		nodeList.clear();
+
+		for(int columnIdx=0; columnIdx<UiConst.NO_PRODUCT_BUTTON_COLUMNS; columnIdx++) {
+			final ColumnConstraints constraints = getColumnConstraints().get(columnIdx);
+			constraints.setPrefWidth(200.0);
+			constraints.setMinWidth(USE_PREF_SIZE);
+			constraints.setMaxWidth(Double.MAX_VALUE);
+			constraints.setFillWidth(true);
+			constraints.setHgrow(Priority.ALWAYS);
+		}
+		
+		for(int rowIdx=0; rowIdx< UiConst.NO_PRODUCT_BUTTON_ROWS; rowIdx++) {
+			final RowConstraints constraints = getRowConstraints().get(rowIdx);
+			constraints.setPrefHeight(100.0);
+			constraints.setMinHeight(USE_PREF_SIZE);
+			constraints.setMaxHeight(Double.MAX_VALUE);
+			constraints.setFillHeight(true);
+			constraints.setVgrow(Priority.ALWAYS);
+		}
+
+		if(editable) {
+			for(int rowIdx=0; rowIdx< UiConst.NO_PRODUCT_BUTTON_ROWS; rowIdx++) {
+				for(int columnIdx=0; columnIdx<UiConst.NO_PRODUCT_BUTTON_COLUMNS; columnIdx++) {
+						final ProductBlankButton button = new ProductBlankButton(columnIdx,rowIdx);
+						nodeList.add(button);
+				}
+			}
+		}
 	}
 	
 	private void initializeAsync() {
@@ -49,12 +97,12 @@ public class ProductButtonGridPane extends GridPane {
 		final Task<List<ProductGroupButtonConfigDTO>> buttonGroupTask = new Task<List<ProductGroupButtonConfigDTO>>() {
 			@Override
 			protected List<ProductGroupButtonConfigDTO> call() {
-				final List<ProductGroupButtonConfigDTO> buttonGroupConfigList = appData.getServerConnector().getProductButtonGroups();
+				final List<ProductGroupButtonConfigDTO> buttonGroupConfigList = appData.getServerConnector().getProductGroupButtons();
 				return buttonGroupConfigList;
 			}
 			@Override
 			protected void succeeded() {
-				log.debug("getProductButtonGroups() Succeeded");
+				log.debug("getProductGroupButtons() Succeeded");
 				final List<ProductGroupButtonConfigDTO>buttonGroupConfigList = getValue();
 				createGroupButtons(buttonGroupConfigList);
 				showGroupButtons();
@@ -99,8 +147,9 @@ public class ProductButtonGridPane extends GridPane {
 		assert(null == productGroupButtonList);
 		
 		productGroupButtonList = new ArrayList<ProductGroupButton>();
-		for(ProductGroupButtonConfigDTO buttonConfig: buttonGroupConfigList) {
-			final ProductGroupButton button = new ProductGroupButton(buttonConfig);
+		for(ProductGroupButtonConfigDTO configDTO: buttonGroupConfigList) {
+			final ProductGroupButtonConfig config = new ProductGroupButtonConfig(configDTO);
+			final ProductGroupButton button = new ProductGroupButton(config);
 			productGroupButtonList.add(button);
 		}
 	}
@@ -108,16 +157,15 @@ public class ProductButtonGridPane extends GridPane {
 	private void showGroupButtons() {
 		final List<Node> nodeList = getChildren();
 		
-		//TODO Fucked this up fix parentIds
 		for(ProductGroupButton button: productGroupButtonList) {
 			final PersistenceId parentId = button.getConfig().getParentId();
-			if(null == parentId) {
+			if(null == activeParentId) {
 				if(null == parentId) {
 					nodeList.add(button);
 				}
 			} else {
 				if(null != parentId) {
-					if(parentId.equals(parentId)) {
+					if(activeParentId.equals(parentId)) {
 						nodeList.add(button);
 					}
 				}
@@ -139,16 +187,15 @@ public class ProductButtonGridPane extends GridPane {
 	private void showProductButtons() {
 		final List<Node> nodeList = getChildren();
 		
-		//TODO Fucked this up fix parentIds
 		for(ProductButton button: productButtonList) {
 			final PersistenceId parentId = button.getConfig().getParentId();
-			if(null == parentId) {
+			if(null == activeParentId) {
 				if(null == parentId) {
 					nodeList.add(button);
 				}
 			} else {
 				if(null != parentId) {
-					if(parentId.equals(parentId)) {
+					if(activeParentId.equals(parentId)) {
 						nodeList.add(button);
 					}
 				}
@@ -159,30 +206,50 @@ public class ProductButtonGridPane extends GridPane {
 	/**************************************************************************
 	 * Inner Classes
 	 **************************************************************************/
-	// TODO NEED ProductButtonConfig ui class
-	private class ProductGroupButton extends Button {
+	private class ProductButtonBase extends Button {
 		
-		private final ProductGroupButtonConfigDTO config;
-
-		public ProductGroupButton(final ProductGroupButtonConfigDTO config) {
-			assert(null != config);
-			this.config = config;
+		protected ProductButtonBase(final int columnIdx,final int rowIdx) {
+			getStyleClass().add("product-button");
+			GridPane.setConstraints(this,columnIdx,rowIdx);
+			GridPane.setFillWidth(this,true);
+			GridPane.setFillHeight(this,true);
+			setPrefWidth(200.0);
+			setPrefHeight(100.0);
+			setMinWidth(USE_PREF_SIZE);
+			setMinHeight(USE_PREF_SIZE);
+			setMaxWidth(Double.MAX_VALUE);
+			setMaxHeight(Double.MAX_VALUE);
+			setWrapText(true);
 		}
 		
-		public ProductGroupButtonConfigDTO getConfig() {
+	}
+	
+	private class ProductGroupButton extends ProductButtonBase {
+		
+		private final ProductGroupButtonConfig config;
+
+		public ProductGroupButton(final ProductGroupButtonConfig config) {
+			super(config.getColumnIndex(),config.getRowIndex());
+			this.config = config;
+			setText(config.getName());
+		}
+		
+		public ProductGroupButtonConfig getConfig() {
 			assert(null != config);
 			return config;
 		}
 		
 	}
 	
-	private class ProductButton extends Button {
+	private class ProductButton extends ProductButtonBase {
 
 		private final ProductButtonConfig config;
 		
 		public ProductButton(final ProductButtonConfig config) {
-			assert(null != config);
+			super(config.getColumnIndex(),config.getRowIndex());
 			this.config = config;
+			setText(config.getProduct().getName());
+
 		}
 		
 		public ProductButtonConfig getConfig() {
@@ -191,10 +258,12 @@ public class ProductButtonGridPane extends GridPane {
 		}
 	}
 	
-	private class ProductBlankButton extends Button {
+	private class ProductBlankButton extends ProductButtonBase {
 
-		public ProductBlankButton() {
+		public ProductBlankButton(final int columnIdx,final int rowIdx) {
+			super(columnIdx,rowIdx);
 			setText(BUTTON_TEXT_BLANK_BUTTON);
+			setOpacity(0.5);
 		}
 	}
 	

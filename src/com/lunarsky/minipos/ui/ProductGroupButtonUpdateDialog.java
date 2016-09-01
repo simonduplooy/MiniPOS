@@ -94,7 +94,7 @@ public class ProductGroupButtonUpdateDialog extends BorderPane {
 			final ProductGroupButtonConfigDTO buttonConfig = createButtonConfigFromControls();
 			@Override
 			protected ProductGroupButtonConfigDTO call() throws EntityNotFoundException {
-				return appData.getServerConnector().saveProductButtonGroup(buttonConfig);
+				return appData.getServerConnector().saveProductGroupButton(buttonConfig);
 			}
 			@Override
 			protected void succeeded() {

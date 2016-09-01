@@ -15,11 +15,11 @@ import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 
 @Entity
 @Table(	name="productbuttongroups")
-public class ProductButtonGroupDAO extends HibernateDAO {
+public class ProductGroupButtonDAO extends HibernateDAO {
 
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "parentId", foreignKey = @ForeignKey(name = "FK_ProductButtonGroups_ProductButtonGroups"))
-	private ProductButtonGroupDAO parentButtonGroupDAO;
+	private ProductGroupButtonDAO parentButtonGroupDAO;
 	@Column(nullable = false, length = Const.MAX_TEXTFIELD_LENGTH)
 	private String name;
 	@Column(nullable = false)
@@ -28,13 +28,13 @@ public class ProductButtonGroupDAO extends HibernateDAO {
 	private Integer rowIdx;
 	
 	//used by hibernate
-	public ProductButtonGroupDAO() {}
+	public ProductGroupButtonDAO() {}
 	
-	public static ProductButtonGroupDAO load(final EntityManager entityManager, final HibernatePersistenceId id) {
+	public static ProductGroupButtonDAO load(final EntityManager entityManager, final HibernatePersistenceId id) {
 		assert(null != entityManager);
 		assert(null != id);
 		
-		final ProductButtonGroupDAO productButtonGroupDAO = entityManager.find(ProductButtonGroupDAO.class,id.getId());
+		final ProductGroupButtonDAO productButtonGroupDAO = entityManager.find(ProductGroupButtonDAO.class,id.getId());
 		if(null == productButtonGroupDAO) { 
 			throw new EntityNotFoundException(String.format("ProductButtonGroup %s not found",id));
 		}
@@ -43,17 +43,17 @@ public class ProductButtonGroupDAO extends HibernateDAO {
 		return productButtonGroupDAO;
 	}
 	
-	public static ProductButtonGroupDAO create(final EntityManager entityManager, final ProductGroupButtonConfigDTO buttonConfig) {
+	public static ProductGroupButtonDAO create(final EntityManager entityManager, final ProductGroupButtonConfigDTO buttonConfig) {
 		assert(null != entityManager);
 		assert(null != buttonConfig);
 		
-		final ProductButtonGroupDAO productButtonGroupDAO = new ProductButtonGroupDAO(entityManager,buttonConfig);
+		final ProductGroupButtonDAO productButtonGroupDAO = new ProductGroupButtonDAO(entityManager,buttonConfig);
 		entityManager.persist(productButtonGroupDAO);
 		
 		return productButtonGroupDAO;
 	}
 	
-	private ProductButtonGroupDAO(final EntityManager entityManager,final ProductGroupButtonConfigDTO buttonConfig) {
+	private ProductGroupButtonDAO(final EntityManager entityManager,final ProductGroupButtonConfigDTO buttonConfig) {
 		super(entityManager);
 		setConfig(buttonConfig);
 	}
@@ -83,7 +83,7 @@ public class ProductButtonGroupDAO extends HibernateDAO {
 	
 	private void setParentId(final PersistenceId parentId) {
 		if(null != parentId) {
-			this.parentButtonGroupDAO = ProductButtonGroupDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
+			this.parentButtonGroupDAO = ProductGroupButtonDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
 		}
 	}
 	

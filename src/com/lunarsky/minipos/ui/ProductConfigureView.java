@@ -17,24 +17,22 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
-public class ProductConfigureView extends BorderPane implements ProductButtonObserver {
+public class ProductConfigureView extends BorderPane  {
 	private static final Logger log = LogManager.getLogger();
 
 	private final AppData appData;
 	private final Stage stage;
 	
 	private PersistenceId parentId;
-	private List<XProductButtonGroup> productButtonGroupList;
-	private List<XProductButton> productButtonList;
-	
+
 	@FXML
-	private GridPane productGridPane;
+	private ScrollPane productButtonScrollPane;
 	
 	public ProductConfigureView(final Stage stage) {
 		assert(null != stage);
@@ -49,13 +47,16 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 	@FXML
 	private void initialize() {
 		initializeControls();
-		initializeProductPane();
-		initializeAsync();
+		//initializeProductPane();
+		//initializeAsync();
 	}
 	
 	private void initializeControls() {
+		final ProductButtonGridPane gridPane = new ProductButtonGridPane(true);
+		productButtonScrollPane.setContent(gridPane);
 	}
 
+	/*
 	private void initializeProductPane() {
 		
 		final List<Node> nodeList = productGridPane.getChildren();
@@ -73,7 +74,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 			}
 		}
 	}
-	
+
 	private void initializeAsync() {
 		
 		//GetProductButtonGroups
@@ -188,9 +189,10 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		showGroupButtons();
 		showProductButtons();
 	}
-	
+	*/
 	@FXML
 	private void handleBack(final ActionEvent event) {
+	/*	
 		log.debug("handleBack()");
 		
 		if(null == parentId) {
@@ -209,8 +211,10 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		}
 		
 		refreshButtons();
+	*/
+		
 	}
-	
+	/*
 	//Implement ProductButtonObserver
 	public void createProductButton(final Integer columnIdx, final Integer rowIdx) {
 		log.debug("createProductButton()");
@@ -339,6 +343,7 @@ public class ProductConfigureView extends BorderPane implements ProductButtonObs
 		final Thread thread = new Thread(task);
 		thread.start();
 	}
+	*/
 	
 	private void close() {
 		appData.getViewManager().closeProductConfigureView();

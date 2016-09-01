@@ -69,9 +69,9 @@ public interface ServerConnector {
 	public ProductButtonConfigDTO saveProductButton(final ProductButtonConfigDTO config);
 	public void deleteProductButton(final PersistenceId id);
 	
-	public List<ProductGroupButtonConfigDTO> getProductButtonGroups();
-	public ProductGroupButtonConfigDTO saveProductButtonGroup(final ProductGroupButtonConfigDTO config);
-	public void deleteProductButtonGroup(final PersistenceId id);
+	public List<ProductGroupButtonConfigDTO> getProductGroupButtons();
+	public ProductGroupButtonConfigDTO saveProductGroupButton(final ProductGroupButtonConfigDTO config);
+	public void deleteProductGroupButton(final PersistenceId id);
 	
 	public void close();
 }

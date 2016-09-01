@@ -19,7 +19,7 @@ public class ProductButtonDAO extends HibernateDAO {
 
 	@ManyToOne (optional = true)
 	@JoinColumn(name="parentId", foreignKey = @ForeignKey(name = "FK_ProductButtons_ProductButtonGroups"))
-	ProductButtonGroupDAO parentButtonGroupDAO;
+	ProductGroupButtonDAO parentButtonGroupDAO;
 	@ManyToOne (optional = false)
 	@JoinColumn(name="productId", foreignKey = @ForeignKey(name = "FK_ProductButtons_Product"))
 	ProductDAO productDAO;
@@ -84,7 +84,7 @@ public class ProductButtonDAO extends HibernateDAO {
 	
 	private void setParentId(final PersistenceId parentId) {
 		if(null != parentId) {
-			this.parentButtonGroupDAO = ProductButtonGroupDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
+			this.parentButtonGroupDAO = ProductGroupButtonDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
 		}
 	}
 	

@@ -213,21 +213,21 @@ public class LocalServerConnector implements ServerConnector {
 		persistenceCall(transaction,()->{persistenceProvider.deleteProductButton(transaction,id);return null;});
 	}
 	
-	public List<ProductGroupButtonConfigDTO> getProductButtonGroups() {
+	public List<ProductGroupButtonConfigDTO> getProductGroupButtons() {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<ProductGroupButtonConfigDTO> buttons = (List<ProductGroupButtonConfigDTO>)persistenceCall(transaction,()->(persistenceProvider.getProductButtonGroups(transaction)));
+		final List<ProductGroupButtonConfigDTO> buttons = (List<ProductGroupButtonConfigDTO>)persistenceCall(transaction,()->(persistenceProvider.getProductGroupButtons(transaction)));
 		return buttons;
 	}
 	
-	public ProductGroupButtonConfigDTO saveProductButtonGroup(final ProductGroupButtonConfigDTO config) {
+	public ProductGroupButtonConfigDTO saveProductGroupButton(final ProductGroupButtonConfigDTO config) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		final ProductGroupButtonConfigDTO updatedConfig = (ProductGroupButtonConfigDTO)persistenceCall(transaction,()->(persistenceProvider.saveProductButtonGroup(transaction, config)));
+		final ProductGroupButtonConfigDTO updatedConfig = (ProductGroupButtonConfigDTO)persistenceCall(transaction,()->(persistenceProvider.saveProductGroupButton(transaction, config)));
 		return updatedConfig;
 	}
 	
-	public void deleteProductButtonGroup(final PersistenceId id) {
+	public void deleteProductGroupButton(final PersistenceId id) {
 		final Transaction transaction = persistenceProvider.startTransaction();
-		persistenceCall(transaction,()->{persistenceProvider.deleteProductButtonGroup(transaction,id);return null;});
+		persistenceCall(transaction,()->{persistenceProvider.deleteProductGroupButton(transaction,id);return null;});
 	}
 	
 	/*****************************************************************************

@@ -12,17 +12,17 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 
-public class ProductButtonGroupManager {
+public class ProductGroupButtonManager {
 	private static final Logger log = LogManager.getLogger();
 	
 	public static List<ProductGroupButtonConfigDTO> getConfigs(final EntityManager entityManager) {
 		log.debug("getConfigs()");
 		
 		final Query query = entityManager.createQuery("from ProductButtonGroupDAO");
-		final List<ProductButtonGroupDAO> resultList = query.getResultList();
+		final List<ProductGroupButtonDAO> resultList = query.getResultList();
 
 		final List<ProductGroupButtonConfigDTO> buttonConfigs = new ArrayList<ProductGroupButtonConfigDTO>();
-		for(ProductButtonGroupDAO result: resultList) {
+		for(ProductGroupButtonDAO result: resultList) {
 			buttonConfigs.add(result.getConfig());
 		}
 		
@@ -32,12 +32,12 @@ public class ProductButtonGroupManager {
 	public static ProductGroupButtonConfigDTO save(final EntityManager entityManager, final ProductGroupButtonConfigDTO config) {
 		log.debug("save() {}",config);
 		
-		final ProductButtonGroupDAO buttonDAO;
+		final ProductGroupButtonDAO buttonDAO;
 		if(config.hasId()) {
-			buttonDAO = ProductButtonGroupDAO.load(entityManager,(HibernatePersistenceId)config.getId());
+			buttonDAO = ProductGroupButtonDAO.load(entityManager,(HibernatePersistenceId)config.getId());
 			buttonDAO.setConfig(config);
 		} else {
-			buttonDAO = ProductButtonGroupDAO.create(entityManager,config);
+			buttonDAO = ProductGroupButtonDAO.create(entityManager,config);
 		}
 		
 		final ProductGroupButtonConfigDTO updatedConfig = buttonDAO.getConfig();		
@@ -47,7 +47,7 @@ public class ProductButtonGroupManager {
 	public static void delete(final EntityManager entityManager, final HibernatePersistenceId id) {
 		log.debug("delete() {}",id);
 		
-		final ProductButtonGroupDAO buttonDAO = entityManager.find(ProductButtonGroupDAO.class,id.getId());
+		final ProductGroupButtonDAO buttonDAO = entityManager.find(ProductGroupButtonDAO.class,id.getId());
 		if(null == buttonDAO) { 
 			throw new EntityNotFoundException(String.format("ProductButtonGroup %s not found",id)); 
 			}

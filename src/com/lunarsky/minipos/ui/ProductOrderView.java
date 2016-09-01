@@ -80,7 +80,7 @@ public class ProductOrderView extends BorderPane implements ProductButtonObserve
 		final Task<List<ProductGroupButtonConfigDTO>> buttonGroupTask = new Task<List<ProductGroupButtonConfigDTO>>() {
 			@Override
 			protected List<ProductGroupButtonConfigDTO> call() {
-				final List<ProductGroupButtonConfigDTO> buttonGroupConfigList = appData.getServerConnector().getProductButtonGroups();
+				final List<ProductGroupButtonConfigDTO> buttonGroupConfigList = appData.getServerConnector().getProductGroupButtons();
 				return buttonGroupConfigList;
 			}
 			@Override

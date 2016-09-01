@@ -233,21 +233,21 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		ProductButtonManager.delete(entityManager,(HibernatePersistenceId)id);
 	}
 	
-	public List<ProductGroupButtonConfigDTO> getProductButtonGroups(final Transaction transaction) {
+	public List<ProductGroupButtonConfigDTO> getProductGroupButtons(final Transaction transaction) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<ProductGroupButtonConfigDTO> buttonConfigs = ProductButtonGroupManager.getConfigs(entityManager);
+		final List<ProductGroupButtonConfigDTO> buttonConfigs = ProductGroupButtonManager.getConfigs(entityManager);
 		return buttonConfigs;	
 	}
 	
-	public ProductGroupButtonConfigDTO saveProductButtonGroup(final Transaction transaction, final ProductGroupButtonConfigDTO config) {
+	public ProductGroupButtonConfigDTO saveProductGroupButton(final Transaction transaction, final ProductGroupButtonConfigDTO config) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final ProductGroupButtonConfigDTO updatedConfig = ProductButtonGroupManager.save(entityManager,config);
+		final ProductGroupButtonConfigDTO updatedConfig = ProductGroupButtonManager.save(entityManager,config);
 		return updatedConfig;
 	}
 	
-	public void deleteProductButtonGroup(final Transaction transaction, final PersistenceId id) {
+	public void deleteProductGroupButton(final Transaction transaction, final PersistenceId id) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		ProductButtonGroupManager.delete(entityManager,(HibernatePersistenceId)id);
+		ProductGroupButtonManager.delete(entityManager,(HibernatePersistenceId)id);
 	}
 	
 	/*****************************************************************************
