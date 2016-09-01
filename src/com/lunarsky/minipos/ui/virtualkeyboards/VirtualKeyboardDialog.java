@@ -1,8 +1,7 @@
 package com.lunarsky.minipos.ui.virtualkeyboards;
 
-import javax.swing.JFrame;
-
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
@@ -11,23 +10,14 @@ import javafx.stage.Stage;
 
 public class VirtualKeyboardDialog extends BorderPane {
 	
-	//Singleton
-	private static VirtualKeyboardDialog instance;
 	private final VirtualKeyboard virtualKeyboard;
+	private final Node targetNode;
 	
-	public static VirtualKeyboardDialog getInstance(final Scene targetScene) {
-		if(null == instance) {
-			instance = new VirtualKeyboardDialog();
-		}
-		instance.getVirtualKeyboard().setTargetScene(targetScene);
-		
-		return instance;
-	}
-	
-	private VirtualKeyboardDialog() {
+	public VirtualKeyboardDialog(final Scene targetScene) {
 		
 		//TODO make window non-focussable, but there seems to be an issue in Javafx
 		//http://stackoverflow.com/questions/33151460/javafx-stop-new-window-stealing-focus
+		targetNode = targetScene.getFocusOwner();
 		
 		final Stage stage = new Stage();
 		//stage.initOwner(null);
@@ -40,15 +30,18 @@ public class VirtualKeyboardDialog extends BorderPane {
 		final Scene scene = new Scene(this);
 		stage.setScene(scene);
 		
-		virtualKeyboard = new VirtualKeyboard();
+		virtualKeyboard = new VirtualKeyboard(targetScene);
 		setCenter(virtualKeyboard);
-		
+			
 		stage.setOnShown((event) -> positionStage());
-		
 	}
 	
 	public Stage getStage() {
 		return (Stage)getScene().getWindow();
+	}
+	
+	public void close() {
+		getStage().close();
 	}
 
 	private VirtualKeyboard getVirtualKeyboard() {
@@ -57,6 +50,8 @@ public class VirtualKeyboardDialog extends BorderPane {
 	}
 	
 	private void positionStage() {
+		
+		targetNode.requestFocus();
 		
 		final Stage stage = getStage();
 

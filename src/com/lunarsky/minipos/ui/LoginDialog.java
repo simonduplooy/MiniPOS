@@ -8,6 +8,7 @@ import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.UserDTO;
 import com.lunarsky.minipos.ui.validator.IntegerTextFieldValidator;
+import com.lunarsky.minipos.ui.virtualkeyboards.NumericVirtualKeyboard;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -15,7 +16,6 @@ import javafx.event.EventTarget;
 import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -34,8 +34,6 @@ public class LoginDialog extends VBox {
 	private Label errorLabel;
 	@FXML
 	private PasswordField passwordField;
-	@FXML
-	private GridPane keypadGridPane;
 	
 	//TODO is there a way to get the stage without holding a reference?
 	private final AppData appData;
@@ -48,29 +46,18 @@ public class LoginDialog extends VBox {
 		this.appData = AppData.getInstance();
 		
 		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"LoginDialog.fxml"); 
+		
 		getStage().setOnCloseRequest((event) -> close());
 		
         errorLabel.setVisible(false);
         
         passwordField.textProperty().addListener((observable,oldValue,newValue) -> handlePasswordChanged(newValue));
         
-        //TODO Fix magic numbers
         passwordValidator = new IntegerTextFieldValidator(passwordField,Const.PASSWORD_LENGTH,Const.PASSWORD_LENGTH);
         passwordValidator.validProperty().addListener((observable,oldValue,newValue) -> handlePasswordComplete(newValue));
                 
-        keypadGridPane.add(new KeypadButton(passwordField,"7",KeyCode.DIGIT7),0,0);
-        keypadGridPane.add(new KeypadButton(passwordField,"8",KeyCode.DIGIT8),1,0);
-        keypadGridPane.add(new KeypadButton(passwordField,"9",KeyCode.DIGIT9),2,0);
-        keypadGridPane.add(new KeypadButton(passwordField,"4",KeyCode.DIGIT4),0,1);
-        keypadGridPane.add(new KeypadButton(passwordField,"5",KeyCode.DIGIT5),1,1);
-        keypadGridPane.add(new KeypadButton(passwordField,"6",KeyCode.DIGIT6),2,1);
-        keypadGridPane.add(new KeypadButton(passwordField,"1",KeyCode.DIGIT1),0,2);
-        keypadGridPane.add(new KeypadButton(passwordField,"2",KeyCode.DIGIT2),1,2);
-        keypadGridPane.add(new KeypadButton(passwordField,"3",KeyCode.DIGIT3),2,2);
-        final KeypadButton button = new KeypadButton(passwordField,"0",KeyCode.DIGIT0);
-        GridPane.setColumnSpan(button,2);
-        keypadGridPane.add(button,0,3);
-        keypadGridPane.add(new KeypadButton(passwordField,"<",KeyCode.BACK_SPACE),2,3);
+        final NumericVirtualKeyboard keyboard = new NumericVirtualKeyboard(getScene());
+        getChildren().add(keyboard);
 	}
 
 	public Stage getStage() {
@@ -135,48 +122,6 @@ public class LoginDialog extends VBox {
 		log.debug("Closing Dialog");
 		getStage().close();
 		//TODO unbind
-	}
-	
-	private class KeypadButton extends Button {
-		private final Node targetNode;
-		private final KeyCode keyCode;
-
-		public KeypadButton(final Node targetNode, final String text, KeyCode keyCode) {
-			super(text);
-			this.targetNode = targetNode;
-			this.keyCode = keyCode;
-			
-    		getStyleClass().add("virtual-keyboard-button");
-    		setFocusTraversable(false);
-    		setMaxWidth(Double.POSITIVE_INFINITY);
-    		
-    		GridPane.setFillHeight(this,true);
-    		GridPane.setFillWidth(this,true);
-    		
-    		setOnAction(this::handleKeyPressed);
-		}
-		
-		private void handleKeyPressed(ActionEvent event) {
-			String character = getText();
-			if(!character.matches("^[0-9]$")) {
-				character = KeyEvent.CHAR_UNDEFINED;
-			}
-			final KeyEvent keyPressEvent = createKeyEvent(this, targetNode, KeyEvent.KEY_PRESSED, character, keyCode);
-			targetNode.fireEvent(keyPressEvent);
-			final KeyEvent keyReleasedEvent = createKeyEvent(this, targetNode, KeyEvent.KEY_RELEASED, character, keyCode);
-			targetNode.fireEvent(keyReleasedEvent);
-			if (character != KeyEvent.CHAR_UNDEFINED) {
-				final KeyEvent keyTypedEvent = createKeyEvent(this, targetNode, KeyEvent.KEY_TYPED, character, keyCode);
-				targetNode.fireEvent(keyTypedEvent);
-			}
-		}
-		
-	  // Utility method to create a KeyEvent from the Modifiers
-	  private KeyEvent createKeyEvent(Object source, EventTarget target,
-	      EventType<KeyEvent> eventType, String character, KeyCode code) {
-	    return new KeyEvent(source, target, eventType, character, code.toString(), code, false, false, false, false);
-	  
-		}
 	}
 	
 }

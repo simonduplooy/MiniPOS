@@ -11,10 +11,10 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 
-public class NumericVirtualKeyboard extends VirtualKeyboardBase {
+public class PasswordVirtualKeyboard extends VirtualKeyboardBase {
 	private static final Logger log = LogManager.getLogger();
 	
-	public NumericVirtualKeyboard(final Scene targetScene) {
+	public PasswordVirtualKeyboard(final Scene targetScene) {
 		super(targetScene);
 	}
 	

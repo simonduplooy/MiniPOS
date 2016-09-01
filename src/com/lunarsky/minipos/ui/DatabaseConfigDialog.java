@@ -91,7 +91,7 @@ public class DatabaseConfigDialog extends BorderPane {
 		//TODO disable until test passed
 		saveButton.disableProperty().bind(enableButtonsProperty);		
 				
-		final VirtualKeyboard virtualKeyboard = new VirtualKeyboard();
+		final VirtualKeyboard virtualKeyboard = new VirtualKeyboard(getScene());
 		setBottom(virtualKeyboard);
 	}
 	

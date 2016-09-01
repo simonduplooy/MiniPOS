@@ -39,6 +39,7 @@ public class UserUpdateDialog extends BorderPane {
 	private final User user;
 	private TextFieldValidator nameValidator;
 	private TextFieldValidator passwordValidator;
+	private VirtualKeyboardDialog keyboardDialog;
 	private Service<UserDTO> saveService;
 	private boolean wasSaved; 
 	
@@ -74,6 +75,7 @@ public class UserUpdateDialog extends BorderPane {
 		initializeMembers();
 		initializeControls();
 		initializeBindings();
+		initializeListeners();
 		initializeAsync();
 		
 	}
@@ -95,6 +97,10 @@ public class UserUpdateDialog extends BorderPane {
 		passwordPasswordField.textProperty().bindBidirectional(user.passwordProperty());
 		
 		saveButton.disableProperty().bind(nameValidator.validProperty().and(passwordValidator.validProperty()).not().or(saveService.runningProperty()));
+	}
+	
+	private void initializeListeners() {
+		getStage().setOnCloseRequest((event) -> close());
 	}
 	
 	private void initializeAsync() {
@@ -122,8 +128,8 @@ public class UserUpdateDialog extends BorderPane {
 	 **************************************************************************/
 	@FXML
 	private void handleShowKeyboard() {
-		final VirtualKeyboardDialog dialog = VirtualKeyboardDialog.getInstance(getScene());
-		dialog.getStage().show();
+		keyboardDialog = new VirtualKeyboardDialog(getScene());
+		keyboardDialog.getStage().show();
 	}
 	
 	@FXML
@@ -193,6 +199,9 @@ public class UserUpdateDialog extends BorderPane {
 	}
 	
 	private void close() {
+		if(null != keyboardDialog) {
+			keyboardDialog.close();
+		}
 		getStage().close();
 	}
 	

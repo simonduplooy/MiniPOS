@@ -3,6 +3,7 @@ package com.lunarsky.minipos.ui.virtualkeyboards;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -12,8 +13,8 @@ import javafx.scene.layout.VBox;
 
 public class VirtualKeyboard extends VirtualKeyboardBase {
 
-	public VirtualKeyboard() {
-
+	public VirtualKeyboard(final Scene targetScene) {
+		super(targetScene);
 	}
 	
 	@Override

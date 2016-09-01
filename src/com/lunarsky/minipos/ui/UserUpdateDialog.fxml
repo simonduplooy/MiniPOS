@@ -40,7 +40,7 @@
          <bottom>
       	   <HBox alignment="BOTTOM_RIGHT" spacing="5.0" BorderPane.alignment="CENTER">
       	      <children>
-                  <Button mnemonicParsing="false" onAction="#handleShowKeyboard" text="Keyboard" />
+                  <Button focusTraversable="false" mnemonicParsing="false" onAction="#handleShowKeyboard" text="Keyboard" />
       	         <Button fx:id="saveButton" defaultButton="true" mnemonicParsing="false" onAction="#handleSave" text="Save" />
       	         <Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
       	      </children>

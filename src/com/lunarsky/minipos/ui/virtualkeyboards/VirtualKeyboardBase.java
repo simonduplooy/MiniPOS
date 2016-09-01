@@ -30,14 +30,14 @@ import javafx.scene.shape.Polygon;
 
 public abstract class VirtualKeyboardBase extends VBox {
 	private static final Logger log = LogManager.getLogger();
-	
-	private static final String KEYPAD_BUTTON_TEXT = "Keyboard";
 
 	private final Modifiers modifiers;
-	private Scene targetScene;
+	private final Scene targetScene;
 
-	public VirtualKeyboardBase() {
-					
+	public VirtualKeyboardBase(final Scene targetScene) {
+		assert(null != targetScene);
+		
+		this.targetScene = targetScene;
 		modifiers = new Modifiers();
 	
 		//build the layout
@@ -45,18 +45,6 @@ public abstract class VirtualKeyboardBase extends VBox {
 		getStyleClass().add("virtual-keyboard");
 		
 		createButtons();
-		
-		setAlignment(Pos.CENTER_RIGHT);
-	}
-	
-	public void setTargetScene(final Scene targetScene) {
-		assert(null != targetScene);
-		this.targetScene = targetScene;
-	}
-	
-	private Scene getTargetScene() {
-		assert(null != targetScene);
-		return targetScene;
 	}
 	
 	protected abstract void createButtons();
@@ -106,7 +94,6 @@ public abstract class VirtualKeyboardBase extends VBox {
 				if (target != null) {
 					targetNode = target.get();
 				} else {
-					final Scene targetScene = getTargetScene();
 					targetNode = targetScene.getFocusOwner();
 				}
         

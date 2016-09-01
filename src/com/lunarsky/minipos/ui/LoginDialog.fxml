@@ -12,27 +12,6 @@
       <Text id="login-label" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" textAlignment="CENTER" />
       <Label fx:id="errorLabel" styleClass="error-text" text="Invalid Password" />
       <PasswordField fx:id="passwordField" alignment="CENTER" prefColumnCount="4" />
-      <HBox alignment="TOP_CENTER" VBox.vgrow="NEVER">
-         <children>
-            <GridPane fx:id="keypadGridPane" alignment="TOP_CENTER" hgap="5.0" vgap="5.0">
-              <columnConstraints>
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
-                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
-                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
-                <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
-                <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
-                  <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
-                  <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
-              </rowConstraints>
-            </GridPane>
-         </children>
-         <padding>
-            <Insets top="5.0" />
-         </padding>
-      </HBox>
    </children>
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
