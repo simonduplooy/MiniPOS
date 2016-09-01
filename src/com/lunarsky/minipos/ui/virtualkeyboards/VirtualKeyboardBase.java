@@ -25,8 +25,9 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
 import javafx.scene.shape.Polygon;
+import javafx.stage.Stage;
 
 public class VirtualKeyboardBase extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
@@ -47,14 +48,26 @@ public class VirtualKeyboardBase extends BorderPane {
 		
 		createButtons();
 		
+		final HBox hbox = new HBox();
+		hbox.setAlignment(Pos.CENTER_RIGHT);
+		BorderPane.setMargin(hbox,new Insets(5,0,0,0));
 		keyboardButton = new ToggleButton(KEYPAD_BUTTON_TEXT);
-		BorderPane.setAlignment(keyboardButton,Pos.CENTER_RIGHT);
-		setBottom(keyboardButton);
+		hbox.getChildren().add(keyboardButton);
+		setBottom(hbox);
 		
 		final Node centerNode = getCenter();
 		centerNode.managedProperty().bind(centerNode.visibleProperty());
 		centerNode.visibleProperty().bind(keyboardButton.selectedProperty());
+		keyboardButton.setOnAction((event) -> handleShowKeyboardButton());
 
+	}
+	
+	protected void handleShowKeyboardButton() {
+		final Stage stage = (Stage)getScene().getWindow();
+		if(!stage.isMaximized()) {
+			stage.sizeToScene();
+			stage.centerOnScreen();
+		}
 	}
 	
 	protected void createButtons() {

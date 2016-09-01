@@ -13,6 +13,7 @@ import com.lunarsky.minipos.model.ui.User;
 import com.lunarsky.minipos.ui.validator.IntegerTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 import com.lunarsky.minipos.ui.validator.TextFieldValidator;
+import com.lunarsky.minipos.ui.virtualkeyboards.VirtualKeyboard;
 
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -85,7 +86,10 @@ public class UserUpdateDialog extends BorderPane {
 	}
 	
 	private void initializeControls() {
-				
+		nameTextField.requestFocus();
+		
+		final VirtualKeyboard keyboard = new VirtualKeyboard();
+		setBottom(keyboard);
 	}
 
 	private void initializeBindings() {
