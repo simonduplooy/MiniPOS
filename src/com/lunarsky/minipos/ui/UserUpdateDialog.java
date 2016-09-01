@@ -25,6 +25,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class UserUpdateDialog extends BorderPane {
@@ -39,7 +40,7 @@ public class UserUpdateDialog extends BorderPane {
 	private final User user;
 	private TextFieldValidator nameValidator;
 	private TextFieldValidator passwordValidator;
-	private VirtualKeyboardDialog keyboardDialog;
+	private VirtualKeyboardButton virtualKeyboardButton;
 	private Service<UserDTO> saveService;
 	private boolean wasSaved; 
 	
@@ -47,6 +48,8 @@ public class UserUpdateDialog extends BorderPane {
 	private TextField nameTextField;
 	@FXML
 	private PasswordField passwordPasswordField;
+	@FXML
+	private HBox buttonHBox;
 	@FXML
 	private Button saveButton;
 	
@@ -89,6 +92,9 @@ public class UserUpdateDialog extends BorderPane {
 	
 	private void initializeControls() {
 		nameTextField.requestFocus();
+		virtualKeyboardButton = new VirtualKeyboardButton(getScene());
+		buttonHBox.getChildren().add(0,virtualKeyboardButton);
+		
 	}
 
 	private void initializeBindings() {
@@ -126,11 +132,6 @@ public class UserUpdateDialog extends BorderPane {
 	/**************************************************************************
 	 * Event Handlers
 	 **************************************************************************/
-	@FXML
-	private void handleShowKeyboard() {
-		keyboardDialog = new VirtualKeyboardDialog(getScene());
-		keyboardDialog.getStage().show();
-	}
 	
 	@FXML
 	private void handleSave(ActionEvent event) {
@@ -199,9 +200,7 @@ public class UserUpdateDialog extends BorderPane {
 	}
 	
 	private void close() {
-		if(null != keyboardDialog) {
-			keyboardDialog.close();
-		}
+		virtualKeyboardButton.close();
 		getStage().close();
 	}
 	
