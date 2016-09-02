@@ -15,6 +15,9 @@ public class UiConst {
 	public static final String CONTEXT_MENU_TEXT_DUPLICATE = "Duplicate";
 	public static final String CONTEXT_MENU_TEXT_DELETE = "Delete";
 	
+	public static final String CONTEXT_MENU_ADD_PRODUCT_GROUP = "Add Group";
+	public static final String CONTEXT_MENU_ADD_PRODUCT = "Add Product";
+	
 	public static final String UNKNOWN_EXCEPTION = "An error occured";
 	
 	private UiConst() {

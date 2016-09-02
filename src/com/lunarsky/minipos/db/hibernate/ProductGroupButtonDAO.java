@@ -14,11 +14,11 @@ import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 
 @Entity
-@Table(	name="productbuttongroups")
+@Table(	name="productgroupbuttons")
 public class ProductGroupButtonDAO extends HibernateDAO {
 
 	@ManyToOne(optional = true)
-	@JoinColumn(name = "parentId", foreignKey = @ForeignKey(name = "FK_ProductButtonGroups_ProductButtonGroups"))
+	@JoinColumn(name = "parentId", foreignKey = @ForeignKey(name = "FK_ProductGroupButtons_ProductGroupButtons"))
 	private ProductGroupButtonDAO parentButtonGroupDAO;
 	@Column(nullable = false, length = Const.MAX_TEXTFIELD_LENGTH)
 	private String name;

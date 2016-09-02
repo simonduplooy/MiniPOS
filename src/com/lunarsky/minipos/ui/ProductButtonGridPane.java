@@ -14,9 +14,11 @@ import com.lunarsky.minipos.model.ui.ProductButtonConfig;
 import com.lunarsky.minipos.model.ui.ProductGroupButtonConfig;
 
 import javafx.concurrent.Task;
-import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -96,7 +98,11 @@ public class ProductButtonGridPane extends GridPane {
 			}
 			@Override
 			protected void failed() {
-				log.debug("getProductButtonGroups() Failed");
+				log.debug("getProductGroupButtons() Failed");
+				final Throwable throwable = getException();
+				log.catching(throwable);
+				final ExceptionAlert alert = new ExceptionAlert(AlertType.ERROR,UiConst.UNKNOWN_EXCEPTION,throwable);
+				alert.show();
 			}
 		};
 		
@@ -120,12 +126,24 @@ public class ProductButtonGridPane extends GridPane {
 			@Override
 			protected void failed() {
 				log.debug("getProductButtons() Failed");
+				final Throwable throwable = getException();
+				log.catching(throwable);
+				final ExceptionAlert alert = new ExceptionAlert(AlertType.ERROR,UiConst.UNKNOWN_EXCEPTION,throwable);
+				alert.show();
 			}
 		};
 		
 	final Thread buttonThread = new Thread(buttonTask);
 	buttonThread.start();
 	}
+	
+	/**************************************************************************
+	 * EventHandlers
+	 **************************************************************************/
+	private void handleAddGroup(final PersistenceId parentId) {
+		log.debug("handleAddGroup() {}",parentId);
+	}
+	
 	
 	/**************************************************************************
 	 * Utilities
@@ -231,7 +249,16 @@ public class ProductButtonGridPane extends GridPane {
 
 		public ProductGroupButton(final ProductGroupButtonConfig config) {
 			super(config.getColumnIndex(),config.getRowIndex());
+
 			this.config = config;
+			
+			final ContextMenu menu = new ContextMenu();
+			final MenuItem addGroupItem = new MenuItem(UiConst.CONTEXT_MENU_ADD_PRODUCT_GROUP);
+			addGroupItem.setOnAction((event) -> handleAddGroup(null));
+			
+			menu.getItems().addAll(addGroupItem);
+			setContextMenu(menu);
+			
 			setText(config.getName());
 		}
 		
@@ -265,6 +292,13 @@ public class ProductButtonGridPane extends GridPane {
 			super(columnIdx,rowIdx);
 			setText(BUTTON_TEXT_BLANK_BUTTON);
 			setOpacity(0.5);
+			
+			final ContextMenu menu = new ContextMenu();
+			final MenuItem addGroupItem = new MenuItem(UiConst.CONTEXT_MENU_ADD_PRODUCT_GROUP);
+			addGroupItem.setOnAction((event) -> handleAddGroup(null));
+			
+			menu.getItems().addAll(addGroupItem);
+			setContextMenu(menu);
 		}
 	}
 	

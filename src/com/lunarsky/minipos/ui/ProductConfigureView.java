@@ -192,27 +192,8 @@ public class ProductConfigureView extends BorderPane  {
 	*/
 	@FXML
 	private void handleBack(final ActionEvent event) {
-	/*	
 		log.debug("handleBack()");
-		
-		if(null == parentId) {
-			close();
-			return;
-		}
-		
-		//Find the parent
-		for(XProductButtonGroup buttonGroup: productButtonGroupList) {
-			final ProductGroupButtonConfigDTO config = buttonGroup.getConfig();
-			final PersistenceId id = config.getId();
-			if(parentId.equals(id)) {
-				parentId = config.getParentId();
-				break;
-			}
-		}
-		
-		refreshButtons();
-	*/
-		
+		close();
 	}
 	/*
 	//Implement ProductButtonObserver

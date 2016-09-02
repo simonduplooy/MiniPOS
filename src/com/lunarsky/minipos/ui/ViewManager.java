@@ -59,7 +59,7 @@ public class ViewManager {
 			protected void succeeded() {
 				log.debug("CreatePersistenceConnection() Succeeded");
 				splashView.setInitializing(false);
-				showLoginDialog();
+				//showLoginDialog();
 			}
 			@Override
 			protected void failed() {

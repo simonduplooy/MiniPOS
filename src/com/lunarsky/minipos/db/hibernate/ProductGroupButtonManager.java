@@ -18,7 +18,7 @@ public class ProductGroupButtonManager {
 	public static List<ProductGroupButtonConfigDTO> getConfigs(final EntityManager entityManager) {
 		log.debug("getConfigs()");
 		
-		final Query query = entityManager.createQuery("from ProductButtonGroupDAO");
+		final Query query = entityManager.createQuery("from ProductGroupButtonDAO");
 		final List<ProductGroupButtonDAO> resultList = query.getResultList();
 
 		final List<ProductGroupButtonConfigDTO> buttonConfigs = new ArrayList<ProductGroupButtonConfigDTO>();
