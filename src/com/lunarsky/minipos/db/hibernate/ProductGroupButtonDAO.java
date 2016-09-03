@@ -10,8 +10,9 @@ import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.interfaces.PersistenceId;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
+import com.lunarsky.minipos.model.ui.PersistenceId;
 
 @Entity
 @Table(	name="productgroupbuttons")
@@ -19,7 +20,7 @@ public class ProductGroupButtonDAO extends HibernateDAO {
 
 	@ManyToOne(optional = true)
 	@JoinColumn(name = "parentId", foreignKey = @ForeignKey(name = "FK_ProductGroupButtons_ProductGroupButtons"))
-	private ProductGroupButtonDAO parentButtonGroupDAO;
+	private ProductGroupButtonDAO parentGroupButtonDAO;
 	@Column(nullable = false, length = Const.MAX_TEXTFIELD_LENGTH)
 	private String name;
 	@Column(nullable = false)
@@ -30,10 +31,8 @@ public class ProductGroupButtonDAO extends HibernateDAO {
 	//used by hibernate
 	public ProductGroupButtonDAO() {}
 	
-	public static ProductGroupButtonDAO load(final EntityManager entityManager, final HibernatePersistenceId id) {
-		assert(null != entityManager);
-		assert(null != id);
-		
+	public static ProductGroupButtonDAO load(final EntityManager entityManager, final PersistenceIdDTO id) {
+
 		final ProductGroupButtonDAO productButtonGroupDAO = entityManager.find(ProductGroupButtonDAO.class,id.getId());
 		if(null == productButtonGroupDAO) { 
 			throw new EntityNotFoundException(String.format("ProductButtonGroup %s not found",id));
@@ -44,9 +43,7 @@ public class ProductGroupButtonDAO extends HibernateDAO {
 	}
 	
 	public static ProductGroupButtonDAO create(final EntityManager entityManager, final ProductGroupButtonConfigDTO buttonConfig) {
-		assert(null != entityManager);
-		assert(null != buttonConfig);
-		
+
 		final ProductGroupButtonDAO productButtonGroupDAO = new ProductGroupButtonDAO(entityManager,buttonConfig);
 		entityManager.persist(productButtonGroupDAO);
 		
@@ -55,15 +52,15 @@ public class ProductGroupButtonDAO extends HibernateDAO {
 	
 	private ProductGroupButtonDAO(final EntityManager entityManager,final ProductGroupButtonConfigDTO buttonConfig) {
 		super(entityManager);
-		setConfig(buttonConfig);
+		setDTO(buttonConfig);
 	}
 	
-	public ProductGroupButtonConfigDTO getConfig() {
+	public ProductGroupButtonConfigDTO getDTO() {
 		final ProductGroupButtonConfigDTO buttonConfig = new ProductGroupButtonConfigDTO(getId(),getParentId(),getName(),getColumnIndex(),getRowIndex()); 
 		return buttonConfig;
 	}
 	
-	public void setConfig(final ProductGroupButtonConfigDTO buttonConfig) {
+	public void setDTO(final ProductGroupButtonConfigDTO buttonConfig) {
 		assert(null != buttonConfig);
 		
 		setId(buttonConfig.getId());
@@ -73,47 +70,36 @@ public class ProductGroupButtonDAO extends HibernateDAO {
 		setRowIndex(buttonConfig.getRowIndex());
 	}
 
-	private PersistenceId getParentId() {
-		if(null == parentButtonGroupDAO) {
-			return null;
-		}
-		final PersistenceId parentId = parentButtonGroupDAO.getId();
+	private PersistenceIdDTO getParentId() {
+		final PersistenceIdDTO parentId = parentGroupButtonDAO.getId();
 		return parentId;
 	}
 	
-	private void setParentId(final PersistenceId parentId) {
-		if(null != parentId) {
-			this.parentButtonGroupDAO = ProductGroupButtonDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
-		}
+	private void setParentId(final PersistenceIdDTO parentId) {
+		parentGroupButtonDAO = ProductGroupButtonDAO.load(getEntityManager(),parentId);
 	}
 	
 	private String getName() {
-		assert(null != name);
 		return name;
 	}
 	
 	private void setName(final String name) {
-		assert(null != name);
 		this.name = name; 
 	}
 	
 	private Integer getColumnIndex() {
-		assert(null != columnIdx);
 		return columnIdx;
 	}
 	
 	private void setColumnIndex(final Integer columnIdx) {
-		assert(null != columnIdx);
 		this.columnIdx = columnIdx;
 	}
 
 	private Integer getRowIndex() {
-		assert(null != rowIdx);
 		return rowIdx;
 	}
 	
 	private void setRowIndex(final Integer rowIdx) {
-		assert(null != rowIdx);
 		this.rowIdx = rowIdx;
 	}
 	

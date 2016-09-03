@@ -10,8 +10,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
-import com.lunarsky.minipos.model.dto.ProductDTO;
 
 public class ProductButtonManager {
 	private static final Logger log = LogManager.getLogger();
@@ -24,7 +24,7 @@ public class ProductButtonManager {
 
 		final List<ProductButtonConfigDTO> buttonConfigs = new ArrayList<ProductButtonConfigDTO>();
 		for(ProductButtonDAO result: resultList) {
-			buttonConfigs.add(result.getConfig());
+			buttonConfigs.add(result.getDTO());
 		}
 		
 		return buttonConfigs;
@@ -35,18 +35,18 @@ public class ProductButtonManager {
 		
 		final ProductButtonDAO buttonDAO;
 		if(config.hasId()) {
-			buttonDAO = ProductButtonDAO.load(entityManager,(HibernatePersistenceId)config.getId());
-			buttonDAO.setConfig(config);
+			buttonDAO = ProductButtonDAO.load(entityManager,config.getId());
+			buttonDAO.setDTO(config);
 		} else {
 			buttonDAO = ProductButtonDAO.create(entityManager,config);
 		}
 		
-		final ProductButtonConfigDTO updatedConfig = buttonDAO.getConfig();		
+		final ProductButtonConfigDTO updatedConfig = buttonDAO.getDTO();		
 		return updatedConfig;
 	}
 
-	public static void delete(final EntityManager entityManager, final HibernatePersistenceId id) {
-		log.debug("delete({})",id);
+	public static void delete(final EntityManager entityManager, final PersistenceIdDTO id) {
+		log.debug("delete() {}",id);
 		
 		final ProductButtonDAO buttonDAO = entityManager.find(ProductButtonDAO.class,id.getId());
 		if(null == buttonDAO) { 

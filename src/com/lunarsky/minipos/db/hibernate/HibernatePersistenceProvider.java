@@ -14,17 +14,15 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.common.exception.NameInUseException;
 import com.lunarsky.minipos.common.exception.PasswordInUseException;
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.interfaces.PersistenceProvider;
 import com.lunarsky.minipos.interfaces.Transaction;
 import com.lunarsky.minipos.model.dto.AccountDTO;
 import com.lunarsky.minipos.model.dto.PersistenceConfigDTO;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
-import com.lunarsky.minipos.model.dto.RoleDTO;
-import com.lunarsky.minipos.model.dto.StockItemDTO;
 import com.lunarsky.minipos.model.dto.UserDTO;
 
 public class HibernatePersistenceProvider implements PersistenceProvider {
@@ -83,9 +81,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		return users;
 	}
 
-	public UserDTO getUser(final Transaction transaction, final PersistenceId id) throws EntityNotFoundException {
+	public UserDTO getUser(final Transaction transaction, final PersistenceIdDTO id) throws EntityNotFoundException {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		UserDTO user = UserManager.getUser(entityManager,(HibernatePersistenceId)id);
+		UserDTO user = UserManager.getUser(entityManager,id);
 		return user;
 	}
 	
@@ -101,52 +99,11 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		return updatedUser;
 	}
 	
-	public void deleteUser(final Transaction transaction, final PersistenceId id)  throws EntityNotFoundException {
+	public void deleteUser(final Transaction transaction, final PersistenceIdDTO id)  throws EntityNotFoundException {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		UserManager.deleteUser(entityManager,(HibernatePersistenceId)id);
+		UserManager.deleteUser(entityManager,id);
 	}
 
-	/*****************************************************************************
-	 * Roles
-	 *****************************************************************************/
-	public List<RoleDTO> getRoles(final Transaction transaction) {
-		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<RoleDTO>roles = RoleManager.getRoles(entityManager);
-		return roles;
-	}
-	
-	public RoleDTO saveRole(final Transaction transaction, final RoleDTO role)  throws EntityNotFoundException {
-		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final RoleDTO updatedRole = RoleManager.saveRole(entityManager, role);
-		return updatedRole;
-	}
-	
-	public void deleteRole(final Transaction transaction, final PersistenceId id)  throws EntityNotFoundException {
-		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		RoleManager.deleteRole(entityManager,(HibernatePersistenceId)id);
-	}
-	
-	/*****************************************************************************
-	 * Stock
-	 *****************************************************************************/
-	public List<StockItemDTO> getStock(final Transaction transaction) {
-		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<StockItemDTO> stockList = StockManager.getStock(entityManager);
-		return stockList;
-	}
-	
-	public StockItemDTO saveStockItem(final Transaction transaction, final StockItemDTO stockItem) throws EntityNotFoundException {
-		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final StockItemDTO updatedStockItem = StockManager.save(entityManager,stockItem);
-		return updatedStockItem;
-	}
-	
-	public void deleteStockItem(final Transaction transaction, final PersistenceId id) throws EntityNotFoundException {
-		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		StockManager.delete(entityManager,(HibernatePersistenceId)id);
-	}
-	
-	
 	/*****************************************************************************
 	 * Accounts
 	 *****************************************************************************/
@@ -156,15 +113,15 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		return accounts;		
 	}
 	
-	public List<AccountDTO> getAccounts(final Transaction transaction, final PersistenceId userId) {
+	public List<AccountDTO> getAccounts(final Transaction transaction, final PersistenceIdDTO userId) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final List<AccountDTO> accounts = AccountManager.getAccounts(entityManager,(HibernatePersistenceId)userId);
+		final List<AccountDTO> accounts = AccountManager.getAccounts(entityManager,userId);
 		return accounts;		
 	}
-	
-	public AccountDTO createAccount(final Transaction transaction, final PersistenceId userId, final AccountDTO account) {
+
+	public AccountDTO createAccount(final Transaction transaction, final PersistenceIdDTO userId, final AccountDTO account) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		final AccountDTO updatedAccount = AccountManager.create(entityManager,(HibernatePersistenceId)userId,account);
+		final AccountDTO updatedAccount = AccountManager.create(entityManager,userId,account);
 		return updatedAccount;
 	}
 
@@ -173,9 +130,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		AccountManager.update(entityManager,account);
 	}
 	
-	public void deleteAccount(final Transaction transaction, final PersistenceId id) {
+	public void deleteAccount(final Transaction transaction, final PersistenceIdDTO id) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		AccountManager.delete(entityManager,(HibernatePersistenceId)id);		
+		AccountManager.delete(entityManager,id);		
 	}
 
 	/*****************************************************************************
@@ -193,9 +150,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		return updatedProduct;
 	}
 	
-	public void deleteProduct(final Transaction transaction, final PersistenceId id) {
+	public void deleteProduct(final Transaction transaction, final PersistenceIdDTO id) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		ProductManager.delete(entityManager,(HibernatePersistenceId)id);
+		ProductManager.delete(entityManager,id);
 	}
 	
 	public List<ProductGroupDTO> getProductGroups(final Transaction transaction) {
@@ -208,9 +165,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		final ProductGroupDTO updatedGroup = ProductGroupManager.save(entityManager,group);
 		return updatedGroup;
 	}
-	public void deleteProductGroup(final Transaction transaction, final PersistenceId id) {
+	public void deleteProductGroup(final Transaction transaction, final PersistenceIdDTO id) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		ProductGroupManager.delete(entityManager,(HibernatePersistenceId)id);
+		ProductGroupManager.delete(entityManager,id);
 	}
 	
 	/*****************************************************************************
@@ -228,9 +185,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		return updatedConfig;
 	}
 	
-	public void deleteProductButton(final Transaction transaction, final PersistenceId id) {
+	public void deleteProductButton(final Transaction transaction, final PersistenceIdDTO id) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		ProductButtonManager.delete(entityManager,(HibernatePersistenceId)id);
+		ProductButtonManager.delete(entityManager,id);
 	}
 	
 	public List<ProductGroupButtonConfigDTO> getProductGroupButtons(final Transaction transaction) {
@@ -245,9 +202,9 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		return updatedConfig;
 	}
 	
-	public void deleteProductGroupButton(final Transaction transaction, final PersistenceId id) {
+	public void deleteProductGroupButton(final Transaction transaction, final PersistenceIdDTO id) {
 		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
-		ProductGroupButtonManager.delete(entityManager,(HibernatePersistenceId)id);
+		ProductGroupButtonManager.delete(entityManager,id);
 	}
 	
 	/*****************************************************************************

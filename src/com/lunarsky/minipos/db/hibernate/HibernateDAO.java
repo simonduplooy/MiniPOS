@@ -13,7 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.lunarsky.minipos.interfaces.PersistenceId;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 
 @MappedSuperclass
 public class HibernateDAO {
@@ -41,18 +41,13 @@ public class HibernateDAO {
     	setEntityManager(entityManager); 
     }
     
-    protected PersistenceId getId() {
-    	final PersistenceId persistenceId = new HibernatePersistenceId(id);
-    	return persistenceId; 
+    protected PersistenceIdDTO getId() {
+    	final PersistenceIdDTO dto = new PersistenceIdDTO(id);
+    	return dto; 
     }
     
-    protected void setId(final PersistenceId id) {
-    	if(null == id) {
-    		return;
-    	}
-    	
-    	final HibernatePersistenceId persistenceId = (HibernatePersistenceId)id;
-    	this.id = persistenceId.getId(); 
+    protected void setId(final PersistenceIdDTO id) {
+    	this.id = id.getId(); 
     }
     
     protected EntityManager getEntityManager() {

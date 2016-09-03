@@ -2,7 +2,7 @@ package com.lunarsky.minipos.model.dto;
 
 public class PersistenceIdDTO {
 
-	private String id;
+	private final String id;
 	
 	public PersistenceIdDTO(final String id) {
 		this.id = id;
@@ -12,8 +12,8 @@ public class PersistenceIdDTO {
 		return id;
 	}
 	
-	public void setId(final String id) {
-		this.id = id;
+	public boolean hasId() {
+		return (null != id);
 	}
 	
 	@Override

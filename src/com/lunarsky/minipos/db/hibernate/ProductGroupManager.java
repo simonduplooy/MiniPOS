@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
 
 public class ProductGroupManager {
@@ -24,7 +24,7 @@ public class ProductGroupManager {
 
 		final List<ProductGroupDTO> groups = new ArrayList<ProductGroupDTO>();
 		for(ProductGroupDAO result: resultList) {
-			groups.add(result.getProductGroup());
+			groups.add(result.getDTO());
 		}
 		
 		return groups;
@@ -35,17 +35,17 @@ public class ProductGroupManager {
 		
 		final ProductGroupDAO groupDAO;
 		if(group.hasId()) {
-			groupDAO = ProductGroupDAO.load(entityManager,(HibernatePersistenceId)group.getId());
-			groupDAO.setProductGroup(group);
+			groupDAO = ProductGroupDAO.load(entityManager,group.getId());
+			groupDAO.setDTO(group);
 		} else {
 			groupDAO = ProductGroupDAO.create(entityManager,group);
 		}
 		
-		final ProductGroupDTO updatedGroup= groupDAO.getProductGroup();		
+		final ProductGroupDTO updatedGroup= groupDAO.getDTO();		
 		return updatedGroup;
 	}
 
-	public static void delete(final EntityManager entityManager, final HibernatePersistenceId id) {
+	public static void delete(final EntityManager entityManager, final PersistenceIdDTO id) {
 		log.debug("delete() {}",id);
 		
 		final ProductGroupDAO groupDAO = entityManager.find(ProductGroupDAO.class,id.getId());

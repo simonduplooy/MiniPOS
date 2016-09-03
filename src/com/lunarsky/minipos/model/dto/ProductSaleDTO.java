@@ -1,44 +1,31 @@
 package com.lunarsky.minipos.model.dto;
 
-import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.ui.PersistenceObject;
 import com.lunarsky.minipos.model.ui.Product;
 
-public class ProductSaleDTO extends PersistenceObject {
+public class ProductSaleDTO extends PersistenceObjectDTO {
 
-	final private Product product;
-	private Integer count;
+	private final Product product;
+	private final Integer count;
 	
-	public ProductSaleDTO(final Product product) {
-		this(null,product);
-	}
-	
-	public ProductSaleDTO(final PersistenceId id,final Product product) {
+	public ProductSaleDTO(final PersistenceIdDTO id,final Product product, final Integer count) {
 		super(id);
 		
-		assert(null != product);
 		this.product = product;
-		
-		count = 1;
+		this.count = count;
 	}
 	
 	public Product getProduct() {
-		assert(null != product);
 		return product;
 	}
 	
-	public void addSale() {
-		count += 1;
+	public Integer getCount() {
+		return count;
 	}
 	
-	public Double getCost() {
-		final Double cost = product.getPrice() * count;
-		return cost;
-	}
-	
+
 	@Override
 	public String toString() {
-		return product.getName()+","+count;
+		return String.format("id:[%s] product:[%s] count:[%s]",getId(),getProduct(),getCount());
 	}
 	
 }

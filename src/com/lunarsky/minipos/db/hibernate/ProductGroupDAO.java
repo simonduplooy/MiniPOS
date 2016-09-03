@@ -11,9 +11,9 @@ import javax.persistence.UniqueConstraint;
 
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.ui.PersistenceId;
 
 @Entity
 @Table(	name="productgroups",
@@ -30,10 +30,8 @@ public class ProductGroupDAO extends HibernateDAO {
 	//used by hibernate
 	public ProductGroupDAO() {}
 	
-	public static ProductGroupDAO load(final EntityManager entityManager, final HibernatePersistenceId id) {
-		assert(null != entityManager);
-		assert(null != id);
-		
+	public static ProductGroupDAO load(final EntityManager entityManager, final PersistenceIdDTO id) {
+
 		final ProductGroupDAO groupDAO = entityManager.find(ProductGroupDAO.class,id.getId());
 		if(null == groupDAO) { 
 			throw new EntityNotFoundException(String.format("ProductGroup %s not found",id));
@@ -44,9 +42,7 @@ public class ProductGroupDAO extends HibernateDAO {
 	}
 	
 	public static ProductGroupDAO create(final EntityManager entityManager, final ProductGroupDTO group) {
-		assert(null != entityManager);
-		assert(null != group);
-		
+
 		final ProductGroupDAO groupDAO = new ProductGroupDAO(entityManager,group);
 		entityManager.persist(groupDAO);
 		
@@ -55,42 +51,33 @@ public class ProductGroupDAO extends HibernateDAO {
 	
 	private ProductGroupDAO(final EntityManager entityManager,final ProductGroupDTO group) {
 		super(entityManager);
-		setProductGroup(group);
+		setDTO(group);
 	}
 	
-	public ProductGroupDTO getProductGroup() {
+	public ProductGroupDTO getDTO() {
 		return new ProductGroupDTO(getId(),getParentId(),getName());
 	}
 	
-	public void setProductGroup(final ProductGroupDTO group) {
-		assert(null != group);
-		
+	public void setDTO(final ProductGroupDTO group) {
 		setId(group.getId());
 		setParentId(group.getParentId());
 		setName(group.getName());
 	}
 
-	private PersistenceId getParentId() {
-		if(null == parentProductGroupDAO) {
-			return null;
-		}
-		final PersistenceId parentId = parentProductGroupDAO.getId();
+	private PersistenceIdDTO getParentId() {
+		final PersistenceIdDTO parentId = parentProductGroupDAO.getId();
 		return parentId;
 	}
 	
-	private void setParentId(final PersistenceId parentId) {
-		if(null != parentId) {
-			parentProductGroupDAO = ProductGroupDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
-		}
+	private void setParentId(final PersistenceIdDTO parentId) {
+		parentProductGroupDAO = ProductGroupDAO.load(getEntityManager(),parentId);
 	}
 	
 	private String getName() {
-		assert(null != name);
 		return name;
 	}
 	
 	private void setName(final String name) {
-		assert(null!=name);
 		this.name = name; 
 	}
 }

@@ -16,6 +16,7 @@ import javax.persistence.UniqueConstraint;
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 
 @Entity
 @Table(
@@ -25,6 +26,7 @@ import com.lunarsky.minipos.model.dto.AccountDTO;
 		}
 )
 public class AccountDAO extends HibernateDAO {
+	
 	@Column(nullable = false, length = Const.MAX_TEXTFIELD_LENGTH)
 	private String name;
 	
@@ -38,10 +40,8 @@ public class AccountDAO extends HibernateDAO {
 	//used by Hibernate
 	public AccountDAO() {}
 	
-	public static AccountDAO load(final EntityManager entityManager, final HibernatePersistenceId id) {
-		assert(null != entityManager);
-		assert(null != id);
-		
+	public static AccountDAO load(final EntityManager entityManager, final PersistenceIdDTO id) {
+
 		final AccountDAO accountDAO = entityManager.find(AccountDAO.class,id.getId());
 		if(null == accountDAO) { 
 			throw new EntityNotFoundException(String.format("Account %s not found",id));
@@ -52,8 +52,6 @@ public class AccountDAO extends HibernateDAO {
 	}
 	
 	public static AccountDAO create(final EntityManager entityManager, final AccountDTO account) {
-		assert(null != entityManager);
-		assert(null != account);
 		
 		final AccountDAO accountDAO = new AccountDAO(entityManager,account);
 		entityManager.persist(accountDAO);
@@ -63,37 +61,31 @@ public class AccountDAO extends HibernateDAO {
 	
 	private AccountDAO(final EntityManager entityManager, final AccountDTO account) {
 		super(entityManager);
-		setAccount(account);
+		setDTO(account);
 	}
 	
-	public AccountDTO getAccount() {
-		final AccountDTO account = new AccountDTO(getId());
-		account.setName(getName());
+	public AccountDTO getDTO() {
+		final AccountDTO account = new AccountDTO(getId(),getName());
 		return account;
 	}
 
-	public void setAccount(final AccountDTO account) {
-		assert(null != account);
-		
+	public void setDTO(final AccountDTO account) {
 		setId(account.getId());
 		setName(account.getName());
 	}
 	
 	private String getName() {
-		assert(null != name);
 		return name;
 	}
 	
 	private void setName(final String name) {
-		assert(null != name);
 		this.name = name;
 	}
 	
 	public void addUser(final UserDAO userDAO) {
-		assert(null != userDAO);
 		if(null == users) {
 			users = new HashSet<UserDAO>();
 		}
-		this.users.add(userDAO);
+		users.add(userDAO);
 	}
 }

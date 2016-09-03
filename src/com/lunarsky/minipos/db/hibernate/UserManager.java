@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.common.exception.NameInUseException;
 import com.lunarsky.minipos.common.exception.PasswordInUseException;
-import com.lunarsky.minipos.interfaces.PersistenceId;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.UserDTO;
 
 public class UserManager {
@@ -24,23 +24,24 @@ public class UserManager {
 	}
 	
 	public static List<UserDTO> getUsers(final EntityManager entityManager) {
-
-		log.debug("Getting Users");
+		log.debug("getUsers()");
+		
 		final Query query = entityManager.createQuery("from UserDAO");
 		final List<UserDAO> resultList = query.getResultList();
 
 		final List<UserDTO> users = new ArrayList<UserDTO>();
 		for(UserDAO result: resultList) {
-			users.add(result.getUser());
+			users.add(result.getDTO());
 		}
 		
 		return users;
 	}
 	
-	public static UserDTO getUser(final EntityManager entityManager, final HibernatePersistenceId id) throws EntityNotFoundException {
-		log.debug("Getting User {}",id);
+	public static UserDTO getUser(final EntityManager entityManager, final PersistenceIdDTO id) throws EntityNotFoundException {
+		log.debug("getUser() {}",id);
+		
 		final UserDAO userDAO = UserDAO.load(entityManager,id);
-		return userDAO.getUser();
+		return userDAO.getDTO();
 	}
 	
 	public static UserDTO getUserWithPassword(final EntityManager entityManager, final String password) throws EntityNotFoundException {
@@ -57,31 +58,33 @@ public class UserManager {
 			throw new EntityNotFoundException(String.format("User with password %s not found",password),noResultException); 
 		}
 		
-		return userDAO.getUser();
+		return userDAO.getDTO();
 	}
 	
 	public static UserDTO saveUser(final EntityManager entityManager, final UserDTO user) throws NameInUseException, PasswordInUseException, EntityNotFoundException {
-
-		//checkConstraints(entityManager,user);
+		log.debug("saveUser() {}", user);
 		
 		UserDAO userDAO;
 		if(user.hasId()) {
 			log.debug("Updating User {}",user.getName());
-			userDAO = UserDAO.load(entityManager,(HibernatePersistenceId)user.getId());
-			userDAO.setUser(user);
+			userDAO = UserDAO.load(entityManager,user.getId());
+			userDAO.setDTO(user);
 		} else {
 			log.debug("Creating new User {}",user.getName());
 			userDAO = UserDAO.create(entityManager, user);
 		}
 		
-		final UserDTO updatedUser = userDAO.getUser();
+		final UserDTO updatedUser = userDAO.getDTO();
 		return updatedUser;
 	}
 
-	public static void deleteUser(final EntityManager entityManager, final HibernatePersistenceId id) throws EntityNotFoundException {
-		log.debug("Deleting User {}",id);
+	public static void deleteUser(final EntityManager entityManager, final PersistenceIdDTO id) throws EntityNotFoundException {
+		log.debug("deleteUser() {}",id);
+		
 		final UserDAO userDAO = entityManager.find(UserDAO.class,id.getId());
-		if(null == userDAO) { throw new EntityNotFoundException(String.format("User %s not found",id));}
+		if(null == userDAO) { 
+			throw new EntityNotFoundException(String.format("User %s not found",id));
+			}
 		entityManager.remove(userDAO);
 	}
 	

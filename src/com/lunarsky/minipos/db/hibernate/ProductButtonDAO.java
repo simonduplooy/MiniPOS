@@ -9,9 +9,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.interfaces.PersistenceId;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
+import com.lunarsky.minipos.model.ui.PersistenceId;
 
 @Entity
 @Table(	name="productButtons")
@@ -19,7 +20,7 @@ public class ProductButtonDAO extends HibernateDAO {
 
 	@ManyToOne (optional = true)
 	@JoinColumn(name="parentId", foreignKey = @ForeignKey(name = "FK_ProductButtons_ProductButtonGroups"))
-	ProductGroupButtonDAO parentButtonGroupDAO;
+	ProductGroupButtonDAO parentGroupButtonDAO;
 	@ManyToOne (optional = false)
 	@JoinColumn(name="productId", foreignKey = @ForeignKey(name = "FK_ProductButtons_Product"))
 	ProductDAO productDAO;
@@ -31,10 +32,8 @@ public class ProductButtonDAO extends HibernateDAO {
 	//used by hibernate
 	public ProductButtonDAO() {}
 	
-	public static ProductButtonDAO load(final EntityManager entityManager, final HibernatePersistenceId id) {
-		assert(null != entityManager);
-		assert(null != id);
-		
+	public static ProductButtonDAO load(final EntityManager entityManager, final PersistenceIdDTO id) {
+
 		final ProductButtonDAO productButtonDAO = entityManager.find(ProductButtonDAO.class,id.getId());
 		if(null == productButtonDAO) { 
 			throw new EntityNotFoundException(String.format("ProductButton %s not found",id));
@@ -45,23 +44,25 @@ public class ProductButtonDAO extends HibernateDAO {
 	}
 	
 	public static ProductButtonDAO create(final EntityManager entityManager, final ProductButtonConfigDTO buttonConfig) {
-		assert(null != entityManager);
-		assert(null != buttonConfig);
-		
+
 		final ProductButtonDAO productButtonDAO = new ProductButtonDAO(entityManager,buttonConfig);
 		entityManager.persist(productButtonDAO);
 		
 		return productButtonDAO;
 	}
 	
-	public ProductButtonConfigDTO getConfig() {
+	private ProductButtonDAO(final EntityManager entityManager,final ProductButtonConfigDTO buttonConfig) {
+		super(entityManager);
+		setDTO(buttonConfig);
+	}
+
+	public ProductButtonConfigDTO getDTO() {
 		final ProductButtonConfigDTO buttonConfig = new ProductButtonConfigDTO(getId(),getParentId(),getProduct(),getColumnIndex(),getRowIndex());  
 		return buttonConfig;
 	}
 
-	public void setConfig(final ProductButtonConfigDTO buttonConfig) {
-		assert(null != buttonConfig);
-		
+	public void setDTO(final ProductButtonConfigDTO buttonConfig) {
+
 		setId(buttonConfig.getId());
 		setParentId(buttonConfig.getParentId());
 		setProduct(buttonConfig.getProduct());
@@ -69,53 +70,37 @@ public class ProductButtonDAO extends HibernateDAO {
 		setRowIndex(buttonConfig.getRowIndex());
 	}
 
-	private ProductButtonDAO(final EntityManager entityManager,final ProductButtonConfigDTO buttonConfig) {
-		super(entityManager);
-		setConfig(buttonConfig);
-	}
-
-	private PersistenceId getParentId() {
-		if(null == parentButtonGroupDAO) {
-			return null;
-		}
-		final PersistenceId parentId = parentButtonGroupDAO.getId();
+	private PersistenceIdDTO getParentId() {
+		final PersistenceIdDTO parentId = parentGroupButtonDAO.getId();
 		return parentId;
 	}
 	
-	private void setParentId(final PersistenceId parentId) {
-		if(null != parentId) {
-			this.parentButtonGroupDAO = ProductGroupButtonDAO.load(getEntityManager(),(HibernatePersistenceId)parentId);
-		}
+	private void setParentId(final PersistenceIdDTO parentId) {
+		parentGroupButtonDAO = ProductGroupButtonDAO.load(getEntityManager(),parentId);
 	}
 	
 	private ProductDTO getProduct() {
-		assert(null != productDAO);
-		final ProductDTO product = productDAO.getProduct();
+		final ProductDTO product = productDAO.getDTO();
 		return product; 
 		}
 	
 	private void setProduct(final ProductDTO product) {
-		assert(null != product);
-		this.productDAO = ProductDAO.load(getEntityManager(),(HibernatePersistenceId)product.getId());
+		productDAO = ProductDAO.load(getEntityManager(),product.getId());
 		}
 	
 	private Integer getColumnIndex() {
-		assert(null != columnIdx);
 		return columnIdx; 
 		}
 	
 	private void setColumnIndex(final Integer columnIdx) {
-		assert(null != columnIdx);
 		this.columnIdx = columnIdx;
 	}
 
 	private Integer getRowIndex() {
-		assert(null != rowIdx);
 		return rowIdx; 
 		}
 	
 	private void setRowIndex(final Integer rowIdx) {
-		assert(null != rowIdx);
 		this.rowIdx = rowIdx;
 	}
 

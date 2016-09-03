@@ -3,37 +3,34 @@ package com.lunarsky.minipos.model.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 public class Product extends ProductBase {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final DoubleProperty priceProperty;
 	
-	public Product(final PersistenceId id, final PersistenceId parentId, final String name, final Double price) {
-		super(id,parentId,name);
-		
-		//id can be null
-		//parentId can be null
-		assert(null != name);
-		assert(null != price);
-		
-		priceProperty = new SimpleDoubleProperty(price);
-		
-		setId(id);
+	//TODO REVERSE ORDER OF CONSTRUCTORS
+	// new SimpleDoubleProperty() should be in the Product() constructor
+	public Product() {
+		priceProperty = new SimpleDoubleProperty();
+	}
+	
+
+	public Product(final PersistenceId parentId, final String name, final Double price) {
+		this();
 		setParentId(parentId);
 		setName(name);
 		setPrice(price);
+		
 	}
 	
-	public Product(final PersistenceId parentId, final String name, final Double price) {
-		this(null,parentId,name,price);
+	public Product(final PersistenceId id, final PersistenceId parentId, final String name, final Double price) {
+		this(parentId,name,price);
+		setId(id);
 	}
 	
 	public Product(final Product product) {
@@ -41,25 +38,24 @@ public class Product extends ProductBase {
 	}
 
 	public Product(final ProductDTO productDTO) {
-		this(productDTO.getId(),productDTO.getParentId(),productDTO.getName(),productDTO.getPrice());
+		this();
+		setDTO(productDTO);
 	}
 	
-	public void set(final ProductDTO productDTO) {
-		assert(null != productDTO);
-		setId(productDTO.getId());
-		setParentId(productDTO.getParentId());
+	public void setDTO(final ProductDTO productDTO) {
+		setId(new PersistenceId(productDTO.getId()));
+		setParentId(new PersistenceId(productDTO.getParentId()));
 		setName(productDTO.getName());
 		setPrice(productDTO.getPrice());
 	}
 	
-	public ProductDTO createDTO() {
-		final ProductDTO productDTO = new ProductDTO(getId(),getParentId(),getName(),getPrice());
+	public ProductDTO getDTO() {
+		final ProductDTO productDTO = new ProductDTO(getId().getDTO(),getParentId().getDTO(),getName(),getPrice());
 		return productDTO;
 	}
 	
 
 	public DoubleProperty priceProperty() {
-		assert(null != priceProperty);
 		return priceProperty;
 	}
 	
@@ -68,7 +64,6 @@ public class Product extends ProductBase {
 	}
 	
 	public void setPrice(final Double price) {
-		assert(null != price);
 		priceProperty.set(price);
 	}
 	

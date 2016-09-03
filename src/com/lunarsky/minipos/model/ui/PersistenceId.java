@@ -11,7 +11,15 @@ public class PersistenceId {
 	}
 	
 	public PersistenceId(PersistenceIdDTO dto) {
-		setId(dto.getId());
+		this(dto.getId());
+	}
+	
+	public PersistenceIdDTO getDTO() {
+		return new PersistenceIdDTO(getId());
+	}
+	
+	public void setDTO(final PersistenceIdDTO idDTO) {
+		setId(idDTO.getId());
 	}
 	
 	public String getId() {
@@ -28,12 +36,11 @@ public class PersistenceId {
 	
 	@Override
 	public boolean equals(Object object) {
-		assert(null != object);
 		assert(object instanceof PersistenceId);
 		
-		final PersistenceId id = (PersistenceId)object;
+		final PersistenceId persistenceId = (PersistenceId)object;
 		
-		final boolean match = this.id.equals(id.getId());
+		final boolean match = id.equals(persistenceId.getId());
 		return match;
 	}
 	
