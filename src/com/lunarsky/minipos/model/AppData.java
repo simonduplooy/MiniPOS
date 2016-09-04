@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.interfaces.ServerConnector;
 import com.lunarsky.minipos.model.dto.UserDTO;
+import com.lunarsky.minipos.model.ui.User;
 import com.lunarsky.minipos.server.ServerConnectorFactory;
 import com.lunarsky.minipos.ui.ViewManager;
 
@@ -20,7 +21,7 @@ public class AppData {
 	private ViewManager viewManager;
 	private ServerConnector serverConnector;
 	
-	private static UserDTO activeUser;
+	private static User activeUser;
 
 	
 	public static AppData getInstance() {
@@ -57,12 +58,12 @@ public class AppData {
 		return viewManager;
 	}
 	
-	public UserDTO getActiveUser() {
+	public User getActiveUser() {
 		assert(null != activeUser);
 		return activeUser;
 	}
 	
-	public void setActiveUser(final UserDTO user) {
+	public void setActiveUser(final User user) {
 		assert(null != user);
 		activeUser = user;
 	}

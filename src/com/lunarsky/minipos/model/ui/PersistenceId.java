@@ -6,6 +6,9 @@ public class PersistenceId {
 
 	private String id;
 	
+	public PersistenceId() {
+	}
+	
 	public PersistenceId(final String id) {
 		this.id = id;
 	}
@@ -38,9 +41,18 @@ public class PersistenceId {
 	public boolean equals(Object object) {
 		assert(object instanceof PersistenceId);
 		
-		final PersistenceId persistenceId = (PersistenceId)object;
+		final String persistenceId = ((PersistenceId)object).getId();
 		
-		final boolean match = id.equals(persistenceId.getId());
+		boolean match = false;
+		
+		if(null != id) {
+			match = id.equals(persistenceId);
+		} else {
+			if(null == persistenceId) {
+				return true;
+			}
+		}
+		
 		return match;
 	}
 	

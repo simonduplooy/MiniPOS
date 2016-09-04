@@ -7,6 +7,8 @@ import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.AccountDTO;
 import com.lunarsky.minipos.model.dto.UserDTO;
+import com.lunarsky.minipos.model.ui.Account;
+import com.lunarsky.minipos.model.ui.User;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 import com.lunarsky.minipos.ui.virtualkeyboards.VirtualKeyboard;
 
@@ -14,7 +16,6 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -28,7 +29,7 @@ public class AccountUpdateDialog extends BorderPane {
 	private static final String WINDOW_TITLE_UPDATE_ACCOUNT = "Update Account";
 	
 	private final AppData appData;
-	private AccountDTO account;
+	private Account account;
 	private StringTextFieldValidator nameValidator; 
 	
 	private Service<AccountDTO> saveService; 
@@ -44,7 +45,7 @@ public class AccountUpdateDialog extends BorderPane {
 
 	
 	// account can be null to create a new Account
-	public AccountUpdateDialog(final Stage parentStage, final AccountDTO account) {
+	public AccountUpdateDialog(final Stage parentStage, final Account account) {
 		assert(null != parentStage);
 			
 		this.appData = AppData.getInstance();
@@ -70,16 +71,16 @@ public class AccountUpdateDialog extends BorderPane {
 				return new Task<AccountDTO>() {
 					@Override
 					protected AccountDTO call() {
-						AccountDTO account = getAccountFromControls();
-						final UserDTO user = appData.getActiveUser();
+						AccountDTO account = getAccountFromControls().getDTO();
+						final UserDTO user = appData.getActiveUser().getDTO();
 						account = appData.getServerConnector().createAccount(user.getId(),account); 
 						return account;
 					}
 					@Override
 					protected void succeeded() {
-						final AccountDTO account = getValue();
+						final AccountDTO accountDTO = getValue();
 						log.debug("CreateAccount Succeeded: [{}]",account);
-						setAccount(account);
+						setAccount(new Account(accountDTO));
 						close();				
 					}
 					@Override
@@ -112,11 +113,11 @@ public class AccountUpdateDialog extends BorderPane {
 		return (Stage)getScene().getWindow();
 	}
 	
-	private void setAccount(final AccountDTO account) {
+	private void setAccount(final Account account) {
 		this.account = account;
 	}
 	
-	public AccountDTO getAccount() {
+	public Account getAccount() {
 		//can be null if cancelled
 		return account;
 	}
@@ -126,10 +127,9 @@ public class AccountUpdateDialog extends BorderPane {
 		saveService.cancel();
 	}
 	
-	private AccountDTO getAccountFromControls() {
+	private Account getAccountFromControls() {
 		final String name = nameTextField.getText();
-		final UserDTO user = appData.getActiveUser();
-		AccountDTO account = new AccountDTO();
+		Account account = new Account();
 		account.setName(name);
 		return account;
 	}

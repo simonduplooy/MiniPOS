@@ -5,17 +5,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
-import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.model.ui.ProductBase;
 import com.lunarsky.minipos.model.ui.ProductButtonConfig;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -135,7 +131,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 		
 		//TODO Service
 		Task<ProductButtonConfigDTO> task = new Task<ProductButtonConfigDTO>() {
-			final ProductButtonConfigDTO buttonConfig = getButtonConfig().createDTO();
+			final ProductButtonConfigDTO buttonConfig = getButtonConfig().getDTO();
 			@Override
 			protected ProductButtonConfigDTO call() throws EntityNotFoundException {
 				return appData.getServerConnector().saveProductButton(buttonConfig);
@@ -144,7 +140,7 @@ public class ProductButtonUpdateDialog extends BorderPane {
 			protected void succeeded() {
 				log.debug("SaveProductButton() Succeeded");
 				final ProductButtonConfigDTO configDTO = getValue();
-				getButtonConfig().set(configDTO);
+				getButtonConfig().setDTO(configDTO);
 				wasSaved = true;
 				close();
 			}

@@ -54,18 +54,6 @@ public class SplashView extends StackPane {
 		button.setOnAction((event) -> AppData.getInstance().getViewManager().showUserOverviewDialog());
 		itemFlowPane.getChildren().add(button);
 
-		button = new Button("Roles");
-		button.setPrefWidth(USE_COMPUTED_SIZE);
-		button.setMinWidth(USE_PREF_SIZE);
-		button.setOnAction((event) -> AppData.getInstance().getViewManager().showRoleOverviewDialog());
-		itemFlowPane.getChildren().add(button);
-
-		button = new Button("Stock");
-		button.setPrefWidth(USE_COMPUTED_SIZE);
-		button.setMinWidth(USE_PREF_SIZE);
-		button.setOnAction((event) -> AppData.getInstance().getViewManager().showStockOverviewDialog());
-		itemFlowPane.getChildren().add(button);
-
 		button = new Button("Products");
 		button.setPrefWidth(USE_COMPUTED_SIZE);
 		button.setMinWidth(USE_PREF_SIZE);

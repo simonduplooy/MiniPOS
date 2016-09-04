@@ -5,8 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.dto.AccountDTO;
-import com.lunarsky.minipos.model.dto.UserDTO;
+import com.lunarsky.minipos.model.ui.Account;
+import com.lunarsky.minipos.model.ui.User;
 import com.sun.javafx.css.StyleManager;
 
 import javafx.application.Application;
@@ -119,7 +119,7 @@ public class ViewManager {
 		showSplashView();
 	}
 
-	private void showAccountView(final AccountDTO account) {
+	private void showAccountView(final Account account) {
 		AccountView accountView = new AccountView(account);
 		setScene(accountView);
 		setDefaultLayout(accountView);		
@@ -129,11 +129,11 @@ public class ViewManager {
 		showAccountOverviewView();
 	}
 	
-	public void accountSelected (final AccountDTO account) {
+	public void accountSelected (final Account account) {
 		showProductOrderView(account);
 	}
 	
-	private void showProductOrderView(final AccountDTO account) {
+	private void showProductOrderView(final Account account) {
 		ProductOrderView view = new ProductOrderView(account);
 		setDefaultLayout(view);	
 		setScene(view);
@@ -159,7 +159,7 @@ public class ViewManager {
         LoginDialog loginDialog = new LoginDialog(getPrimaryStage());
         loginDialog.getStage().showAndWait();
 
-        final UserDTO user = loginDialog.getUser();
+        final User user = loginDialog.getUser();
         if(null != user) {
         	log.debug(String.format("User Login: %s",user));
         	AppData.getInstance().setActiveUser(user);
@@ -180,18 +180,7 @@ public class ViewManager {
 		UserOverviewDialog dialog = new UserOverviewDialog(getPrimaryStage());
 	    dialog.getStage().show();
 	}	
-	
-	
-	public void showRoleOverviewDialog() {
-		RoleOverviewDialog dialog = new RoleOverviewDialog(getPrimaryStage());
-	    dialog.getStage().show();
-	}
-	
-	public void showStockOverviewDialog() {
-		StockOverviewDialog dialog = new StockOverviewDialog(getPrimaryStage());
-	    dialog.getStage().show();
-	}
-	
+
 	public void showProductOverviewDialog() {
 		ProductOverviewDialog dialog = new ProductOverviewDialog(getPrimaryStage());
 	    dialog.getStage().show();

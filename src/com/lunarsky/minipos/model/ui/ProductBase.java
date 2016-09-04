@@ -9,7 +9,18 @@ public class ProductBase extends PersistenceObject implements Comparable<Product
 	private final StringProperty nameProperty;
 
 	public ProductBase() {
+		parentId = new PersistenceId();
 		nameProperty = new SimpleStringProperty();
+	}
+	
+	public ProductBase(final String name) {
+		this();
+		setName(name);
+	}
+	
+	public ProductBase(final PersistenceId id, final String name) {
+		this(name);
+		setId(id);
 	}
 	
 	public PersistenceId getParentId() {

@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,19 +7,14 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.dto.AccountDTO;
-import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
-import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
-import com.lunarsky.minipos.model.dto.ProductSaleDTO;
+import com.lunarsky.minipos.model.ui.Account;
+import com.lunarsky.minipos.model.ui.PersistenceId;
 import com.lunarsky.minipos.model.ui.Product;
-import com.lunarsky.minipos.model.ui.ProductButtonConfig;
+import com.lunarsky.minipos.model.ui.ProductSale;
 
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.BorderPane;
@@ -30,8 +24,8 @@ public class ProductOrderView extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 
 	private final AppData appData;
-	private final AccountDTO account;
-	private final List<ProductSaleDTO> productSales;
+	private final Account account;
+	private final List<ProductSale> productSales;
 
 	private PersistenceId parentId;
 
@@ -45,13 +39,13 @@ public class ProductOrderView extends BorderPane {
 	@FXML
 	private GridPane productGridPane;
 	
-	public ProductOrderView(final AccountDTO account) {
+	public ProductOrderView(final Account account) {
 		assert(null != account);
 		
 		this.appData = AppData.getInstance();
 		this.account = account;
 		
-        productSales = new ArrayList<ProductSaleDTO>();
+        productSales = new ArrayList<ProductSale>();
 		
         UiUtil.loadRootConstructNode(this,"ProductOrderView.fxml");
 
@@ -85,7 +79,7 @@ public class ProductOrderView extends BorderPane {
 	
 	private void calculateTotal() {
 		Double cost = 0.0;
-		for(ProductSaleDTO sale: productSales) {
+		for(ProductSale sale: productSales) {
 			cost += sale.getCost();
 		}
 		
@@ -94,8 +88,8 @@ public class ProductOrderView extends BorderPane {
 		costLabel.setText(costText);
 	}
 	
-	private ProductSaleDTO findProductSale(final Product product) {
-		for(ProductSaleDTO sale: productSales) {
+	private ProductSale findProductSale(final Product product) {
+		for(ProductSale sale: productSales) {
 			if(sale.getProduct().equals(product)) {
 				return sale;
 			}

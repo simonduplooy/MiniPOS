@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.ui.Account;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,12 +15,12 @@ public class AccountView extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
 
 	private final AppData appData;
-	private final AccountDTO account;
+	private final Account account;
 
 	@FXML
 	private Label accountLabel;
 	
-	public AccountView(final AccountDTO account) {
+	public AccountView(final Account account) {
 		assert(null != account);
 		
 		this.appData = AppData.getInstance();

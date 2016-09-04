@@ -20,12 +20,10 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.converter.NumberStringConverter;
 
@@ -106,7 +104,7 @@ public class ProductUpdateDialog extends BorderPane {
 			@Override
 			protected Task<ProductDTO> createTask() {
 				final Task<ProductDTO> task = new Task<ProductDTO>() {
-					final ProductDTO productDTO = getProduct().createDTO();
+					final ProductDTO productDTO = getProduct().getDTO();
 					@Override
 					protected ProductDTO call() throws EntityNotFoundException {
 						return appData.getServerConnector().saveProduct(productDTO);
@@ -115,7 +113,7 @@ public class ProductUpdateDialog extends BorderPane {
 					protected void succeeded() {
 						log.debug("saveProduct() Succeeded");
 						final ProductDTO productDTO = getValue();
-						getProduct().set(productDTO);
+						getProduct().setDTO(productDTO);
 						wasSaved = true;
 						close();
 					}

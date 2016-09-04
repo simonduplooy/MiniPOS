@@ -6,19 +6,18 @@ import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
+import com.lunarsky.minipos.model.ui.PersistenceId;
+import com.lunarsky.minipos.model.ui.ProductGroupButtonConfig;
 import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ProductGroupButtonUpdateDialog extends BorderPane {
@@ -28,7 +27,7 @@ public class ProductGroupButtonUpdateDialog extends BorderPane {
 
 	private final AppData appData;
 
-	private ProductGroupButtonConfigDTO buttonConfig;
+	private ProductGroupButtonConfig buttonConfig;
 
 	@FXML
 	private TextField nameTextField;
@@ -36,7 +35,7 @@ public class ProductGroupButtonUpdateDialog extends BorderPane {
 	@FXML
 	private Button saveButton;
 
-	public ProductGroupButtonUpdateDialog(final Stage parentStage, final ProductGroupButtonConfigDTO buttonConfig) {
+	public ProductGroupButtonUpdateDialog(final Stage parentStage, final ProductGroupButtonConfig buttonConfig) {
 		assert(null != parentStage);
 		//buttonConfig can be null
 
@@ -52,7 +51,7 @@ public class ProductGroupButtonUpdateDialog extends BorderPane {
 	}
 	
 	//Can be null if canceled
-	public ProductGroupButtonConfigDTO getButtonConfig() {
+	public ProductGroupButtonConfig getButtonConfig() {
 		return buttonConfig;
 	}
 	
@@ -91,14 +90,15 @@ public class ProductGroupButtonUpdateDialog extends BorderPane {
 		
 		//TODO Service
 		Task<ProductGroupButtonConfigDTO> task = new Task<ProductGroupButtonConfigDTO>() {
-			final ProductGroupButtonConfigDTO buttonConfig = createButtonConfigFromControls();
+			final ProductGroupButtonConfigDTO buttonConfig = createButtonConfigFromControls().getDTO();
 			@Override
 			protected ProductGroupButtonConfigDTO call() throws EntityNotFoundException {
 				return appData.getServerConnector().saveProductGroupButton(buttonConfig);
 			}
 			@Override
 			protected void succeeded() {
-				setButtonConfig(getValue());
+				final ProductGroupButtonConfigDTO configDTO = getValue();
+				setButtonConfig(new ProductGroupButtonConfig(configDTO));
 				log.debug("SaveProductButtonGroup() Succeeded");
 				close();
 			}
@@ -120,17 +120,17 @@ public class ProductGroupButtonUpdateDialog extends BorderPane {
 		close();
 	}
 	
-	private ProductGroupButtonConfigDTO createButtonConfigFromControls() {
+	private ProductGroupButtonConfig createButtonConfigFromControls() {
 		final PersistenceId id = buttonConfig.getId();
 		final PersistenceId parentId = buttonConfig.getParentId();
 		final String name = nameTextField.getText();
 		final Integer columnIdx = buttonConfig.getColumnIndex();
 		final Integer rowIdx = buttonConfig.getRowIndex();
-		final ProductGroupButtonConfigDTO buttonConfig = new ProductGroupButtonConfigDTO(id,parentId,name,columnIdx,rowIdx);
+		final ProductGroupButtonConfig buttonConfig = new ProductGroupButtonConfig(id,parentId,name,columnIdx,rowIdx);
 		return buttonConfig;
 	}
 	
-	private void setButtonConfig(final ProductGroupButtonConfigDTO buttonConfig) {
+	private void setButtonConfig(final ProductGroupButtonConfig buttonConfig) {
 		assert(null != buttonConfig);
 		this.buttonConfig = buttonConfig;
 	}

@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.dto.AccountDTO;
+import com.lunarsky.minipos.model.ui.Account;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,9 +15,9 @@ public class AccountButton extends Button {
 	private static final Logger log = LogManager.getLogger();
 	
 
-	private final AccountDTO account;
+	private final Account account;
 	
-	public AccountButton(final AccountDTO account) {
+	public AccountButton(final Account account) {
 		assert(null != account);
 		this.account = account;
 		

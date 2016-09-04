@@ -6,10 +6,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
+import com.lunarsky.minipos.model.ui.PersistenceId;
 import com.lunarsky.minipos.model.ui.ProductButtonConfig;
 import com.lunarsky.minipos.model.ui.ProductGroupButtonConfig;
 

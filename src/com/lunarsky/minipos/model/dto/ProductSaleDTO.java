@@ -4,28 +4,27 @@ import com.lunarsky.minipos.model.ui.Product;
 
 public class ProductSaleDTO extends PersistenceObjectDTO {
 
-	private final Product product;
-	private final Integer count;
+	private final ProductDTO product;
+	private final Integer productCount;
 	
-	public ProductSaleDTO(final PersistenceIdDTO id,final Product product, final Integer count) {
+	public ProductSaleDTO(final PersistenceIdDTO id,final ProductDTO product, final Integer productCount) {
 		super(id);
 		
 		this.product = product;
-		this.count = count;
+		this.productCount = productCount;
 	}
 	
-	public Product getProduct() {
+	public ProductDTO getProduct() {
 		return product;
 	}
 	
-	public Integer getCount() {
-		return count;
+	public Integer getProductCount() {
+		return productCount;
 	}
 	
-
 	@Override
 	public String toString() {
-		return String.format("id:[%s] product:[%s] count:[%s]",getId(),getProduct(),getCount());
+		return String.format("id:[%s] product:[%s] productCount:[%s]",getId(),getProduct(),getProductCount());
 	}
 	
 }

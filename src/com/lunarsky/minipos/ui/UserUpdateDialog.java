@@ -157,7 +157,7 @@ public class UserUpdateDialog extends BorderPane {
 				
 				final Task<UserDTO> task = new Task<UserDTO>() {
 					
-					final UserDTO userDTO = getUser().createDTO();
+					final UserDTO userDTO = getUser().getDTO();
 					
 					@Override
 					protected UserDTO call() {
@@ -167,8 +167,8 @@ public class UserUpdateDialog extends BorderPane {
 					@Override
 					protected void succeeded() {
 						log.debug("SaveUser() Succeeded");
-						final UserDTO dto = getValue();
-						user.set(dto);
+						final UserDTO userDTO = getValue();
+						user.setDTO(userDTO);
 						wasSaved = true;
 						close();
 					}

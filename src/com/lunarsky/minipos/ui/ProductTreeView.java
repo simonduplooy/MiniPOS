@@ -7,10 +7,10 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.ui.PersistenceId;
 import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.model.ui.ProductBase;
 import com.lunarsky.minipos.model.ui.ProductGroup;
@@ -102,6 +102,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		List<ProductGroupDTO> groups = appData.getServerConnector().getProductGroups();
 		for(ProductGroupDTO groupDTO: groups) {
 			final ProductGroup group = new ProductGroup(groupDTO);
+			log.debug("Adding:[{}]",group);
 			final TreeItem<ProductBase> treeItem = new TreeItem<ProductBase>(group);
 			treeList.add(treeItem);
 		}
@@ -109,6 +110,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		List<ProductDTO> products = appData.getServerConnector().getProducts();
 		for(ProductDTO productDTO: products) {
 			final Product product = new Product(productDTO);
+			log.debug("Adding:[{}]",product);
 			final TreeItem<ProductBase> treeItem = new TreeItem<ProductBase>(product);
 			treeList.add(treeItem);
 		}
@@ -219,7 +221,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		//TODO Async
 		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
 		final ProductGroup group = (ProductGroup)selectedTreeItem.getValue();
-		appData.getServerConnector().deleteProductGroup(group.getId());
+		appData.getServerConnector().deleteProductGroup(group.getId().getDTO());
 		selectedTreeItem.getParent().getChildren().remove(selectedTreeItem);
 	}
 	
@@ -270,7 +272,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 		//TODO Async
 		final TreeItem<ProductBase> selectedTreeItem = selectedItemProperty().getValue();
 		final Product product = (Product)selectedTreeItem.getValue();
-		appData.getServerConnector().deleteProduct(product.getId());
+		appData.getServerConnector().deleteProduct(product.getId().getDTO());
 		selectedTreeItem.getParent().getChildren().remove(selectedTreeItem);
 	}
 	
@@ -283,7 +285,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	private class ProductRoot extends ProductBase {
 		
 		private ProductRoot(final String name) {
-			super(null,null,name);
+			super(name);
 		}
 	}
 }

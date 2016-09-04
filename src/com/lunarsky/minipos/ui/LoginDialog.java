@@ -7,21 +7,14 @@ import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.AppData;
 import com.lunarsky.minipos.model.dto.UserDTO;
+import com.lunarsky.minipos.model.ui.User;
 import com.lunarsky.minipos.ui.validator.IntegerTextFieldValidator;
 import com.lunarsky.minipos.ui.virtualkeyboards.NumericVirtualKeyboard;
 
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventTarget;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -38,7 +31,7 @@ public class LoginDialog extends VBox {
 	//TODO is there a way to get the stage without holding a reference?
 	private final AppData appData;
 	private final IntegerTextFieldValidator passwordValidator;
-	private UserDTO user;
+	private User user;
 	
 	public LoginDialog(final Stage parentStage) {
 		assert(null != parentStage);
@@ -85,8 +78,8 @@ public class LoginDialog extends VBox {
 				
 				@Override
 				protected void succeeded() {
-					final UserDTO user = getValue();
-					setUser(user);
+					final UserDTO userDTO = getValue();
+					setUser(new User(userDTO));
 					close();
 				}
 				
@@ -109,11 +102,11 @@ public class LoginDialog extends VBox {
 		}
 	}
 	
-	public UserDTO getUser() {
+	public User getUser() {
 		return user;
 	}
 
-	private void setUser(final UserDTO user) {
+	private void setUser(final User user) {
 		assert(null != user);
 		this.user = user;
 	}

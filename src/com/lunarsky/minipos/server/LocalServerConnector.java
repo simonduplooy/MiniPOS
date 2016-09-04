@@ -6,19 +6,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.db.PersistenceProviderFactory;
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.interfaces.PersistenceProvider;
 import com.lunarsky.minipos.interfaces.ServerConnector;
 import com.lunarsky.minipos.interfaces.Transaction;
 import com.lunarsky.minipos.model.dto.AccountDTO;
 import com.lunarsky.minipos.model.dto.PersistenceConfigDTO;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
-import com.lunarsky.minipos.model.dto.RoleDTO;
-import com.lunarsky.minipos.model.dto.StockItemDTO;
 import com.lunarsky.minipos.model.dto.UserDTO;
+import com.lunarsky.minipos.model.ui.PersistenceId;
 
 public class LocalServerConnector implements ServerConnector {
 	
@@ -60,7 +59,7 @@ public class LocalServerConnector implements ServerConnector {
 		return users;
 	}
 	
-	public UserDTO getUser(final PersistenceId id){
+	public UserDTO getUser(final PersistenceIdDTO id){
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final UserDTO user = (UserDTO)persistenceCall(transaction,()->(persistenceProvider.getUser(transaction, id)));
 		return user;
@@ -78,54 +77,11 @@ public class LocalServerConnector implements ServerConnector {
 		return updatedUser;
 	}
 
-	public void deleteUser(final PersistenceId id) {
+	public void deleteUser(final PersistenceIdDTO id) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.deleteUser(transaction, id);return null;});
 	}
 	
-	/*****************************************************************************
-	 * Roles
-	 *****************************************************************************/
-	public List<RoleDTO> getRoles() {
-		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<RoleDTO> roles= (List<RoleDTO>)persistenceCall(transaction,()->(persistenceProvider.getRoles(transaction)));
-		return roles;
-	}
-	
-	/*****************************************************************************
-	 * Roles
-	 *****************************************************************************/
-	public RoleDTO saveRole(final RoleDTO role) {
-		final Transaction transaction = persistenceProvider.startTransaction();
-		final RoleDTO updatedRole= (RoleDTO)persistenceCall(transaction,()->(persistenceProvider.saveRole(transaction, role)));
-		return updatedRole;
-	}
-
-	public void deleteRole(final PersistenceId id) {
-		final Transaction transaction = persistenceProvider.startTransaction();
-		persistenceCall(transaction,()->{persistenceProvider.deleteRole(transaction, id);return null;});
-	}
-
-	/*****************************************************************************
-	 * Stock
-	 *****************************************************************************/
-	public List<StockItemDTO> getStock() {
-		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<StockItemDTO> stockItems = (List<StockItemDTO>)persistenceCall(transaction,()->(persistenceProvider.getStock(transaction)));
-		return stockItems;
-	}
-	
-	public StockItemDTO saveStockItem(final StockItemDTO stockItem) {
-		final Transaction transaction = persistenceProvider.startTransaction();
-		final StockItemDTO updatedStockItem = (StockItemDTO)persistenceCall(transaction,()->(persistenceProvider.saveStockItem(transaction, stockItem)));
-		return updatedStockItem;
-	}
-	
-	public void deleteStockItem(final PersistenceId id) {
-		final Transaction transaction = persistenceProvider.startTransaction();
-		persistenceCall(transaction,()->{persistenceProvider.deleteStockItem(transaction, id);return null;});
-	}
-
 	/*****************************************************************************
 	 * Accounts
 	 *****************************************************************************/
@@ -135,12 +91,12 @@ public class LocalServerConnector implements ServerConnector {
 		return accounts;		
 	}
 
-	public List<AccountDTO> getAccounts(final PersistenceId userId) {
+	public List<AccountDTO> getAccounts(final PersistenceIdDTO userId) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final List<AccountDTO> accounts = (List<AccountDTO>)persistenceCall(transaction,()->(persistenceProvider.getAccounts(transaction,userId)));
 		return accounts;		
 	}
-	public AccountDTO createAccount(final PersistenceId userId, final AccountDTO account) {
+	public AccountDTO createAccount(final PersistenceIdDTO userId, final AccountDTO account) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		final AccountDTO updatedAccount = (AccountDTO)persistenceCall(transaction,()->(persistenceProvider.createAccount(transaction, userId, account)));
 		return updatedAccount;
@@ -151,7 +107,7 @@ public class LocalServerConnector implements ServerConnector {
 		persistenceCall(transaction,()->{persistenceProvider.updateAccount(transaction, account);return null;});
 	}
 
-	public void deleteAccount(final PersistenceId id) {
+	public void deleteAccount(final PersistenceIdDTO id) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.deleteAccount(transaction, id);return null;});		
 	}
@@ -171,7 +127,7 @@ public class LocalServerConnector implements ServerConnector {
 		return updatedProduct;
 	}
 
-	public void deleteProduct(final PersistenceId id) {
+	public void deleteProduct(final PersistenceIdDTO id) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.deleteProduct(transaction, id);return null;});	
 	}
@@ -188,7 +144,7 @@ public class LocalServerConnector implements ServerConnector {
 		return updatedGroup;
 	}
 	
-	public void deleteProductGroup(final PersistenceId id) {
+	public void deleteProductGroup(final PersistenceIdDTO id) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.deleteProductGroup(transaction, id);return null;});	
 	}
@@ -208,7 +164,7 @@ public class LocalServerConnector implements ServerConnector {
 		return updatedConfig;
 	}
 	
-	public void deleteProductButton(final PersistenceId id) {
+	public void deleteProductButton(final PersistenceIdDTO id) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.deleteProductButton(transaction,id);return null;});
 	}
@@ -225,7 +181,7 @@ public class LocalServerConnector implements ServerConnector {
 		return updatedConfig;
 	}
 	
-	public void deleteProductGroupButton(final PersistenceId id) {
+	public void deleteProductGroupButton(final PersistenceIdDTO id) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.deleteProductGroupButton(transaction,id);return null;});
 	}

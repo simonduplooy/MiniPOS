@@ -1,26 +1,15 @@
 package com.lunarsky.minipos.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.AppData;
-import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
-import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
-import com.lunarsky.minipos.model.ui.Product;
-import com.lunarsky.minipos.model.ui.ProductButtonConfig;
+import com.lunarsky.minipos.model.ui.PersistenceId;
 
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 
 public class ProductConfigureView extends BorderPane  {

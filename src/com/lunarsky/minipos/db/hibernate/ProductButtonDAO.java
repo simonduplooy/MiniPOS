@@ -71,7 +71,15 @@ public class ProductButtonDAO extends HibernateDAO {
 	}
 
 	private PersistenceIdDTO getParentId() {
-		final PersistenceIdDTO parentId = parentGroupButtonDAO.getId();
+		
+		final PersistenceIdDTO parentId;
+		
+		if(null == parentGroupButtonDAO) {
+			parentId =  new PersistenceIdDTO(null);
+		} else {
+			parentId = parentGroupButtonDAO.getId();
+		}
+		
 		return parentId;
 	}
 	

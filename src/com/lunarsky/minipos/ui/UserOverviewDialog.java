@@ -230,7 +230,7 @@ public class UserOverviewDialog extends BorderPane {
 			private final User user = getSelectedUser();
 			@Override
 			protected Void call() {
-				appData.getServerConnector().deleteUser(user.getId());
+				appData.getServerConnector().deleteUser(user.getId().getDTO());
 				return null;
 			}
 			@Override

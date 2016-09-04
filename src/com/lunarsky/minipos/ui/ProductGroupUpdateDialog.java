@@ -90,7 +90,7 @@ public class ProductGroupUpdateDialog extends BorderPane {
 			@Override
 			protected Task<ProductGroupDTO> createTask() {
 				final Task<ProductGroupDTO> task = new Task<ProductGroupDTO>() {
-					final ProductGroupDTO groupDTO = getGroup().createDTO();
+					final ProductGroupDTO groupDTO = getGroup().getDTO();
 					@Override
 					protected ProductGroupDTO call() throws EntityNotFoundException {
 						return appData.getServerConnector().saveProductGroup(groupDTO);
@@ -99,7 +99,7 @@ public class ProductGroupUpdateDialog extends BorderPane {
 					protected void succeeded() {
 						log.debug("saveProductGroup() Succeeded");
 						final ProductGroupDTO groupDTO = getValue();
-						getGroup().set(groupDTO);
+						getGroup().setDTO(groupDTO);
 						wasSaved = true;
 						close();
 					}
