@@ -3,14 +3,13 @@ package com.lunarsky.minipos.model.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.interfaces.PersistenceId;
 import com.lunarsky.minipos.model.dto.PersistenceObjectDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class ProductGroupButtonConfig extends PersistenceObjectDTO {
+public class ProductGroupButtonConfig extends PersistenceObject {
 	private static final Logger log = LogManager.getLogger();
 	
 	private PersistenceId parentId; 
@@ -18,23 +17,39 @@ public class ProductGroupButtonConfig extends PersistenceObjectDTO {
 	private Integer columnIdx;
 	private Integer rowIdx;
 	
-	public ProductGroupButtonConfig(final PersistenceId id, final PersistenceId parentId, final String name, final Integer columnIdx, final Integer rowIdx) {
-		super(id);
-		
+	public ProductGroupButtonConfig() {
 		nameProperty = new SimpleStringProperty();
-		
+	}
+	
+	public ProductGroupButtonConfig(final PersistenceId parentId, final String name, final Integer columnIdx, final Integer rowIdx) {
+		this();
 		setParentId(parentId);
 		setName(name);
 		setColumnIndex(columnIdx);
 		setRowIndex(rowIdx);
 	}
 	
-	public ProductGroupButtonConfig(final PersistenceId parentId, final String name, final Integer columnIdx, final Integer rowIdx) {
-		this(null,parentId,name,columnIdx,rowIdx);
+	public ProductGroupButtonConfig(final PersistenceId id, final PersistenceId parentId, final String name, final Integer columnIdx, final Integer rowIdx) {
+		this(parentId,name,columnIdx,rowIdx);
+	}
+		
+	public ProductGroupButtonConfig(final ProductGroupButtonConfigDTO configDTO) {
+		this();
+		setDTO(configDTO);
 	}
 	
-	public ProductGroupButtonConfig(final ProductGroupButtonConfigDTO dto) {
-		this(dto.getId(),dto.getParentId(),dto.getName(),dto.getColumnIndex(),dto.getRowIndex());
+	public ProductGroupButtonConfigDTO getDTO() {
+		final ProductGroupButtonConfigDTO configDTO = new ProductGroupButtonConfigDTO(getId().getDTO(),getParentId().getDTO(),getName(),getColumnIndex(),getRowIndex());
+		return configDTO;
+	}
+	
+	public void setDTO(ProductGroupButtonConfigDTO configDTO) {
+		setId(new PersistenceId(configDTO.getId()));
+		setParentId(new PersistenceId(configDTO.getParentId()));
+		setName(configDTO.getName());
+		setColumnIndex(configDTO.getColumnIndex());
+		setRowIndex(configDTO.getRowIndex());
+		
 	}
 	
 	public PersistenceId getParentId() {

@@ -3,18 +3,24 @@ package com.lunarsky.minipos.model.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.interfaces.PersistenceId;
-import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
-
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 
 public class ProductGroup extends ProductBase {
 	private static final Logger log = LogManager.getLogger();
 
+	public ProductGroup() {
+		
+	}
+	
+	public ProductGroup(final PersistenceId parentId, final String name) {
+		this();
+		setParentId(parentId);
+		setName(name);
+	}
+	
 	public ProductGroup(final PersistenceId id, final PersistenceId parentId, final String name) {
-		super(id,parentId,name);
+		this(parentId,name);
+		setId(id);
 	}
 	
 	public ProductGroup(final ProductGroup group) {
@@ -22,19 +28,18 @@ public class ProductGroup extends ProductBase {
 	}
 	
 	public ProductGroup(final ProductGroupDTO group) {
-		this(group.getId(),group.getParentId(),group.getName());
+		this();
+		setDTO(group);
 	}
 
-	public void set(final ProductGroupDTO group) {
-		assert(null != group);
-
-		setId(group.getId());
-		setParentId(group.getParentId());
+	public void setDTO(final ProductGroupDTO group) {
+		setId(new PersistenceId(group.getId()));
+		setParentId(new PersistenceId(group.getParentId()));
 		setName(group.getName());
 	}
 	
-	public ProductGroupDTO createDTO() {
-		final ProductGroupDTO groupDTO = new ProductGroupDTO(getId(),getParentId(),getName());
+	public ProductGroupDTO getDTO() {
+		final ProductGroupDTO groupDTO = new ProductGroupDTO(getId().getDTO(),getParentId().getDTO(),getName());
 		return groupDTO;
 	}
 	
