@@ -12,14 +12,13 @@ import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
-import com.lunarsky.minipos.model.ui.PersistenceId;
 
 @Entity
 @Table(	name="productgroupbuttons")
 public class ProductGroupButtonDAO extends HibernateDAO {
 
 	@ManyToOne(optional = true)
-	@JoinColumn(name = "parentId", foreignKey = @ForeignKey(name = "FK_ProductGroupButtons_ProductGroupButtons"))
+	@JoinColumn(name = "parentId", foreignKey = @ForeignKey(name = "FK_ProductButtons_ProductGroupButtons"))
 	private ProductGroupButtonDAO parentGroupButtonDAO;
 	@Column(nullable = false, length = Const.MAX_TEXTFIELD_LENGTH)
 	private String name;
@@ -71,12 +70,19 @@ public class ProductGroupButtonDAO extends HibernateDAO {
 	}
 
 	private PersistenceIdDTO getParentId() {
-		final PersistenceIdDTO parentId = parentGroupButtonDAO.getId();
+		final PersistenceIdDTO parentId;
+		if(null != parentGroupButtonDAO) {
+			parentId = parentGroupButtonDAO.getId();
+		} else {
+			parentId = new PersistenceIdDTO();
+		}
 		return parentId;
 	}
 	
 	private void setParentId(final PersistenceIdDTO parentId) {
-		parentGroupButtonDAO = ProductGroupButtonDAO.load(getEntityManager(),parentId);
+		if(parentId.hasId()) {
+			parentGroupButtonDAO = ProductGroupButtonDAO.load(getEntityManager(),parentId);
+		}
 	}
 	
 	private String getName() {

@@ -17,11 +17,10 @@ public class ProductConfigureView extends BorderPane  {
 
 	private final AppData appData;
 	private final Stage stage;
-	
-	private PersistenceId parentId;
 
 	@FXML
 	private ScrollPane productButtonScrollPane;
+	private ProductButtonGridPane productButtonGridPane;
 	
 	public ProductConfigureView(final Stage stage) {
 		assert(null != stage);
@@ -41,8 +40,8 @@ public class ProductConfigureView extends BorderPane  {
 	}
 	
 	private void initializeControls() {
-		final ProductButtonGridPane gridPane = new ProductButtonGridPane(true);
-		productButtonScrollPane.setContent(gridPane);
+		productButtonGridPane = new ProductButtonGridPane(true);
+		productButtonScrollPane.setContent(productButtonGridPane);
 	}
 
 	/*
@@ -182,7 +181,11 @@ public class ProductConfigureView extends BorderPane  {
 	@FXML
 	private void handleBack(final ActionEvent event) {
 		log.debug("handleBack()");
-		close();
+		
+		final boolean backHandled = productButtonGridPane.handleBack();
+		if(!backHandled) {
+			close();
+		}
 	}
 	/*
 	//Implement ProductButtonObserver

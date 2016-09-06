@@ -9,14 +9,11 @@ import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class ProductGroupButtonConfig extends PersistenceObject {
+public class ProductGroupButtonConfig extends ProductButtonConfigBase {
 	private static final Logger log = LogManager.getLogger();
 	
-	private PersistenceId parentId; 
 	private StringProperty nameProperty;
-	private Integer columnIdx;
-	private Integer rowIdx;
-	
+
 	public ProductGroupButtonConfig() {
 		nameProperty = new SimpleStringProperty();
 	}
@@ -32,14 +29,22 @@ public class ProductGroupButtonConfig extends PersistenceObject {
 	public ProductGroupButtonConfig(final PersistenceId id, final PersistenceId parentId, final String name, final Integer columnIdx, final Integer rowIdx) {
 		this(parentId,name,columnIdx,rowIdx);
 	}
-		
+	
+	public ProductGroupButtonConfig(final ProductGroupButtonConfig config) {
+		this(config.getId(),config.getParentId(),config.getName(),config.getColumnIndex(),config.getRowIndex());
+	}
+	
 	public ProductGroupButtonConfig(final ProductGroupButtonConfigDTO configDTO) {
 		this();
 		setDTO(configDTO);
 	}
 	
 	public ProductGroupButtonConfigDTO getDTO() {
-		final ProductGroupButtonConfigDTO configDTO = new ProductGroupButtonConfigDTO(getId().getDTO(),getParentId().getDTO(),getName(),getColumnIndex(),getRowIndex());
+		final ProductGroupButtonConfigDTO configDTO = new ProductGroupButtonConfigDTO(getId().getDTO(),
+				getParentId().getDTO(),
+				getName(),
+				getColumnIndex(),
+				getRowIndex());
 		return configDTO;
 	}
 	
@@ -52,17 +57,9 @@ public class ProductGroupButtonConfig extends PersistenceObject {
 		
 	}
 	
-	public PersistenceId getParentId() {
-		return parentId;
-	}
-	
-	public void setParentId(final PersistenceId parentId) {
-		this.parentId = parentId;
-	}
-	
 	public StringProperty nameProperty() {
 		assert(null != nameProperty);
-		return nameProperty();
+		return nameProperty;
 	}
 	
 	public String getName() {
@@ -72,26 +69,6 @@ public class ProductGroupButtonConfig extends PersistenceObject {
 	public void setName(final String name) {
 		assert(null != name);
 		nameProperty().setValue(name);
-	}
-	
-	public Integer getColumnIndex() {
-		assert(null != columnIdx);
-		return columnIdx;
-	}
-	
-	public void setColumnIndex(final Integer columnIdx) {
-		assert(null != columnIdx);
-		this.columnIdx = columnIdx;
-	}
-	
-	public Integer getRowIndex() {
-		assert(null != rowIdx);
-		return rowIdx;
-	}
-	
-	public void setRowIndex(final Integer rowIdx) {
-		assert(null != rowIdx);
-		this.rowIdx = rowIdx;
 	}
 	
 	public String toString() {

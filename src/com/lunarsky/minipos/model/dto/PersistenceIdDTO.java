@@ -4,6 +4,10 @@ public class PersistenceIdDTO {
 
 	private final String id;
 	
+	public PersistenceIdDTO() {
+		id = null;
+	}
+	
 	public PersistenceIdDTO(final String id) {
 		this.id = id;
 	}

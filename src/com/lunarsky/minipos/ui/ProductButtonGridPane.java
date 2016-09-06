@@ -1,16 +1,17 @@
 package com.lunarsky.minipos.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.model.AppData;
+import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.ui.PersistenceId;
 import com.lunarsky.minipos.model.ui.ProductButtonConfig;
+import com.lunarsky.minipos.model.ui.ProductButtonConfigBase;
 import com.lunarsky.minipos.model.ui.ProductGroupButtonConfig;
 
 import javafx.concurrent.Task;
@@ -23,6 +24,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+import javafx.stage.Stage;
 
 public class ProductButtonGridPane extends GridPane {
 	private static final Logger log = LogManager.getLogger();
@@ -33,9 +35,13 @@ public class ProductButtonGridPane extends GridPane {
 	
 	private final AppData appData;
 	private final boolean editable;
-	private PersistenceId activeParentId;
-	private List<ProductGroupButton> productGroupButtonList;
-	private List<ProductButton> productButtonList;
+	private final ProductButtonConfigBase rootConfig;
+	private ProductButtonConfigBase parentConfig;
+	//private List<ProductButtonBase> buttonList;
+	
+	//TODO this should be a binding to the tasks
+	private boolean productButtonAsyncInitializeComplete;
+	private boolean groupButtonAsyncInitializeComplete;
 	
 	/**************************************************************************
 	 * Constructors
@@ -44,6 +50,7 @@ public class ProductButtonGridPane extends GridPane {
 		
 		this.appData = AppData.getInstance();
 		this.editable = editable;
+		this.rootConfig = new ProductButtonConfigBase();
 		
 		initialize();
 	}
@@ -52,8 +59,14 @@ public class ProductButtonGridPane extends GridPane {
 	 * Initialize
 	 **************************************************************************/
 	private void initialize() {
+		initializeMembers();
 		initializeControls();
 		initializeAsync();
+	}
+	
+	private void initializeMembers() {
+		parentConfig = rootConfig;
+		//buttonList = new ArrayList<ProductButtonBase>();
 	}
 	
 	private void initializeControls() {
@@ -78,7 +91,7 @@ public class ProductButtonGridPane extends GridPane {
 			getRowConstraints().add(constraints);
 		}
 		
-		buildProductPane();
+		initializeProductPane();
 	}
 	
 	private void initializeAsync() {
@@ -94,7 +107,7 @@ public class ProductButtonGridPane extends GridPane {
 				log.debug("getProductGroupButtons() Succeeded");
 				final List<ProductGroupButtonConfigDTO>buttonGroupConfigList = getValue();
 				createGroupButtons(buttonGroupConfigList);
-				showGroupButtons();
+				groupButtonInitializeComplete();
 			}
 			@Override
 			protected void failed() {
@@ -121,7 +134,7 @@ public class ProductButtonGridPane extends GridPane {
 				log.debug("getProductButtons() Succeeded");
 				final List<ProductButtonConfigDTO> buttonConfigList = getValue();
 				createProductButtons(buttonConfigList);
-				showProductButtons();
+				productButtonInitializeComplete();
 			}
 			@Override
 			protected void failed() {
@@ -135,80 +148,208 @@ public class ProductButtonGridPane extends GridPane {
 		
 	final Thread buttonThread = new Thread(buttonTask);
 	buttonThread.start();
+	
+	}
+	
+	private void productButtonInitializeComplete() {
+		productButtonAsyncInitializeComplete = true;
+		handleAsyncInitializeComplete();
+	}
+	
+	private void groupButtonInitializeComplete() {
+		groupButtonAsyncInitializeComplete = true;
+		handleAsyncInitializeComplete();
+	}
+	
+	private void handleAsyncInitializeComplete() {
+		if(productButtonAsyncInitializeComplete && groupButtonAsyncInitializeComplete) {
+			showButtons(getParentConfig().getId());
+		}
+	}
+	
+	/**************************************************************************
+	 * Getters & Setters
+	 **************************************************************************/
+	public Stage getStage() {
+		return (Stage) getScene().getWindow();
+	}
+	
+	private ProductButtonConfigBase getParentConfig() {
+		return parentConfig;
+	}
+	
+	private void setParentConfig(final ProductButtonConfigBase config) {
+		this.parentConfig = config;
 	}
 	
 	/**************************************************************************
 	 * EventHandlers
 	 **************************************************************************/
-	private void handleAddGroup(final PersistenceId parentId) {
-		log.debug("handleAddGroup() {}",parentId);
+	public boolean handleBack() {
+		
+		final ProductButtonConfigBase parentConfig = getParentConfig();
+		
+		//At the top of the tree
+		if(!parentConfig.getId().hasId()) {
+			return false;
+		}
+		
+		showButtons(parentConfig.getParentId());
+		return true;
+	}
+
+	private void handleAddGroup(final ProductButtonConfigBase config) {
+		log.debug("handleAddGroup() {}",config);
+		
+		
+		ProductGroupButtonConfig groupConfig = new ProductGroupButtonConfig(getParentConfig().getId(),
+				"",
+				config.getColumnIndex(),
+				config.getRowIndex());
+		
+		final ProductGroupButtonUpdateDialog dialog = new ProductGroupButtonUpdateDialog(getStage(),groupConfig);
+		dialog.getStage().showAndWait();
+		
+		if(dialog.wasSaved()) {
+			groupConfig = dialog.getButtonConfig();
+			final ProductGroupButton button = new ProductGroupButton(editable,groupConfig);
+			button.setVisible(true);
+			getChildren().add(button);
+		}
 	}
 	
+
+	private void handleAddProduct(final ProductButtonConfigBase config) {
+		log.debug("handleAddProduct() {}",config);
+		
+		ProductButtonConfig buttonConfig = new ProductButtonConfig(getParentConfig().getId(),
+				null,
+				config.getColumnIndex(),
+				config.getRowIndex());
+		
+		final ProductButtonUpdateDialog dialog = new ProductButtonUpdateDialog(getStage(),buttonConfig);
+		dialog.getStage().showAndWait();
+		
+		if(dialog.wasSaved()) {
+			buttonConfig = dialog.getButtonConfig();
+			final ProductButton button = new ProductButton(editable,buttonConfig);
+			//buttonList.add(button);
+			button.setVisible(true);
+			getChildren().add(button);
+		}
+	}
+	
+	private void handleDeleteButton(final ProductButtonBase button) {
+		log.debug("handleDeleteButton() {}",button);
+		
+		final Task<Void> task = new Task<Void>() {
+			private final PersistenceIdDTO idDTO = button.getConfig().getId().getDTO();
+			
+			@Override 
+			protected Void call() {
+				if(button instanceof ProductGroupButton) {
+					appData.getServerConnector().deleteProductGroupButton(idDTO);
+				} else if(button instanceof ProductButton) {
+					appData.getServerConnector().deleteProductButton(idDTO);
+				} else {
+					throw new RuntimeException("Unknown Button Instance");
+				}
+				return null;
+			}
+			@Override
+			protected void succeeded() {
+				log.debug("handleDeleteButton() Succeeded");
+				//buttonList.remove(button);
+				getChildren().remove(button);
+			}
+			@Override
+			protected void failed() {
+				log.debug("handleDeleteButton() Failed");
+				final Throwable throwable = getException();
+				log.catching(throwable);
+				final ExceptionAlert alert = new ExceptionAlert(AlertType.ERROR,UiConst.UNKNOWN_EXCEPTION,throwable);
+				alert.showAndWait();
+			}
+		};
+		
+		final Thread thread = new Thread(task);
+		thread.start();
+	}
+	
+	private void handleGroupSelected(final ProductButtonConfigBase config) {
+		log.debug("handleGroupSelected() {}",config);
+		showButtons(config.getId());
+	}
 	
 	/**************************************************************************
 	 * Utilities
 	 **************************************************************************/
+	//TODO the following two are called when their tasks complete but from the same thread.
+	//Is buttonList.add() safe, or can the thread be interrupted?
 	private void createGroupButtons(final List<ProductGroupButtonConfigDTO> buttonGroupConfigList) {
-		assert(null == productGroupButtonList);
-		
-		productGroupButtonList = new ArrayList<ProductGroupButton>();
+		log.debug("createGroupButtons() >");
+
 		for(ProductGroupButtonConfigDTO configDTO: buttonGroupConfigList) {
 			final ProductGroupButtonConfig config = new ProductGroupButtonConfig(configDTO);
-			final ProductGroupButton button = new ProductGroupButton(config);
-			productGroupButtonList.add(button);
+			final ProductGroupButton button = new ProductGroupButton(editable,config);
+			log.debug("Adding {}",button);
+			getChildren().add(button);
+			//buttonList.add(button);
 		}
-	}
-	
-	private void showGroupButtons() {
-		final List<Node> nodeList = getChildren();
 		
-		for(ProductGroupButton button: productGroupButtonList) {
-			final PersistenceId parentId = button.getConfig().getParentId();
-			if(null == activeParentId) {
-				if(null == parentId) {
-					nodeList.add(button);
-				}
-			} else {
-				if(null != parentId) {
-					if(activeParentId.equals(parentId)) {
-						nodeList.add(button);
-					}
-				}
-			}
-		}
+		log.debug("createGroupButtons() <");
 	}
 	
 	private void createProductButtons(final List<ProductButtonConfigDTO> buttonConfigList) {
-		assert(null == productButtonList);
+		log.debug("createProductButtons() >");
 		
-		productButtonList = new ArrayList<ProductButton>();
 		for(ProductButtonConfigDTO buttonConfig: buttonConfigList) {
 			final ProductButtonConfig config = new ProductButtonConfig(buttonConfig);
-			final ProductButton button = new ProductButton(config);
-			productButtonList.add(button);
+			final ProductButton button = new ProductButton(editable,config);
+			log.debug("Adding {}",button);
+			getChildren().add(button);
+			//buttonList.add(button);
 		}
+		
+		log.debug("createProductButtons() <");
 	}
 	
-	private void showProductButtons() {
+	private void showButtons(final PersistenceId parentId) {
+		
+		ProductButtonConfigBase newParentConfig = null;
+		
 		final List<Node> nodeList = getChildren();
 		
-		for(ProductButton button: productButtonList) {
-			final PersistenceId parentId = button.getConfig().getParentId();
-			if(null == activeParentId) {
-				if(null == parentId) {
-					nodeList.add(button);
-				}
+		for(Node node: nodeList) {
+			final ProductButtonBase button = (ProductButtonBase)node;
+			if(button instanceof ProductBlankButton) {
+				continue;
+			}
+			
+			final ProductButtonConfigBase config = button.getConfig();
+			final PersistenceId configId = config.getId();
+			final PersistenceId configParentId = config.getParentId();
+			
+			if(parentId.equals(configId)) {
+				assert(null == newParentConfig);
+				newParentConfig = config;
+			}
+			
+			if(parentId.equals(configParentId)) {
+				button.setVisible(true);
 			} else {
-				if(null != parentId) {
-					if(activeParentId.equals(parentId)) {
-						nodeList.add(button);
-					}
-				}
+				button.setVisible(false);
 			}
 		}
+		
+		if(null == newParentConfig) {
+			newParentConfig = rootConfig;
+		}
+		
+		setParentConfig(newParentConfig);
 	}
 	
-	private void buildProductPane() {
+	private void initializeProductPane() {
 		
 		final List<Node> nodeList = getChildren();
 		nodeList.clear();
@@ -216,22 +357,35 @@ public class ProductButtonGridPane extends GridPane {
 		if(editable) {
 			for(int rowIdx=0; rowIdx< UiConst.NO_PRODUCT_BUTTON_ROWS; rowIdx++) {
 				for(int columnIdx=0; columnIdx<UiConst.NO_PRODUCT_BUTTON_COLUMNS; columnIdx++) {
-						final ProductBlankButton button = new ProductBlankButton(columnIdx,rowIdx);
-						nodeList.add(button);
+					final ProductButtonConfigBase config = new ProductButtonConfigBase(getParentConfig().getId(),columnIdx,rowIdx);
+					final ProductBlankButton button = new ProductBlankButton(editable,config);
+					nodeList.add(button);
 				}
 			}
 		}
 	}
+	
 	/**************************************************************************
 	 * Inner Classes
 	 **************************************************************************/
 	private class ProductButtonBase extends Button {
 		
-		protected ProductButtonBase(final int columnIdx,final int rowIdx) {
+		private final boolean editable;
+		private final ProductButtonConfigBase config;
+		
+		protected ProductButtonBase(final boolean editable, final ProductButtonConfigBase config) {
+			
+			this.editable = editable;
+			this.config = config;
+			
+			setVisible(false);
+			
 			getStyleClass().add("product-button");
-			GridPane.setConstraints(this,columnIdx,rowIdx);
+			
+			GridPane.setConstraints(this,config.getColumnIndex(),config.getRowIndex());
 			GridPane.setFillWidth(this,true);
 			GridPane.setFillHeight(this,true);
+			
 			setPrefWidth(BUTTON_PREF_WIDTH);
 			setPrefHeight(BUTTON_PREF_HEIGHT);
 			setMinWidth(USE_PREF_SIZE);
@@ -241,64 +395,96 @@ public class ProductButtonGridPane extends GridPane {
 			setWrapText(true);
 		}
 		
+		protected boolean isEditable() {
+			return editable;
+		}
+		
+		protected ProductButtonConfigBase getConfig() {
+			return config;
+		}
+		
 	}
 	
 	private class ProductGroupButton extends ProductButtonBase {
 		
-		private final ProductGroupButtonConfig config;
 
-		public ProductGroupButton(final ProductGroupButtonConfig config) {
-			super(config.getColumnIndex(),config.getRowIndex());
-
-			this.config = config;
+		public ProductGroupButton(final boolean editable, final ProductGroupButtonConfig config) {
+			super(editable,config);
 			
-			final ContextMenu menu = new ContextMenu();
-			final MenuItem addGroupItem = new MenuItem(UiConst.CONTEXT_MENU_ADD_PRODUCT_GROUP);
-			addGroupItem.setOnAction((event) -> handleAddGroup(null));
+			if(isEditable()) {
+				final ContextMenu menu = new ContextMenu();
+				final MenuItem deleteItem = new MenuItem(UiConst.CONTEXT_MENU_TEXT_DELETE);
+				deleteItem.setOnAction((event) -> handleDeleteButton(this));
+				
+				menu.getItems().addAll(deleteItem);
+				setContextMenu(menu);
+			}
 			
-			menu.getItems().addAll(addGroupItem);
-			setContextMenu(menu);
+			textProperty().bind(config.nameProperty());
 			
-			setText(config.getName());
+			setOnAction((event) -> handleGroupSelected(getConfig()));
 		}
 		
-		public ProductGroupButtonConfig getConfig() {
-			assert(null != config);
-			return config;
+		@Override
+		public String toString() {
+			final ProductGroupButtonConfig config = (ProductGroupButtonConfig)getConfig();
+			return String.format("product:[%s] id:[%s] parentId:[%s] :[%d] :[%d]",config.getName(),config.getId(),config.getParentId(),config.getColumnIndex(),config.getRowIndex());
 		}
 		
 	}
 	
 	private class ProductButton extends ProductButtonBase {
 
-		private final ProductButtonConfig config;
-		
-		public ProductButton(final ProductButtonConfig config) {
-			super(config.getColumnIndex(),config.getRowIndex());
-			this.config = config;
-			setText(config.getProduct().getName());
+		public ProductButton(final boolean editable, final ProductButtonConfig config) {
+			super(editable,config);
+			
+			if(isEditable()) {
+				final ContextMenu menu = new ContextMenu();
+				final MenuItem deleteItem = new MenuItem(UiConst.CONTEXT_MENU_TEXT_DELETE);
+				deleteItem.setOnAction((event) -> handleDeleteButton(this));
+				
+				menu.getItems().addAll(deleteItem);
+				setContextMenu(menu);
+			}
+			
+			textProperty().bind(config.getProduct().nameProperty());
 
 		}
 		
-		public ProductButtonConfig getConfig() {
-			assert(null != config);
-			return config;
+		@Override
+		public String toString() {
+			final ProductButtonConfig config = (ProductButtonConfig)getConfig();
+			return String.format("product:[%s] id:[%s] parentId:[%s] :[%d] :[%d]",config.getProduct().getName(),config.getId(),config.getParentId(),config.getColumnIndex(),config.getRowIndex());
 		}
+
 	}
 	
 	private class ProductBlankButton extends ProductButtonBase {
 
-		public ProductBlankButton(final int columnIdx,final int rowIdx) {
-			super(columnIdx,rowIdx);
+		public ProductBlankButton(final boolean editable, final ProductButtonConfigBase config) {
+			super(editable,config);
+			
+			setVisible(true);
 			setText(BUTTON_TEXT_BLANK_BUTTON);
 			setOpacity(0.5);
 			
-			final ContextMenu menu = new ContextMenu();
-			final MenuItem addGroupItem = new MenuItem(UiConst.CONTEXT_MENU_ADD_PRODUCT_GROUP);
-			addGroupItem.setOnAction((event) -> handleAddGroup(null));
-			
-			menu.getItems().addAll(addGroupItem);
-			setContextMenu(menu);
+			if(isEditable()) {
+				final ContextMenu menu = new ContextMenu();
+				
+				final MenuItem addGroupItem = new MenuItem(UiConst.CONTEXT_MENU_ADD_PRODUCT_GROUP);
+				addGroupItem.setOnAction((event) -> handleAddGroup(getConfig()));
+				final MenuItem addProductItem = new MenuItem(UiConst.CONTEXT_MENU_ADD_PRODUCT);
+				addProductItem.setOnAction((event) -> handleAddProduct(getConfig()));
+				
+				menu.getItems().addAll(addGroupItem,addProductItem);
+				setContextMenu(menu);
+			}
+		}
+		
+		@Override
+		public String toString() {
+			final ProductButtonConfigBase config = getConfig();
+			return String.format("id:[%s] parentId:[%s] :[%d] :[%d]",config.getId(),config.getParentId(),config.getColumnIndex(),config.getRowIndex());
 		}
 	}
 	

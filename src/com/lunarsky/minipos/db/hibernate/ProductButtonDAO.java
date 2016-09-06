@@ -19,7 +19,7 @@ import com.lunarsky.minipos.model.ui.PersistenceId;
 public class ProductButtonDAO extends HibernateDAO {
 
 	@ManyToOne (optional = true)
-	@JoinColumn(name="parentId", foreignKey = @ForeignKey(name = "FK_ProductButtons_ProductButtonGroups"))
+	@JoinColumn(name="parentId", foreignKey = @ForeignKey(name = "FK_ProductButtons_ProductGroupButtons"))
 	ProductGroupButtonDAO parentGroupButtonDAO;
 	@ManyToOne (optional = false)
 	@JoinColumn(name="productId", foreignKey = @ForeignKey(name = "FK_ProductButtons_Product"))
@@ -74,17 +74,19 @@ public class ProductButtonDAO extends HibernateDAO {
 		
 		final PersistenceIdDTO parentId;
 		
-		if(null == parentGroupButtonDAO) {
-			parentId =  new PersistenceIdDTO(null);
-		} else {
+		if(null != parentGroupButtonDAO) {
 			parentId = parentGroupButtonDAO.getId();
+		} else {
+			parentId =  new PersistenceIdDTO(null);
 		}
 		
 		return parentId;
 	}
 	
 	private void setParentId(final PersistenceIdDTO parentId) {
-		parentGroupButtonDAO = ProductGroupButtonDAO.load(getEntityManager(),parentId);
+		if(parentId.hasId()) {
+			parentGroupButtonDAO = ProductGroupButtonDAO.load(getEntityManager(),parentId);
+		}
 	}
 	
 	private ProductDTO getProduct() {

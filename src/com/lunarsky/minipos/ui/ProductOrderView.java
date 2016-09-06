@@ -17,8 +17,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 
 public class ProductOrderView extends BorderPane {
 	private static final Logger log = LogManager.getLogger();
@@ -37,34 +37,38 @@ public class ProductOrderView extends BorderPane {
 	@FXML
 	private Label costLabel;
 	@FXML
-	private GridPane productGridPane;
+	private ScrollPane productScrollPane;
 	
 	public ProductOrderView(final Account account) {
 		assert(null != account);
 		
-		this.appData = AppData.getInstance();
 		this.account = account;
-		
+		this.appData = AppData.getInstance();
         productSales = new ArrayList<ProductSale>();
-		
+        
         UiUtil.loadRootConstructNode(this,"ProductOrderView.fxml");
 
 	}
 		
 	@FXML
 	private void initialize() {
+		initializeMembers();
 		initializeControls();
-		initializeProductPane();
 		initializeAsync();
 	}
 	
-	private void initializeControls() {
-		accountLabel.setText(account.getName());
-		calculateTotal();
+	private void initializeMembers() {
+		
+
 	}
 	
-	private void initializeProductPane() {
-		productGridPane.getChildren().clear();
+	
+	private void initializeControls() {
+		final ProductButtonGridPane productGrid = new ProductButtonGridPane(false);
+		productScrollPane.setContent(productGrid);
+		
+		accountLabel.setText(account.getName());
+		calculateTotal();
 	}
 	
 	private void initializeAsync() {
@@ -74,6 +78,7 @@ public class ProductOrderView extends BorderPane {
 	@FXML
 	private void handleBack(final ActionEvent event) {
 		log.debug("handleBack()");
+		close();
 		
 	}
 	

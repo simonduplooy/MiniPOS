@@ -15,6 +15,7 @@ import com.lunarsky.minipos.ui.validator.StringTextFieldValidator;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -28,19 +29,22 @@ public class ProductGroupButtonUpdateDialog extends BorderPane {
 	private final AppData appData;
 
 	private ProductGroupButtonConfig buttonConfig;
+	private StringTextFieldValidator nameValidator;
+	private boolean wasSaved;
 
 	@FXML
 	private TextField nameTextField;
-	private StringTextFieldValidator nameValidator;
 	@FXML
 	private Button saveButton;
 
 	public ProductGroupButtonUpdateDialog(final Stage parentStage, final ProductGroupButtonConfig buttonConfig) {
 		assert(null != parentStage);
-		//buttonConfig can be null
+		assert(null != buttonConfig);
 
 		this.appData = AppData.getInstance();
-		this.buttonConfig = buttonConfig;
+		
+		//Create copy to not modify the original if cancelled
+		this.buttonConfig = new ProductGroupButtonConfig(buttonConfig);
 
 		UiUtil.createDialog(parentStage,WINDOW_TITLE,this,"ProductButtonGroupUpdateDialog.fxml");
 
@@ -50,7 +54,10 @@ public class ProductGroupButtonUpdateDialog extends BorderPane {
 		return (Stage)getScene().getWindow();
 	}
 	
-	//Can be null if canceled
+	public boolean wasSaved() {
+		return wasSaved;
+	}
+	
 	public ProductGroupButtonConfig getButtonConfig() {
 		return buttonConfig;
 	}
@@ -90,23 +97,25 @@ public class ProductGroupButtonUpdateDialog extends BorderPane {
 		
 		//TODO Service
 		Task<ProductGroupButtonConfigDTO> task = new Task<ProductGroupButtonConfigDTO>() {
-			final ProductGroupButtonConfigDTO buttonConfig = createButtonConfigFromControls().getDTO();
+			final ProductGroupButtonConfigDTO configDTO = createButtonConfigFromControls().getDTO();
 			@Override
 			protected ProductGroupButtonConfigDTO call() throws EntityNotFoundException {
-				return appData.getServerConnector().saveProductGroupButton(buttonConfig);
+				return appData.getServerConnector().saveProductGroupButton(configDTO);
 			}
 			@Override
 			protected void succeeded() {
 				final ProductGroupButtonConfigDTO configDTO = getValue();
-				setButtonConfig(new ProductGroupButtonConfig(configDTO));
+				buttonConfig.setDTO(configDTO);
+				wasSaved = true;
 				log.debug("SaveProductButtonGroup() Succeeded");
 				close();
 			}
 			@Override
 			protected void failed() {
-				final Throwable t = getException();
-				log.catching(Level.ERROR,t);
-				throw new RuntimeException(t);
+				final Throwable throwable = getException();
+				log.catching(Level.ERROR,throwable);
+				final ExceptionAlert alert = new ExceptionAlert(AlertType.ERROR,UiConst.UNKNOWN_EXCEPTION,throwable);
+				alert.showAndWait();
 			}
 		};
 		

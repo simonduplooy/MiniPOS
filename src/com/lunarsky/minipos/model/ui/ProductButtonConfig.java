@@ -8,14 +8,11 @@ import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class ProductButtonConfig extends PersistenceObject {
+public class ProductButtonConfig extends ProductButtonConfigBase {
 	private static final Logger log = LogManager.getLogger();
 	
-	private PersistenceId parentId; 
 	private ObjectProperty<Product> productProperty;
-	private Integer columnIdx;
-	private Integer rowIdx;
-	
+
 	public ProductButtonConfig() {
 		productProperty = new SimpleObjectProperty<Product>();	
 	}
@@ -51,15 +48,7 @@ public class ProductButtonConfig extends PersistenceObject {
 		setColumnIndex(configDTO.getColumnIndex());
 		setRowIndex(configDTO.getRowIndex());
 	}
-		
-	public PersistenceId getParentId() {
-		return parentId;
-	}
-	
-	public void setParentId(final PersistenceId parentId) {
-		this.parentId = parentId;
-	}
-	
+
 	public ObjectProperty<Product> productProperty() {
 		assert(null != productProperty);
 		return productProperty;
@@ -71,26 +60,6 @@ public class ProductButtonConfig extends PersistenceObject {
 	
 	public void setProduct(final Product product) {
 		productProperty().set(product);
-	}
-	
-	public Integer getColumnIndex() {
-		assert(null != columnIdx);
-		return columnIdx;
-	}
-	
-	public void setColumnIndex(final Integer columnIdx) {
-		assert(null != columnIdx);
-		this.columnIdx = columnIdx;
-	}
-	
-	public Integer getRowIndex() {
-		assert(null != rowIdx);
-		return rowIdx;
-	}
-	
-	public void setRowIndex(final Integer rowIdx) {
-		assert(null != rowIdx);
-		this.rowIdx = rowIdx;
 	}
 	
 	public String toString() {
