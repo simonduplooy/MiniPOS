@@ -31,7 +31,7 @@ public class ProductGroup extends ProductBase {
 		this();
 		setDTO(group);
 	}
-
+	
 	public void setDTO(final ProductGroupDTO group) {
 		setId(new PersistenceId(group.getId()));
 		setParentId(new PersistenceId(group.getParentId()));

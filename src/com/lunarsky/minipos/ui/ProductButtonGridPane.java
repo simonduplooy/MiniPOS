@@ -37,7 +37,6 @@ public class ProductButtonGridPane extends GridPane {
 	private final boolean editable;
 	private final ProductButtonConfigBase rootConfig;
 	private ProductButtonConfigBase parentConfig;
-	//private List<ProductButtonBase> buttonList;
 	
 	//TODO this should be a binding to the tasks
 	private boolean productButtonAsyncInitializeComplete;
@@ -66,7 +65,6 @@ public class ProductButtonGridPane extends GridPane {
 	
 	private void initializeMembers() {
 		parentConfig = rootConfig;
-		//buttonList = new ArrayList<ProductButtonBase>();
 	}
 	
 	private void initializeControls() {
@@ -218,7 +216,19 @@ public class ProductButtonGridPane extends GridPane {
 		}
 	}
 	
-
+	
+	private void handleUpdateGroupButton(final ProductGroupButtonConfig config) {
+		log.debug("handleUpdateGroupButton() {}",config);
+		
+		final ProductGroupButtonUpdateDialog dialog = new ProductGroupButtonUpdateDialog(getStage(),config);
+		dialog.getStage().showAndWait();
+		
+		if(dialog.wasSaved()) {
+			final ProductGroupButtonConfig updatedConfig = dialog.getButtonConfig();
+			config.set(updatedConfig);
+		}
+	}
+	
 	private void handleAddProduct(final ProductButtonConfigBase config) {
 		log.debug("handleAddProduct() {}",config);
 		
@@ -233,7 +243,6 @@ public class ProductButtonGridPane extends GridPane {
 		if(dialog.wasSaved()) {
 			buttonConfig = dialog.getButtonConfig();
 			final ProductButton button = new ProductButton(editable,buttonConfig);
-			//buttonList.add(button);
 			button.setVisible(true);
 			getChildren().add(button);
 		}
@@ -259,7 +268,6 @@ public class ProductButtonGridPane extends GridPane {
 			@Override
 			protected void succeeded() {
 				log.debug("handleDeleteButton() Succeeded");
-				//buttonList.remove(button);
 				getChildren().remove(button);
 			}
 			@Override
@@ -285,7 +293,7 @@ public class ProductButtonGridPane extends GridPane {
 	 * Utilities
 	 **************************************************************************/
 	//TODO the following two are called when their tasks complete but from the same thread.
-	//Is buttonList.add() safe, or can the thread be interrupted?
+	//Is getChildren.add() safe?
 	private void createGroupButtons(final List<ProductGroupButtonConfigDTO> buttonGroupConfigList) {
 		log.debug("createGroupButtons() >");
 
@@ -294,7 +302,6 @@ public class ProductButtonGridPane extends GridPane {
 			final ProductGroupButton button = new ProductGroupButton(editable,config);
 			log.debug("Adding {}",button);
 			getChildren().add(button);
-			//buttonList.add(button);
 		}
 		
 		log.debug("createGroupButtons() <");
@@ -308,7 +315,6 @@ public class ProductButtonGridPane extends GridPane {
 			final ProductButton button = new ProductButton(editable,config);
 			log.debug("Adding {}",button);
 			getChildren().add(button);
-			//buttonList.add(button);
 		}
 		
 		log.debug("createProductButtons() <");
@@ -415,8 +421,9 @@ public class ProductButtonGridPane extends GridPane {
 				final ContextMenu menu = new ContextMenu();
 				final MenuItem deleteItem = new MenuItem(UiConst.CONTEXT_MENU_TEXT_DELETE);
 				deleteItem.setOnAction((event) -> handleDeleteButton(this));
-				
-				menu.getItems().addAll(deleteItem);
+				final MenuItem updateItem = new MenuItem(UiConst.CONTEXT_MENU_TEXT_UPDATE);
+				updateItem.setOnAction((event) -> handleUpdateGroupButton((ProductGroupButtonConfig)getConfig()));				
+				menu.getItems().addAll(updateItem,deleteItem);
 				setContextMenu(menu);
 			}
 			

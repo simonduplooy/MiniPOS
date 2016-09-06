@@ -28,6 +28,7 @@ public class ProductGroupButtonConfig extends ProductButtonConfigBase {
 	
 	public ProductGroupButtonConfig(final PersistenceId id, final PersistenceId parentId, final String name, final Integer columnIdx, final Integer rowIdx) {
 		this(parentId,name,columnIdx,rowIdx);
+		setId(id);
 	}
 	
 	public ProductGroupButtonConfig(final ProductGroupButtonConfig config) {
@@ -37,6 +38,14 @@ public class ProductGroupButtonConfig extends ProductButtonConfigBase {
 	public ProductGroupButtonConfig(final ProductGroupButtonConfigDTO configDTO) {
 		this();
 		setDTO(configDTO);
+	}
+	
+	public void set(final ProductGroupButtonConfig config) {
+		setId(config.getId());
+		setParentId(config.getParentId());
+		setName(config.getName());
+		setColumnIndex(config.getColumnIndex());
+		setRowIndex(config.getRowIndex());
 	}
 	
 	public ProductGroupButtonConfigDTO getDTO() {
