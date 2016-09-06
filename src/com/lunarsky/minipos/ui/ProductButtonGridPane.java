@@ -10,6 +10,7 @@ import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.ui.PersistenceId;
+import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.model.ui.ProductButtonConfig;
 import com.lunarsky.minipos.model.ui.ProductButtonConfigBase;
 import com.lunarsky.minipos.model.ui.ProductGroupButtonConfig;
@@ -38,7 +39,9 @@ public class ProductButtonGridPane extends GridPane {
 	private final ProductButtonConfigBase rootConfig;
 	private ProductButtonConfigBase parentConfig;
 	
-	//TODO this should be a binding to the tasks
+	private ProductSelectionObserver productSelectionObserver;
+	
+	//TODO There must be a more elegant way
 	private boolean productButtonAsyncInitializeComplete;
 	private boolean groupButtonAsyncInitializeComplete;
 	
@@ -172,6 +175,10 @@ public class ProductButtonGridPane extends GridPane {
 		return (Stage) getScene().getWindow();
 	}
 	
+	public void setProductSelectionObserver(final ProductSelectionObserver observer) {
+		productSelectionObserver = observer;
+	}
+	
 	private ProductButtonConfigBase getParentConfig() {
 		return parentConfig;
 	}
@@ -282,6 +289,13 @@ public class ProductButtonGridPane extends GridPane {
 		
 		final Thread thread = new Thread(task);
 		thread.start();
+	}
+	
+	private void handleProductSelected(final Product product) {
+		log.debug("handleProductSelected()",product);
+		if(null != productSelectionObserver) {
+			productSelectionObserver.handleProductSelected(product);
+		}
 	}
 	
 	private void handleGroupSelected(final ProductButtonConfigBase config) {
@@ -456,6 +470,7 @@ public class ProductButtonGridPane extends GridPane {
 			
 			textProperty().bind(config.getProduct().nameProperty());
 
+			setOnAction((event) -> handleProductSelected(((ProductButtonConfig)getConfig()).getProduct()));
 		}
 		
 		@Override
@@ -493,6 +508,10 @@ public class ProductButtonGridPane extends GridPane {
 			final ProductButtonConfigBase config = getConfig();
 			return String.format("id:[%s] parentId:[%s] :[%d] :[%d]",config.getId(),config.getParentId(),config.getColumnIndex(),config.getRowIndex());
 		}
+	}
+	
+	public interface ProductSelectionObserver {
+		public void handleProductSelected(final Product product);
 	}
 	
 

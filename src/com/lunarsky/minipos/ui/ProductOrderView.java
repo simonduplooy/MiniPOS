@@ -20,7 +20,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 
-public class ProductOrderView extends BorderPane {
+public class ProductOrderView extends BorderPane implements ProductButtonGridPane.ProductSelectionObserver {
 	private static final Logger log = LogManager.getLogger();
 
 	private final AppData appData;
@@ -38,6 +38,7 @@ public class ProductOrderView extends BorderPane {
 	private Label costLabel;
 	@FXML
 	private ScrollPane productScrollPane;
+	private ProductButtonGridPane productGridPane;
 	
 	public ProductOrderView(final Account account) {
 		assert(null != account);
@@ -58,15 +59,15 @@ public class ProductOrderView extends BorderPane {
 	}
 	
 	private void initializeMembers() {
-		
-
+		productGridPane = new ProductButtonGridPane(false);
+		productGridPane.setProductSelectionObserver(this);
 	}
 	
 	
 	private void initializeControls() {
-		final ProductButtonGridPane productGrid = new ProductButtonGridPane(false);
-		productScrollPane.setContent(productGrid);
-		
+
+		productScrollPane.setContent(productGridPane);
+
 		accountLabel.setText(account.getName());
 		calculateTotal();
 	}
@@ -75,11 +76,21 @@ public class ProductOrderView extends BorderPane {
 		
 	}
 	
+	//Implement ProductSelectionObserver
+	public void handleProductSelected(final Product product) {
+		log.debug("handleProductSelected() {}",product);
+		final ProductSale sale = findProductSale(product);
+		sale.increaseProductCount(1);
+		calculateTotal();
+	}
+	
 	@FXML
 	private void handleBack(final ActionEvent event) {
 		log.debug("handleBack()");
-		close();
-		
+		final boolean backHandled = productGridPane.handleBack();
+		if(!backHandled) {
+			close();	
+		}		
 	}
 	
 	private void calculateTotal() {
@@ -94,12 +105,22 @@ public class ProductOrderView extends BorderPane {
 	}
 	
 	private ProductSale findProductSale(final Product product) {
-		for(ProductSale sale: productSales) {
-			if(sale.getProduct().equals(product)) {
-				return sale;
+
+		ProductSale sale = null;
+		
+		for(ProductSale existingSale: productSales) {
+			if(existingSale.getProduct().equals(product)) {
+				sale = existingSale;
+				break;
 			}
 		}
-		return null;
+		
+		if(null == sale) {
+			sale = new ProductSale(product,0);
+			productSales.add(sale);
+		}
+		
+		return sale;
 	}
 	
 	private void close() {

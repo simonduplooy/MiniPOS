@@ -76,6 +76,10 @@ public class ProductSale extends PersistenceObject {
 		productCountProperty.setValue(count);
 	}
 	
+	public void increaseProductCount(final Integer count) {
+		setProductCount(getProductCount()+count);
+	}
+	
 	public Double getCost() {
 		final Double cost = getProductCount() * getProduct().getPrice();
 		return cost;
