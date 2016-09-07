@@ -18,7 +18,7 @@ import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 public class ProductGroupButtonDAO extends HibernateDAO {
 
 	@ManyToOne(optional = true)
-	@JoinColumn(name = "parentId", foreignKey = @ForeignKey(name = "FK_ProductButtons_ProductGroupButtons"))
+	@JoinColumn(name = "parentId", foreignKey = @ForeignKey(name = "FK_ProductGroupButtons_ProductGroupButtons"))
 	private ProductGroupButtonDAO parentGroupButtonDAO;
 	@Column(nullable = false, length = Const.MAX_TEXTFIELD_LENGTH)
 	private String name;

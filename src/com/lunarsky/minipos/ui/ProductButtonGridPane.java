@@ -39,7 +39,7 @@ public class ProductButtonGridPane extends GridPane {
 	private final ProductButtonConfigBase rootConfig;
 	private ProductButtonConfigBase parentConfig;
 	
-	private ProductSelectionObserver productSelectionObserver;
+	private Observer observer;
 	
 	//TODO There must be a more elegant way
 	private boolean productButtonAsyncInitializeComplete;
@@ -175,8 +175,8 @@ public class ProductButtonGridPane extends GridPane {
 		return (Stage) getScene().getWindow();
 	}
 	
-	public void setProductSelectionObserver(final ProductSelectionObserver observer) {
-		productSelectionObserver = observer;
+	public void setProductSelectionObserver(final Observer observer) {
+		this.observer = observer;
 	}
 	
 	private ProductButtonConfigBase getParentConfig() {
@@ -293,8 +293,8 @@ public class ProductButtonGridPane extends GridPane {
 	
 	private void handleProductSelected(final Product product) {
 		log.debug("handleProductSelected()",product);
-		if(null != productSelectionObserver) {
-			productSelectionObserver.handleProductSelected(product);
+		if(null != observer) {
+			observer.handleProductSelected(product);
 		}
 	}
 	
@@ -510,7 +510,7 @@ public class ProductButtonGridPane extends GridPane {
 		}
 	}
 	
-	public interface ProductSelectionObserver {
+	public interface Observer {
 		public void handleProductSelected(final Product product);
 	}
 	

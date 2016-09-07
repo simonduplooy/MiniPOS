@@ -20,7 +20,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 
-public class ProductOrderView extends BorderPane implements ProductButtonGridPane.ProductSelectionObserver {
+public class ProductOrderView extends BorderPane implements ProductButtonGridPane.Observer {
 	private static final Logger log = LogManager.getLogger();
 
 	private final AppData appData;
