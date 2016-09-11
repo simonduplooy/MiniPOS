@@ -87,9 +87,9 @@ public class ProductUpdateDialog extends BorderPane {
 		
 		final Product product = getProduct();
 		nameTextField.textProperty().bindBidirectional(product.nameProperty());
-		NumberStringConverter converter = new NumberStringConverter(UiConst.CURRENCY_FORMAT);
 		final StringProperty priceTextProperty = priceTextField.textProperty();
 		final DoubleProperty priceDoubleProperty = product.priceProperty();
+		NumberStringConverter converter = new NumberStringConverter(UiConst.CURRENCY_FORMAT);
 		Bindings.bindBidirectional(priceTextProperty,priceDoubleProperty,converter);
 		
 		saveButton.disableProperty().bind(nameValidator.validProperty().and(priceValidator.validProperty()).not().or(saveService.runningProperty()));

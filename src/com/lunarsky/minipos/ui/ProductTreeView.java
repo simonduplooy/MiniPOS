@@ -146,30 +146,39 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	
 	private ContextMenu createProductContextMenu() {
 		final ContextMenu contextMenu = new ContextMenu();
+		
 		final MenuItem updateItem = new MenuItem("Update");
 		updateItem.setOnAction((event) -> handleUpdateProduct());
+		
 		final MenuItem deleteItem = new MenuItem("Delete");
 		deleteItem.setOnAction((event) -> handleDeleteProduct());
+		
 		contextMenu.getItems().addAll(updateItem,deleteItem);
 		return contextMenu;
 	}
 
 	private ContextMenu createGroupContextMenu() {
 		final ContextMenu contextMenu = new ContextMenu();
+		
 		final MenuItem addGroupItem = new MenuItem("Add Group");
 		addGroupItem.setOnAction((event) -> handleAddGroup());
+		
 		final MenuItem addProductItem = new MenuItem("Add Product");
-		addGroupItem.setOnAction((event) -> handleAddProduct());
+		addProductItem.setOnAction((event) -> handleAddProduct());
+		
 		final MenuItem updateItem = new MenuItem("Update");
 		updateItem.setOnAction((event) -> handleUpdateGroup());
+		
 		final MenuItem deleteItem = new MenuItem("Delete");
 		deleteItem.setOnAction((event) -> handleDeleteGroup());
+		
 		contextMenu.getItems().addAll(addGroupItem,addProductItem,updateItem,deleteItem);
 		return contextMenu;
 	}
 	
 	public void handleAddRootGroup() {
 		log.debug("handleAddRootGroup()");
+		
 		final TreeItem<ProductBase> rootItem = getRoot();
 		handleAddGroup(rootItem);
 	}
@@ -182,7 +191,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	
 	private void handleAddGroup(final TreeItem<ProductBase> parentTreeItem) {
 		final PersistenceId parentId = parentTreeItem.getValue().getId();
-		final ProductGroup group = new ProductGroup(null,parentId,"");
+		final ProductGroup group = new ProductGroup(parentId,"");
 		final ProductGroup updatedGroup = handleUpdateGroup(group);
 		if(updatedGroup != group) {
 			final TreeItem<ProductBase> newTreeItem = new TreeItem<ProductBase>(updatedGroup);
@@ -233,7 +242,7 @@ public class ProductTreeView extends TreeView<ProductBase> {
 	
 	private void handleAddProduct(final TreeItem<ProductBase>  parentTreeItem) {
 		final PersistenceId parentId = parentTreeItem.getValue().getId();
-		final Product product = new Product(null,parentId,"",0.0);
+		final Product product = new Product(parentId,"",0.0);
 		final Product updatedProduct = handleUpdateProduct(product);
 		if(null != updatedProduct) {
 			final TreeItem<ProductBase> newTreeItem = new TreeItem<ProductBase>(updatedProduct);

@@ -78,7 +78,9 @@ public class ProductGroupDAO extends HibernateDAO {
 	}
 	
 	private void setParentId(final PersistenceIdDTO parentId) {
-		parentProductGroupDAO = ProductGroupDAO.load(getEntityManager(),parentId);
+		if(parentId.hasId()) {
+			parentProductGroupDAO = ProductGroupDAO.load(getEntityManager(),parentId);
+		}
 	}
 	
 	private String getName() {
