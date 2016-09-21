@@ -18,6 +18,7 @@ public class User extends PersistenceObject implements Comparable<User> {
 	 * Constructors
 	 **************************************************************************/
 	public User() {
+		super();
 		nameProperty = new SimpleStringProperty();
 		passwordProperty = new SimpleStringProperty();
 	}
@@ -55,7 +56,7 @@ public class User extends PersistenceObject implements Comparable<User> {
 	
 	public User duplicate() {
 		//do not copy the id
-		return new User(null,getName(),getPassword());
+		return new User(getName(),getPassword());
 	}
 	
 	/**************************************************************************
