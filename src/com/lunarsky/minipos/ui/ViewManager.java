@@ -119,30 +119,20 @@ public class ViewManager {
 		showSplashView();
 	}
 
-	private void showAccountView(final Account account) {
-		AccountView accountView = new AccountView(account);
-		setScene(accountView);
-		setDefaultLayout(accountView);		
+	private void showSaleView(final Account account) {
+		SaleView saleView = new SaleView(account);
+		setScene(saleView);
+		setDefaultLayout(saleView);		
 	}
 
-	public void closeAccountView() {
+	public void closeSaleView() {
 		showAccountOverviewView();
 	}
 	
 	public void accountSelected (final Account account) {
-		showProductOrderView(account);
+		showSaleView(account);
 	}
-	
-	private void showProductOrderView(final Account account) {
-		ProductOrderView view = new ProductOrderView(account);
-		setDefaultLayout(view);	
-		setScene(view);
-	}
-	
-	public void closeProductOrderView() {
 		
-	}
-	
 	public void showProductConfigureView() {
 		final Stage stage = getPrimaryStage();
 		final ProductConfigureView view = new ProductConfigureView(stage);

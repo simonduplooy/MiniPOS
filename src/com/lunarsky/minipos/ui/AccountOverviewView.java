@@ -77,6 +77,7 @@ public class AccountOverviewView extends BorderPane {
 			log.debug("Adding Account {}",accountDTO);
 			final AccountButton button = new AccountButton(new Account(accountDTO));
 			accountFlowPane.getChildren().add(button);
+			//TODO Order according to creation time
 		}
 	}
 	

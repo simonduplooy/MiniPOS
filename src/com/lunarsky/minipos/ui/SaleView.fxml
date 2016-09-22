@@ -16,6 +16,7 @@
          <bottom>
             <VBox alignment="BOTTOM_LEFT" BorderPane.alignment="CENTER">
                <children>
+                  <Button mnemonicParsing="false" onAction="#handleDone" prefHeight="100.0" prefWidth="200.0" text="Done" />
                   <Button defaultButton="true" mnemonicParsing="false" onAction="#handleBack" prefHeight="100.0" prefWidth="200.0" text="Back" />
                </children>
             </VBox>
@@ -29,13 +30,12 @@
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
    </padding>
    <left>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <BorderPane prefWidth="250.0" BorderPane.alignment="CENTER">
          <center>
-            <ScrollPane fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER">
-               <content>
-                  <ListView fx:id="salesListView" />
-               </content>
-            </ScrollPane>
+            <ScrollPane fx:id="orderScrollPane" fitToWidth="true" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding></ScrollPane>
          </center>
          <bottom>
             <BorderPane BorderPane.alignment="CENTER">
@@ -46,7 +46,7 @@
                      </BorderPane.margin></Label>
                </left>
                <right>
-                  <Label fx:id="costLabel" styleClass="total-text" text="Amount" BorderPane.alignment="CENTER">
+                  <Label fx:id="totalLabel" styleClass="total-text" text="Amount" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets left="5.0" right="5.0" />
                      </BorderPane.margin></Label>

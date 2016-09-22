@@ -3,53 +3,33 @@ package com.lunarsky.minipos.model.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.lunarsky.minipos.model.dto.ProductSaleDTO;
-
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
-public class ProductSale extends PersistenceObject {
+public class ProductSale extends Sale {
 	private static final Logger log = LogManager.getLogger();
 	
-	private final ObjectProperty<Product> productProperty;
-	private final IntegerProperty productCountProperty;
+	final ObjectProperty<Product> productProperty;
+	final IntegerProperty countProperty;
+	final DoubleProperty discountProperty;
+	final DoubleProperty subTotalProperty;
 	
 	public ProductSale() {
 		productProperty = new SimpleObjectProperty<Product>();
-		productCountProperty = new SimpleIntegerProperty();
+		countProperty = new SimpleIntegerProperty();
+		discountProperty = new SimpleDoubleProperty();
+		subTotalProperty = new SimpleDoubleProperty();
 	}
 	
-	public ProductSale(final Product product, final Integer productCount) {
+	public ProductSale(final Product product, final Integer count) {
 		this();
 		setProduct(product);
-		setProductCount(productCount);
-	}
-	
-	public ProductSale(final PersistenceId id, final Product product, final Integer productCount) {
-		this(product,productCount);
-		setId(id);
-	}
-	
-	public ProductSale(final ProductSale sale) {
-		this(sale.getId(),sale.getProduct(),sale.getProductCount());
-	}
-	
-	public ProductSale(final ProductSaleDTO saleDTO) {
-		this();
-		setDTO(saleDTO);
-	}
-	
-	public ProductSaleDTO getDTO() {
-		final ProductSaleDTO saleDTO = new ProductSaleDTO(getId().getDTO(),getProduct().getDTO(),getProductCount());
-		return saleDTO;
-	}
-	
-	public void setDTO(final ProductSaleDTO saleDTO) {
-		setId(new PersistenceId(saleDTO.getId()));
-		setProduct(new Product(saleDTO.getProduct()));
-		setProductCount(saleDTO.getProductCount());
+		setCount(count);
 	}
 	
 	public ObjectProperty<Product> productProperty() {
@@ -60,34 +40,55 @@ public class ProductSale extends PersistenceObject {
 		return productProperty.getValue();
 	}
 	
+	
 	public void setProduct(final Product product) {
 		productProperty.setValue(product);
+		descriptionProperty().bind(product.nameProperty());
+		
+		subTotalProperty.bind(product.priceProperty().multiply(countProperty));
+		totalProperty().bind(subTotalProperty.subtract(discountProperty));
 	}
 	
-	public IntegerProperty productCountProperty() {
-		return productCountProperty;
+	public IntegerProperty countProperty() {
+		return countProperty;
 	}
 	
-	public Integer getProductCount() {
-		return productCountProperty.getValue();
+	public Integer getCount() {
+		return countProperty.getValue();
 	}
 	
-	public void setProductCount(final Integer count) {
-		productCountProperty.setValue(count);
+	public void setCount(final Integer count) {
+		countProperty.setValue(count);
 	}
 	
-	public void increaseProductCount(final Integer count) {
-		setProductCount(getProductCount()+count);
+	public void increaseCount(final Integer count) {
+		Integer currentCount = countProperty.getValue();
+		currentCount += count;
+		countProperty.setValue(currentCount);
 	}
 	
-	public Double getCost() {
-		final Double cost = getProductCount() * getProduct().getPrice();
-		return cost;
+	public DoubleProperty discountProperty() {
+		return discountProperty;
+	}
+	
+	public Double getDiscount() {
+		return discountProperty.getValue();
+	}
+	
+	public void setDiscount(final Double count) {
+		discountProperty.setValue(count);
+	}
+	
+	public DoubleProperty subTotalProperty() {
+		return subTotalProperty;
+	}
+	
+	public Double getSubTotal() {
+		return subTotalProperty.getValue();
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("product:[%s] id:[%s] productCount:[%d]",getProduct(),getId(),getProductCount());
+		return String.format("description:[%s] count:[%d] product:[%s] total:[%.2f]",getDescription(),getCount(),getProduct(),getTotal());
 	}
-
 }

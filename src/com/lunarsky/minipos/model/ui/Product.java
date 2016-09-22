@@ -13,8 +13,6 @@ public class Product extends ProductBase {
 	
 	private final DoubleProperty priceProperty;
 	
-	//TODO REVERSE ORDER OF CONSTRUCTORS
-	// new SimpleDoubleProperty() should be in the Product() constructor
 	public Product() {
 		priceProperty = new SimpleDoubleProperty();
 	}
@@ -69,12 +67,13 @@ public class Product extends ProductBase {
 	
 	public Product duplicate() {
 		//Do not duplicate the ID
-		final Product product = new Product(null,getParentId(),getName(),getPrice());
+		final Product product = new Product(getParentId(),getName(),getPrice());
 		return product;
 	}
 	
+	@Override
 	public String toString() {
-		return String.format("name:[%s] id:[%s] parentId:[%s] price:[%s]",getName(),getId(),getParentId(),getPrice());
+		return String.format("name:[%s] id:[%s] parentId:[%s] price:[%.2f]",getName(),getId(),getParentId(),getPrice());
 	}
 
 }

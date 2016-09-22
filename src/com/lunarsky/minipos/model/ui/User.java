@@ -18,7 +18,6 @@ public class User extends PersistenceObject implements Comparable<User> {
 	 * Constructors
 	 **************************************************************************/
 	public User() {
-		super();
 		nameProperty = new SimpleStringProperty();
 		passwordProperty = new SimpleStringProperty();
 	}
