@@ -16,6 +16,7 @@ import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 import com.lunarsky.minipos.model.dto.UserDTO;
 import com.lunarsky.minipos.model.ui.PersistenceId;
 
@@ -184,6 +185,20 @@ public class LocalServerConnector implements ServerConnector {
 	public void deleteProductGroupButton(final PersistenceIdDTO id) {
 		final Transaction transaction = persistenceProvider.startTransaction();
 		persistenceCall(transaction,()->{persistenceProvider.deleteProductGroupButton(transaction,id);return null;});
+	}
+	
+	/*****************************************************************************
+	 * SaleOrder
+	 *****************************************************************************/
+	public List<SaleOrderDTO> getSaleOrders(final AccountDTO account) {
+		final Transaction transaction = persistenceProvider.startTransaction();
+		final List<SaleOrderDTO> orderList = (List<SaleOrderDTO>)persistenceCall(transaction,()->(persistenceProvider.getSaleOrders(transaction,account)));
+		return orderList;
+
+	}
+	
+	public SaleOrderDTO addSaleOrder(final AccountDTO account,final SaleOrderDTO saleOrder) {
+		final Transaction transaction = persistenceProvider.startTransaction();
 	}
 	
 	/*****************************************************************************

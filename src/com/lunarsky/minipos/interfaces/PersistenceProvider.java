@@ -9,6 +9,7 @@ import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 import com.lunarsky.minipos.model.dto.UserDTO;
 
 public interface PersistenceProvider {
@@ -60,6 +61,12 @@ public interface PersistenceProvider {
 	public List<ProductGroupButtonConfigDTO> getProductGroupButtons(final Transaction transaction);
 	public ProductGroupButtonConfigDTO saveProductGroupButton(final Transaction transaction, final ProductGroupButtonConfigDTO config);
 	public void deleteProductGroupButton(final Transaction transaction, final PersistenceIdDTO id);
+	
+	/*****************************************************************************
+	 * SaleOrder
+	 *****************************************************************************/
+	public List<SaleOrderDTO> getSaleOrders(final Transaction transaction, final AccountDTO account);
+	public SaleOrderDTO addSaleOrder(final Transaction transaction, final AccountDTO account,final SaleOrderDTO saleOrder);
 	
 	public void close();
 	

@@ -3,18 +3,19 @@ package com.lunarsky.minipos.model.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.lunarsky.minipos.model.dto.SaleDTO;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Sale extends PersistenceObject {
+public abstract class Sale extends PersistenceObject {
 	private static final Logger log = LogManager.getLogger();
 	
 	private final StringProperty descriptionProperty;
 	private final DoubleProperty totalProperty;
 
-	
 	public Sale() {
 		descriptionProperty = new SimpleStringProperty();
 		totalProperty = new SimpleDoubleProperty();
@@ -44,6 +45,8 @@ public class Sale extends PersistenceObject {
 	public void setTotal(final Double cost) {
 		totalProperty.setValue(cost);
 	}
+	
+	public abstract SaleDTO getDTO();
 	
 	@Override
 	public String toString() {

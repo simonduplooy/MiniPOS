@@ -4,10 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.lunarsky.minipos.model.AppData;
+import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 import com.lunarsky.minipos.model.ui.Account;
 import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.model.ui.ProductSale;
-import com.lunarsky.minipos.model.ui.Sale;
 import com.lunarsky.minipos.model.ui.SaleOrder;
 
 import javafx.beans.binding.Bindings;
@@ -111,7 +111,12 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	@FXML
 	private void handleDone() {
 		log.debug("handleDone()");
-		//TODO Save
+		saveOrder();
+	}
+	
+	private void saveOrder() {
+		//TODO Async
+		final SaleOrderDTO dto = order.getDTO();
 		close();
 	}
 	

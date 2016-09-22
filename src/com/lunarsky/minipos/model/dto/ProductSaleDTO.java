@@ -2,7 +2,7 @@ package com.lunarsky.minipos.model.dto;
 
 import com.lunarsky.minipos.model.ui.Product;
 
-public class ProductSaleDTO extends PersistenceObjectDTO {
+public class ProductSaleDTO extends SaleDTO {
 
 	private final ProductDTO product;
 	private final Integer productCount;

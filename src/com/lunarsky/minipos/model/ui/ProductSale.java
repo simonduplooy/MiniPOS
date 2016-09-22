@@ -3,10 +3,12 @@ package com.lunarsky.minipos.model.ui;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.lunarsky.minipos.model.dto.ProductSaleDTO;
+import com.lunarsky.minipos.model.dto.SaleDTO;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -85,6 +87,12 @@ public class ProductSale extends Sale {
 	
 	public Double getSubTotal() {
 		return subTotalProperty.getValue();
+	}
+	
+	@Override
+	public SaleDTO getDTO() {
+		final ProductSaleDTO dto = new ProductSaleDTO(getId().getDTO(),getProduct().getDTO(),getCount());
+		return dto;
 	}
 	
 	@Override

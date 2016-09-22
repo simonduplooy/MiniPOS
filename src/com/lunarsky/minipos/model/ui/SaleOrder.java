@@ -1,13 +1,17 @@
 package com.lunarsky.minipos.model.ui;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.lunarsky.minipos.model.dto.SaleDTO;
+import com.lunarsky.minipos.model.dto.SaleOrderDTO;
+
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -61,6 +65,16 @@ public class SaleOrder extends PersistenceObject {
 		}
 		
 		return null;
+	}
+	
+	public SaleOrderDTO getDTO() {
+
+		final List<SaleDTO> saleDTOList = new ArrayList<SaleDTO>();
+		for(Sale sale: saleList) {
+			saleDTOList.add(sale.getDTO());
+		}
+		final SaleOrderDTO dto = new SaleOrderDTO(getId().getDTO(),getCreationTime(),saleDTOList);
+		return dto;
 	}
 	
 }

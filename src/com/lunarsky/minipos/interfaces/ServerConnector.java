@@ -9,6 +9,7 @@ import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 import com.lunarsky.minipos.model.dto.UserDTO;
 
 public interface ServerConnector {
@@ -57,6 +58,12 @@ public interface ServerConnector {
 	public List<ProductGroupButtonConfigDTO> getProductGroupButtons();
 	public ProductGroupButtonConfigDTO saveProductGroupButton(final ProductGroupButtonConfigDTO config);
 	public void deleteProductGroupButton(final PersistenceIdDTO id);
+	
+	/*****************************************************************************
+	 * SaleOrder
+	 *****************************************************************************/
+	public List<SaleOrderDTO> getSaleOrders(final AccountDTO account);
+	public SaleOrderDTO addSaleOrder(final AccountDTO account,final SaleOrderDTO saleOrder);
 	
 	public void close();
 }
