@@ -188,20 +188,6 @@ public class LocalServerConnector implements ServerConnector {
 	}
 	
 	/*****************************************************************************
-	 * SaleOrder
-	 *****************************************************************************/
-	public List<SaleOrderDTO> getSaleOrders(final AccountDTO account) {
-		final Transaction transaction = persistenceProvider.startTransaction();
-		final List<SaleOrderDTO> orderList = (List<SaleOrderDTO>)persistenceCall(transaction,()->(persistenceProvider.getSaleOrders(transaction,account)));
-		return orderList;
-
-	}
-	
-	public SaleOrderDTO addSaleOrder(final AccountDTO account,final SaleOrderDTO saleOrder) {
-		final Transaction transaction = persistenceProvider.startTransaction();
-	}
-	
-	/*****************************************************************************
 	 * Utils
 	 *****************************************************************************/
 	public void close() {

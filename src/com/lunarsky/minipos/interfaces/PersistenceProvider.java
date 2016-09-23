@@ -61,12 +61,7 @@ public interface PersistenceProvider {
 	public List<ProductGroupButtonConfigDTO> getProductGroupButtons(final Transaction transaction);
 	public ProductGroupButtonConfigDTO saveProductGroupButton(final Transaction transaction, final ProductGroupButtonConfigDTO config);
 	public void deleteProductGroupButton(final Transaction transaction, final PersistenceIdDTO id);
-	
-	/*****************************************************************************
-	 * SaleOrder
-	 *****************************************************************************/
-	public List<SaleOrderDTO> getSaleOrders(final Transaction transaction, final AccountDTO account);
-	public SaleOrderDTO addSaleOrder(final Transaction transaction, final AccountDTO account,final SaleOrderDTO saleOrder);
+
 	
 	public void close();
 	

@@ -10,6 +10,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -36,6 +37,10 @@ public class AccountDAO extends HibernateDAO {
 		, inverseJoinColumns=@JoinColumn(name="user_id")
 		, foreignKey = @ForeignKey(name = "FK_Accounts_Users"))  
 	private Set<UserDAO> users;
+	
+	
+	@OneToMany(mappedBy="account")
+	private Set<SaleOrderDAO> orders;
 	
 	//used by Hibernate
 	public AccountDAO() {}

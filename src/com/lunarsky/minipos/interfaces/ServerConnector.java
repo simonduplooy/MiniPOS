@@ -59,11 +59,5 @@ public interface ServerConnector {
 	public ProductGroupButtonConfigDTO saveProductGroupButton(final ProductGroupButtonConfigDTO config);
 	public void deleteProductGroupButton(final PersistenceIdDTO id);
 	
-	/*****************************************************************************
-	 * SaleOrder
-	 *****************************************************************************/
-	public List<SaleOrderDTO> getSaleOrders(final AccountDTO account);
-	public SaleOrderDTO addSaleOrder(final AccountDTO account,final SaleOrderDTO saleOrder);
-	
 	public void close();
 }
