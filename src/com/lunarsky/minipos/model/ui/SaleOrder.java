@@ -2,6 +2,7 @@ package com.lunarsky.minipos.model.ui;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -19,20 +20,20 @@ import javafx.collections.ObservableList;
 public class SaleOrder extends PersistenceObject {
 	private static final Logger log = LogManager.getLogger();
 	
-	private final LocalDateTime creationDateTime;
+	private final Date creationDate;
 	private final ObservableList<Sale> saleList;
 	private final DoubleProperty totalProperty;
 	private NumberBinding totalBinding;
 
 	
 	public SaleOrder() {
-		creationDateTime = LocalDateTime.now();
+		creationDate = new Date();
 		saleList = FXCollections.observableArrayList();
 		totalProperty = new SimpleDoubleProperty();
 	}
 	
-	public LocalDateTime getCreationTime() {
-		return creationDateTime;
+	public Date getCreationDate() {
+		return creationDate;
 	}
 	
 	public void addSale(final Sale sale) {
@@ -73,7 +74,7 @@ public class SaleOrder extends PersistenceObject {
 		for(Sale sale: saleList) {
 			saleDTOList.add(sale.getDTO());
 		}
-		final SaleOrderDTO dto = new SaleOrderDTO(getId().getDTO(),getCreationTime(),saleDTOList);
+		final SaleOrderDTO dto = new SaleOrderDTO(getId().getDTO(),getCreationDate(),saleDTOList);
 		return dto;
 	}
 	
