@@ -46,6 +46,18 @@ public class HibernateDAO {
     	return dto; 
     }
     
+    protected Long getVersion() {
+    	return version;
+    }
+    
+    protected Date getCreated() {
+    	return created;
+    }
+    
+    protected Date getLastModified() {
+    	return lastModified;
+    }
+    
     protected void setId(final PersistenceIdDTO id) {
     	this.id = id.getId(); 
     }

@@ -93,4 +93,11 @@ public class AccountDAO extends HibernateDAO {
 		}
 		users.add(userDAO);
 	}
+	
+	public void addOrder(final SaleOrderDAO order) {
+		if(null == orders) {
+			orders = new HashSet<SaleOrderDAO>();
+		}
+		orders.add(order);
+	}
 }

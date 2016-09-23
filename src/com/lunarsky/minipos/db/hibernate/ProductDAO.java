@@ -21,12 +21,13 @@ import com.lunarsky.minipos.model.ui.PersistenceId;
 		)
 public class ProductDAO extends HibernateDAO {
 
-	@ManyToOne(optional = true)
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "parentId", foreignKey = @ForeignKey(name = "FK_Products_ProductGroups"))
 	private ProductGroupDAO parentProductGroupDAO;
 	
-	@Column(length = Const.MAX_TEXTFIELD_LENGTH)
+	@Column(length = Const.MAX_TEXTFIELD_LENGTH, nullable = false)
 	private String name;
+	@Column(nullable = false)
 	private Double price;
 
 	//used by hibernate

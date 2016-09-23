@@ -13,6 +13,7 @@ import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.common.exception.NameInUseException;
 import com.lunarsky.minipos.model.dto.AccountDTO;
 import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
+import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 
 public class AccountManager {
 	private static final Logger log = LogManager.getLogger();
@@ -71,5 +72,17 @@ public class AccountManager {
 			throw new EntityNotFoundException(String.format("Account %s not found",id));
 		}
 		entityManager.remove(accountDAO);
+	}
+	
+	public static void addOrder(final EntityManager entityManager, final PersistenceIdDTO accountId, final SaleOrderDTO order) {
+		log.debug("addOrder()");
+		
+		final AccountDAO accountDAO = entityManager.find(AccountDAO.class,accountId.getId());
+		if(null == accountDAO) {
+			throw new EntityNotFoundException(String.format("Account %s not found",accountId));
+		}
+		final SaleOrderDAO orderDAO = new SaleOrderDAO(order);
+		accountDAO.addOrder(orderDAO);
+		
 	}
 }
