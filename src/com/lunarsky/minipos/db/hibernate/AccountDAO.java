@@ -1,6 +1,8 @@
 package com.lunarsky.minipos.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -18,6 +20,7 @@ import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.dto.AccountDTO;
 import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
+import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 
 @Entity
 @Table(
@@ -94,10 +97,20 @@ public class AccountDAO extends HibernateDAO {
 		users.add(userDAO);
 	}
 	
-	public void addOrder(final SaleOrderDAO order) {
+	public List<SaleOrderDTO> getOrders() {
+		final List<SaleOrderDTO> orderList = new ArrayList<SaleOrderDTO>();
+		for(SaleOrderDAO order: orders) {
+			final SaleOrderDTO orderDTO = order.getDTO();
+			orderList.add(orderDTO);
+		}
+		return orderList;
+	}
+	
+	public void addOrder(final SaleOrderDTO order) {
 		if(null == orders) {
 			orders = new HashSet<SaleOrderDAO>();
 		}
+		
 		orders.add(order);
 	}
 }

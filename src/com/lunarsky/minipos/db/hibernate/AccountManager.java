@@ -74,15 +74,26 @@ public class AccountManager {
 		entityManager.remove(accountDAO);
 	}
 	
+	public static List<SaleOrderDTO> getOrders(final EntityManager entityManager, final PersistenceIdDTO accountId) {
+		log.debug("getOrders()");
+		
+		final AccountDAO account = entityManager.find(AccountDAO.class,accountId.getId());
+		if(null == account) {
+			throw new EntityNotFoundException(String.format("Account %s not found",accountId));
+		}
+		
+		account.get
+		
+	}
+	
 	public static void addOrder(final EntityManager entityManager, final PersistenceIdDTO accountId, final SaleOrderDTO order) {
 		log.debug("addOrder()");
 		
-		final AccountDAO accountDAO = entityManager.find(AccountDAO.class,accountId.getId());
-		if(null == accountDAO) {
+		final AccountDAO account = entityManager.find(AccountDAO.class,accountId.getId());
+		if(null == account) {
 			throw new EntityNotFoundException(String.format("Account %s not found",accountId));
 		}
-		final SaleOrderDAO orderDAO = new SaleOrderDAO(order);
-		accountDAO.addOrder(orderDAO);
-		
+		final SaleOrderDAO orderDAO = SaleOrderDAO.create(entityManager,order);
+		account.addOrder(orderDAO);
 	}
 }

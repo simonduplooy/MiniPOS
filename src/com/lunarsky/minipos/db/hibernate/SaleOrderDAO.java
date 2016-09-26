@@ -1,5 +1,7 @@
 package com.lunarsky.minipos.db.hibernate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -11,8 +13,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.dto.AccountDTO;
 import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
+import com.lunarsky.minipos.model.dto.ProductSaleDTO;
+import com.lunarsky.minipos.model.dto.SaleDTO;
 import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 
 @Entity
@@ -54,12 +57,21 @@ public class SaleOrderDAO extends HibernateDAO {
 	}
 	
 	public SaleOrderDTO getDTO() {
-		final SaleOrderDTO order = new SaleOrderDTO(getId(),getCreated());
+		final SaleOrderDTO order = new SaleOrderDTO(getId(),getCreated(),getSales());
 		return order;
 	}
 
 	public void setDTO(final SaleOrderDTO order) {
 		setId(account.getId());
+	}
+	
+	public List<SaleDTO> getSales() {
+		final List<SaleDTO> saleList = new ArrayList<SaleDTO>();
+		for(ProductSaleDAO saleDAO: productSales) {
+			final ProductSaleDTO saleDTO = saleDAO.getDTO();
+			saleList.add(saleDTO);
+		}
+		return saleList;
 	}
 	
 }
