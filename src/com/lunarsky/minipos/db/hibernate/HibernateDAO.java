@@ -2,6 +2,7 @@ package com.lunarsky.minipos.db.hibernate;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;

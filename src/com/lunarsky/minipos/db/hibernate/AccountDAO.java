@@ -98,6 +98,7 @@ public class AccountDAO extends HibernateDAO {
 	}
 	
 	public List<SaleOrderDTO> getOrders() {
+		
 		final List<SaleOrderDTO> orderList = new ArrayList<SaleOrderDTO>();
 		for(SaleOrderDAO order: orders) {
 			final SaleOrderDTO orderDTO = order.getDTO();
