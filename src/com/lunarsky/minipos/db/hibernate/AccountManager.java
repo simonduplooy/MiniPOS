@@ -77,23 +77,17 @@ public class AccountManager {
 	public static List<SaleOrderDTO> getOrders(final EntityManager entityManager, final PersistenceIdDTO accountId) {
 		log.debug("getOrders()");
 		
-		final AccountDAO account = entityManager.find(AccountDAO.class,accountId.getId());
-		if(null == account) {
-			throw new EntityNotFoundException(String.format("Account %s not found",accountId));
-		}
+		final AccountDAO account = AccountDAO.load(entityManager,accountId);
 		
-		account.get
+		//TODO
+		return null;
 		
 	}
 	
 	public static void addOrder(final EntityManager entityManager, final PersistenceIdDTO accountId, final SaleOrderDTO order) {
 		log.debug("addOrder()");
+
+		final SaleOrderDAO orderDAO = SaleOrderDAO.create(entityManager,accountId,order);
 		
-		final AccountDAO account = entityManager.find(AccountDAO.class,accountId.getId());
-		if(null == account) {
-			throw new EntityNotFoundException(String.format("Account %s not found",accountId));
-		}
-		final SaleOrderDAO orderDAO = SaleOrderDAO.create(entityManager,order);
-		account.addOrder(orderDAO);
 	}
 }

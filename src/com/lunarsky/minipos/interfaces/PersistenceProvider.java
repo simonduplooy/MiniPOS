@@ -35,10 +35,18 @@ public interface PersistenceProvider {
 	 *****************************************************************************/
 	public List<AccountDTO> getAccounts(final Transaction transaction);
 	public List<AccountDTO> getAccounts(final Transaction transaction, final PersistenceIdDTO userId);
+
 	//TODO should create & update be combined saveAccount
 	public AccountDTO createAccount(final Transaction transaction, final PersistenceIdDTO userId, final AccountDTO account);
 	public void updateAccount(final Transaction transaction, final AccountDTO account);
 	public void deleteAccount(final Transaction transaction, final PersistenceIdDTO id);
+	
+	public List<SaleOrderDTO> getOrders(final Transaction transaction, final PersistenceIdDTO accountId);
+	
+	/*****************************************************************************
+	 * Sale Orders
+	 *****************************************************************************/
+	public void addOrder(final Transaction transaction, final PersistenceIdDTO accountId, final SaleOrderDTO order);
 	
 	/*****************************************************************************
 	 * Products

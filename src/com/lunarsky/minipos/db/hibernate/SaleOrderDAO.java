@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
+import com.lunarsky.minipos.model.dto.AccountDTO;
 import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductSaleDTO;
 import com.lunarsky.minipos.model.dto.SaleDTO;
@@ -43,9 +44,10 @@ public class SaleOrderDAO extends HibernateDAO {
 		return orderDAO;
 	}
 	
-	public static SaleOrderDAO create(final EntityManager entityManager, final SaleOrderDTO order) {
+	public static SaleOrderDAO create(final EntityManager entityManager, final PersistenceIdDTO accountId, final SaleOrderDTO order) {
 		
 		final SaleOrderDAO orderDAO = new SaleOrderDAO(entityManager,order);
+		orderDAO.setAccount(accountId);
 		entityManager.persist(orderDAO);
 		
 		return orderDAO;
@@ -62,7 +64,6 @@ public class SaleOrderDAO extends HibernateDAO {
 	}
 
 	public void setDTO(final SaleOrderDTO order) {
-		setId(account.getId());
 	}
 	
 	public List<SaleDTO> getSales() {
@@ -72,6 +73,10 @@ public class SaleOrderDAO extends HibernateDAO {
 			saleList.add(saleDTO);
 		}
 		return saleList;
+	}
+	
+	private void setAccount(final PersistenceIdDTO accountId) {
+		this.account = AccountDAO.load(getEntityManager(),accountId);
 	}
 	
 }

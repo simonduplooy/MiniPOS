@@ -106,11 +106,10 @@ public class AccountDAO extends HibernateDAO {
 		return orderList;
 	}
 	
-	public void addOrder(final SaleOrderDTO order) {
-		if(null == orders) {
-			orders = new HashSet<SaleOrderDAO>();
-		}
+	public void addOrder(final PersistenceIdDTO accountId, final SaleOrderDTO order) {
 		
-		orders.add(order);
+		final SaleOrderDAO orderDAO = SaleOrderDAO.create(getEntityManager(),accountId,order);
+		orders.add(orderDAO);
+		
 	}
 }

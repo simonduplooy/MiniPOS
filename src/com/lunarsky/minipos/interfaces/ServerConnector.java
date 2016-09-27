@@ -36,6 +36,13 @@ public interface ServerConnector {
 	public AccountDTO createAccount(final PersistenceIdDTO userId,final AccountDTO account);
 	public void updateAccount(final AccountDTO account);
 	public void deleteAccount(final PersistenceIdDTO id);
+	public List<SaleOrderDTO> getOrders(final PersistenceIdDTO accountId);
+	
+	
+	/*****************************************************************************
+	 * Sale Orders
+	 *****************************************************************************/
+	public void addOrder(final PersistenceIdDTO accountId, final SaleOrderDTO order);
 	
 	/*****************************************************************************
 	 * Products

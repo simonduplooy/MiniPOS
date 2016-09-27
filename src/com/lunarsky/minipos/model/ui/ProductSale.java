@@ -91,12 +91,12 @@ public class ProductSale extends Sale {
 	
 	@Override
 	public SaleDTO getDTO() {
-		final ProductSaleDTO dto = new ProductSaleDTO(getId().getDTO(),getProduct().getDTO(),getCount());
-		return dto;
+		final ProductSaleDTO sale = new ProductSaleDTO(getId().getDTO(),getProduct().getDTO(),getCount(),getDiscount());
+		return sale;
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("description:[%s] count:[%d] product:[%s] total:[%.2f]",getDescription(),getCount(),getProduct(),getTotal());
+		return String.format("description:[%s] count:[%d] discount:[%.2f] total:[%.2f]",getDescription(),getCount(),getDiscount(),getTotal());
 	}
 }
