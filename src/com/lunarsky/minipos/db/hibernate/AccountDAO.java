@@ -59,16 +59,17 @@ public class AccountDAO extends HibernateDAO {
 		return accountDAO;
 	}
 	
-	public static AccountDAO create(final EntityManager entityManager, final AccountDTO account) {
+	public static AccountDAO create(final EntityManager entityManager, final PersistenceIdDTO userId, final AccountDTO account) {
 		
-		final AccountDAO accountDAO = new AccountDAO(entityManager,account);
+		final AccountDAO accountDAO = new AccountDAO(entityManager,userId,account);
 		entityManager.persist(accountDAO);
 		
 		return accountDAO;
 	}
 	
-	private AccountDAO(final EntityManager entityManager, final AccountDTO account) {
+	private AccountDAO(final EntityManager entityManager, final PersistenceIdDTO userId, final AccountDTO account) {
 		super(entityManager);
+		addUser(userId);
 		setDTO(account);
 	}
 	
@@ -90,10 +91,11 @@ public class AccountDAO extends HibernateDAO {
 		this.name = name;
 	}
 	
-	public void addUser(final UserDAO userDAO) {
+	public void addUser(final PersistenceIdDTO userId) {
 		if(null == users) {
 			users = new HashSet<UserDAO>();
 		}
+		final UserDAO userDAO = UserDAO.load(getEntityManager(),userId);
 		users.add(userDAO);
 	}
 	

@@ -48,13 +48,7 @@ public class AccountManager {
 	public static AccountDTO create(final EntityManager entityManager, final PersistenceIdDTO userId, final AccountDTO account) throws NameInUseException, EntityNotFoundException {
 		log.debug("create() {}",account);
 		
-		final AccountDAO accountDAO = AccountDAO.create(entityManager, account);
-		final UserDAO userDAO = UserDAO.load(entityManager,userId);
-
-		//TODO this deletes the created DateTime of account - 
-		accountDAO.addUser(userDAO);
-		entityManager.persist(accountDAO);
-
+		final AccountDAO accountDAO = AccountDAO.create(entityManager, userId, account);
 		final AccountDTO updatedAccount = accountDAO.getDTO();
 		return updatedAccount;
 	}
