@@ -116,8 +116,8 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	
 	private void saveOrder() {
 		//TODO Async
-		//final SaleOrderDTO dto = order.getDTO();
 		final SaleOrderDTO orderDTO = order.getDTO();
+		//TODO only save if the order has at least one sale
 		appData.getServerConnector().addOrder(account.getId().getDTO(),orderDTO);
 		close();
 	}

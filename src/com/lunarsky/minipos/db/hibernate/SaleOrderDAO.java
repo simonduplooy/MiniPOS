@@ -1,6 +1,7 @@
 package com.lunarsky.minipos.db.hibernate;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,7 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
-import com.lunarsky.minipos.model.dto.AccountDTO;
 import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
 import com.lunarsky.minipos.model.dto.ProductSaleDTO;
 import com.lunarsky.minipos.model.dto.SaleDTO;
@@ -39,7 +39,6 @@ public class SaleOrderDAO extends HibernateDAO {
 		if(null == orderDAO) { 
 			throw new EntityNotFoundException(String.format("SaleOrder %s not found",id));
 		}
-		
 		orderDAO.setEntityManager(entityManager);
 		return orderDAO;
 	}
@@ -49,6 +48,8 @@ public class SaleOrderDAO extends HibernateDAO {
 		final SaleOrderDAO orderDAO = new SaleOrderDAO(entityManager,order);
 		orderDAO.setAccount(accountId);
 		entityManager.persist(orderDAO);
+		
+		orderDAO.createSales(order.getSales());
 		
 		return orderDAO;
 	}
@@ -64,19 +65,34 @@ public class SaleOrderDAO extends HibernateDAO {
 	}
 
 	public void setDTO(final SaleOrderDTO order) {
+
 	}
 	
-	public List<SaleDTO> getSales() {
+	private void setAccount(final PersistenceIdDTO accountId) {
+		this.account = AccountDAO.load(getEntityManager(),accountId);
+	}
+	
+	private void createSales(final List<SaleDTO> sales) {
+		
+		for(SaleDTO sale: sales){
+			//TODO OpenItemSale
+			if(sale instanceof ProductSaleDTO) {
+				final ProductSaleDTO productSale = (ProductSaleDTO)sale;
+				final ProductSaleDAO productSaleDAO = ProductSaleDAO.create(getEntityManager(),this,productSale);
+				//productSales.add(productSaleDAO);
+			} else {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+	
+	private List<SaleDTO> getSales() {
 		final List<SaleDTO> saleList = new ArrayList<SaleDTO>();
 		for(ProductSaleDAO saleDAO: productSales) {
 			final ProductSaleDTO saleDTO = saleDAO.getDTO();
 			saleList.add(saleDTO);
 		}
 		return saleList;
-	}
-	
-	private void setAccount(final PersistenceIdDTO accountId) {
-		this.account = AccountDAO.load(getEntityManager(),accountId);
 	}
 	
 }
