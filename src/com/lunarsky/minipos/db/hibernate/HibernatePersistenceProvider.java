@@ -23,6 +23,7 @@ import com.lunarsky.minipos.model.dto.ProductButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupButtonConfigDTO;
 import com.lunarsky.minipos.model.dto.ProductGroupDTO;
+import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 import com.lunarsky.minipos.model.dto.UserDTO;
 
 public class HibernatePersistenceProvider implements PersistenceProvider {
@@ -135,6 +136,20 @@ public class HibernatePersistenceProvider implements PersistenceProvider {
 		AccountManager.delete(entityManager,id);		
 	}
 
+	public List<SaleOrderDTO> getOrders(final Transaction transaction, final PersistenceIdDTO accountId) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		final List<SaleOrderDTO> orders = AccountManager.getOrders(entityManager,accountId);
+		return orders;
+	}
+	
+	/*****************************************************************************
+	 * Sale Orders
+	 *****************************************************************************/
+	public void addOrder(final Transaction transaction, final PersistenceIdDTO accountId, final SaleOrderDTO order) {
+		final EntityManager entityManager = ((HibernateTransaction)transaction).getEntityManager();
+		AccountManager.addOrder(entityManager,accountId,order);
+	}
+	
 	/*****************************************************************************
 	 * Products
 	 *****************************************************************************/

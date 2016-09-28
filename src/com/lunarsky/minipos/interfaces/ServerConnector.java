@@ -36,6 +36,13 @@ public interface ServerConnector {
 	public AccountDTO createAccount(final PersistenceIdDTO userId,final AccountDTO account);
 	public void updateAccount(final AccountDTO account);
 	public void deleteAccount(final PersistenceIdDTO id);
+	public List<SaleOrderDTO> getOrders(final PersistenceIdDTO accountId);
+	
+	
+	/*****************************************************************************
+	 * Sale Orders
+	 *****************************************************************************/
+	public void addOrder(final PersistenceIdDTO accountId, final SaleOrderDTO order);
 	
 	/*****************************************************************************
 	 * Products
@@ -58,12 +65,6 @@ public interface ServerConnector {
 	public List<ProductGroupButtonConfigDTO> getProductGroupButtons();
 	public ProductGroupButtonConfigDTO saveProductGroupButton(final ProductGroupButtonConfigDTO config);
 	public void deleteProductGroupButton(final PersistenceIdDTO id);
-	
-	/*****************************************************************************
-	 * SaleOrder
-	 *****************************************************************************/
-	public List<SaleOrderDTO> getSaleOrders(final AccountDTO account);
-	public SaleOrderDTO addSaleOrder(final AccountDTO account,final SaleOrderDTO saleOrder);
 	
 	public void close();
 }

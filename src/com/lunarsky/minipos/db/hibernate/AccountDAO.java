@@ -1,6 +1,8 @@
 package com.lunarsky.minipos.db.hibernate;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -10,6 +12,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -17,6 +20,7 @@ import com.lunarsky.minipos.common.Const;
 import com.lunarsky.minipos.common.exception.EntityNotFoundException;
 import com.lunarsky.minipos.model.dto.AccountDTO;
 import com.lunarsky.minipos.model.dto.PersistenceIdDTO;
+import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 
 @Entity
 @Table(
@@ -37,6 +41,10 @@ public class AccountDAO extends HibernateDAO {
 		, foreignKey = @ForeignKey(name = "FK_Accounts_Users"))  
 	private Set<UserDAO> users;
 	
+	
+	@OneToMany(mappedBy="account")
+	private Set<SaleOrderDAO> orders;
+	
 	//used by Hibernate
 	public AccountDAO() {}
 	
@@ -51,16 +59,17 @@ public class AccountDAO extends HibernateDAO {
 		return accountDAO;
 	}
 	
-	public static AccountDAO create(final EntityManager entityManager, final AccountDTO account) {
+	public static AccountDAO create(final EntityManager entityManager, final PersistenceIdDTO userId, final AccountDTO account) {
 		
-		final AccountDAO accountDAO = new AccountDAO(entityManager,account);
+		final AccountDAO accountDAO = new AccountDAO(entityManager,userId,account);
 		entityManager.persist(accountDAO);
 		
 		return accountDAO;
 	}
 	
-	private AccountDAO(final EntityManager entityManager, final AccountDTO account) {
+	private AccountDAO(final EntityManager entityManager, final PersistenceIdDTO userId, final AccountDTO account) {
 		super(entityManager);
+		addUser(userId);
 		setDTO(account);
 	}
 	
@@ -82,10 +91,28 @@ public class AccountDAO extends HibernateDAO {
 		this.name = name;
 	}
 	
-	public void addUser(final UserDAO userDAO) {
+	public void addUser(final PersistenceIdDTO userId) {
 		if(null == users) {
 			users = new HashSet<UserDAO>();
 		}
+		final UserDAO userDAO = UserDAO.load(getEntityManager(),userId);
 		users.add(userDAO);
+	}
+	
+	public List<SaleOrderDTO> getOrders() {
+		
+		final List<SaleOrderDTO> orderList = new ArrayList<SaleOrderDTO>();
+		for(SaleOrderDAO order: orders) {
+			final SaleOrderDTO orderDTO = order.getDTO();
+			orderList.add(orderDTO);
+		}
+		return orderList;
+	}
+	
+	public void addOrder(final PersistenceIdDTO accountId, final SaleOrderDTO order) {
+		
+		final SaleOrderDAO orderDAO = SaleOrderDAO.create(getEntityManager(),accountId,order);
+		orders.add(orderDAO);
+		
 	}
 }

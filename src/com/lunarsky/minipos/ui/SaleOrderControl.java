@@ -1,5 +1,7 @@
 package com.lunarsky.minipos.ui;
 
+import java.text.DateFormat;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,8 +39,7 @@ public class SaleOrderControl extends VBox {
 		order = saleOrder;
 		order.getSales().addListener((ListChangeListener.Change<? extends Sale> change) -> { handleOrderChanged(change);} );
 		
-		final LocalDateTimeStringConverter converter = new LocalDateTimeStringConverter();
-		dateTimeLabel = new Label(converter.toString(order.getCreationTime()));
+		dateTimeLabel = new Label(DateFormat.getInstance().format(saleOrder.getCreationDate()));
 		getChildren().add(dateTimeLabel);
 
 	}
