@@ -59,7 +59,6 @@ public class AppData {
 	}
 	
 	public User getActiveUser() {
-		assert(null != activeUser);
 		return activeUser;
 	}
 	

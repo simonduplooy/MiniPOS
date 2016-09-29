@@ -99,6 +99,16 @@ public class ViewManager {
 		}
 	}
 	
+	public User getActiveUser() {
+		final AppData appData = AppData.getInstance();
+		User user = appData.getActiveUser();
+		if(null == user) {
+			showLoginDialog();
+		}
+		user = appData.getActiveUser();
+		return user;
+	}
+	
 	private SplashView showSplashView() {
 
 		SplashView splashView = new SplashView();

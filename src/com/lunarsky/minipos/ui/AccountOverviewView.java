@@ -83,7 +83,7 @@ public class AccountOverviewView extends BorderPane {
 	
 	@FXML
 	private void initialize() {
-		final User user = appData.getActiveUser();
+		final User user = appData.getViewManager().getActiveUser();
 		userLabel.setText(user.getName());
 	}
 	
