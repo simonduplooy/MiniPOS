@@ -71,19 +71,16 @@ public class AccountManager {
 	}
 	
 	public static List<SaleOrderDTO> getOrders(final EntityManager entityManager, final PersistenceIdDTO accountId) {
-		log.debug("getOrders()");
 		
 		final AccountDAO account = AccountDAO.load(entityManager,accountId);
-		
-		//TODO
-		return null;
-		
+		final List<SaleOrderDTO> orders = account.getOrders();
+		return orders;
 	}
 	
 	public static void addOrder(final EntityManager entityManager, final PersistenceIdDTO accountId, final SaleOrderDTO order) {
-		log.debug("addOrder()");
-
-		final SaleOrderDAO orderDAO = SaleOrderDAO.create(entityManager,accountId,order);
+		
+		SaleOrderDAO.create(entityManager,accountId,order);
 		
 	}
+	
 }

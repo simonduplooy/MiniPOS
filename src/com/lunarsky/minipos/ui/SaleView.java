@@ -1,5 +1,8 @@
 package com.lunarsky.minipos.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,6 +11,7 @@ import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 import com.lunarsky.minipos.model.ui.Account;
 import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.model.ui.ProductSale;
+import com.lunarsky.minipos.model.ui.Sale;
 import com.lunarsky.minipos.model.ui.SaleOrder;
 
 import javafx.beans.binding.Bindings;
@@ -23,6 +27,7 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 
 	private final AppData appData;
 	private final Account account;
+	private final List<SaleOrder> previousOrders;
 	private SaleOrder order;
 
 	@FXML
@@ -42,6 +47,7 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		
 		this.account = account;
 		this.appData = AppData.getInstance();
+		this.previousOrders = new ArrayList<SaleOrder>();
        
         UiUtil.loadRootConstructNode(this,"SaleView.fxml");
 
@@ -79,6 +85,15 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	}
 	
 	private void initializeAsync() {
+		//TODO Async
+		final List<SaleOrderDTO> saleOrders = appData.getServerConnector().getSaleOrders(account.getId().getDTO());
+		for(SaleOrderDTO orderDTO: saleOrders) {
+			final SaleOrder order = new SaleOrder(orderDTO);
+			//TODO this should be a bill
+			for(Sale sale: order.getSales()) {
+				this.order.addSale(sale);				
+			}
+		}
 		
 	}
 	
@@ -115,10 +130,11 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	}
 	
 	private void saveOrder() {
-		//TODO Async
-		final SaleOrderDTO orderDTO = order.getDTO();
-		//TODO only save if the order has at least one sale
-		appData.getServerConnector().addOrder(account.getId().getDTO(),orderDTO);
+		if(!order.getSales().isEmpty()) {
+			//TODO Async
+			final SaleOrderDTO orderDTO = order.getDTO();
+			appData.getServerConnector().addSaleOrder(account.getId().getDTO(),orderDTO);
+		}
 		close();
 	}
 	

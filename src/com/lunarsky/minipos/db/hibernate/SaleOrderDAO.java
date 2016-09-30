@@ -30,6 +30,9 @@ public class SaleOrderDAO extends HibernateDAO {
 	@OneToMany(mappedBy="saleOrder")
 	private Set<ProductSaleDAO> productSales;
 	
+	/*********************************************************************
+	 * Public
+	 ********************************************************************/
 	//used by hibernate
 	public SaleOrderDAO() {}
 	
@@ -53,12 +56,7 @@ public class SaleOrderDAO extends HibernateDAO {
 		
 		return orderDAO;
 	}
-	
-	private SaleOrderDAO(final EntityManager entityManager, final SaleOrderDTO order) {
-		super(entityManager);
-		setDTO(order);
-	}
-	
+		
 	public SaleOrderDTO getDTO() {
 		final SaleOrderDTO order = new SaleOrderDTO(getId(),getCreated(),getSales());
 		return order;
@@ -68,6 +66,14 @@ public class SaleOrderDAO extends HibernateDAO {
 
 	}
 	
+	/*********************************************************************
+	 * Private
+	 ********************************************************************/	
+	private SaleOrderDAO(final EntityManager entityManager, final SaleOrderDTO order) {
+		super(entityManager);
+		setDTO(order);
+	}
+
 	private void setAccount(final PersistenceIdDTO accountId) {
 		this.account = AccountDAO.load(getEntityManager(),accountId);
 	}

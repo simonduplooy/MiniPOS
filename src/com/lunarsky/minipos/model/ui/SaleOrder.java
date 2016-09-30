@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.model.ui;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -8,6 +7,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.lunarsky.minipos.model.dto.ProductSaleDTO;
 import com.lunarsky.minipos.model.dto.SaleDTO;
 import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 
@@ -30,6 +30,19 @@ public class SaleOrder extends PersistenceObject {
 		creationDate = new Date();
 		saleList = FXCollections.observableArrayList();
 		totalProperty = new SimpleDoubleProperty();
+	}
+	
+	public SaleOrder(final SaleOrderDTO order) {
+		this();
+		for(SaleDTO sale: order.getSales()) {
+			if(sale instanceof ProductSaleDTO) {
+				final ProductSaleDTO productSaleDTO = (ProductSaleDTO)sale;
+				final ProductSale productSale = new ProductSale(productSaleDTO);
+				addSale(productSale);
+			} else {
+				throw new IllegalArgumentException();
+			}
+		}
 	}
 	
 	public Date getCreationDate() {

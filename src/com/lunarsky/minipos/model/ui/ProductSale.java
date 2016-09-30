@@ -28,6 +28,13 @@ public class ProductSale extends Sale {
 		subTotalProperty = new SimpleDoubleProperty();
 	}
 	
+	public ProductSale(final ProductSaleDTO sale) {
+		this();
+		setProduct(new Product(sale.getProduct()));
+		setCount(sale.getCount());
+		setDiscount(sale.getDiscount());
+	}
+	
 	public ProductSale(final Product product, final Integer count) {
 		this();
 		setProduct(product);

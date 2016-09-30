@@ -41,12 +41,8 @@ public interface PersistenceProvider {
 	public void updateAccount(final Transaction transaction, final AccountDTO account);
 	public void deleteAccount(final Transaction transaction, final PersistenceIdDTO id);
 	
-	public List<SaleOrderDTO> getOrders(final Transaction transaction, final PersistenceIdDTO accountId);
-	
-	/*****************************************************************************
-	 * Sale Orders
-	 *****************************************************************************/
-	public void addOrder(final Transaction transaction, final PersistenceIdDTO accountId, final SaleOrderDTO order);
+	public List<SaleOrderDTO> getSaleOrders(final Transaction transaction, final PersistenceIdDTO accountId);
+	public void addSaleOrder(final Transaction transaction, final PersistenceIdDTO accountId, final SaleOrderDTO order);
 	
 	/*****************************************************************************
 	 * Products
