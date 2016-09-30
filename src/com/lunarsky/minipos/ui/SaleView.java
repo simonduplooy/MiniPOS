@@ -15,7 +15,8 @@ import com.lunarsky.minipos.model.ui.Sale;
 import com.lunarsky.minipos.model.ui.SaleOrder;
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -27,8 +28,8 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 
 	private final AppData appData;
 	private final Account account;
-	private final List<SaleOrder> previousOrders;
-	private SaleOrder order;
+	private final ObservableList<SaleOrder> orders;
+	private SaleOrder activeOrder;
 
 	@FXML
 	private Label accountLabel;
@@ -39,7 +40,7 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	@FXML
 	private ScrollPane productScrollPane;
 	
-	private SaleOrderControl orderControl;
+	private BillControl billControl;
 	private ProductButtonGridPane productGridPane;
 	
 	public SaleView(final Account account) {
@@ -47,7 +48,7 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		
 		this.account = account;
 		this.appData = AppData.getInstance();
-		this.previousOrders = new ArrayList<SaleOrder>();
+		this.orders = FXCollections.observableArrayList();
        
         UiUtil.loadRootConstructNode(this,"SaleView.fxml");
 
@@ -65,8 +66,9 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		order = new SaleOrder();
 		
 		productGridPane = new ProductButtonGridPane(false);
-		orderControl = new SaleOrderControl(order);
-		orderControl.heightProperty().addListener((ChangeListener<? super Number>)((observable,oldValue,newValue) -> handleOrderControlHeightChanged(newValue)));
+		billControl = new BillControl();
+		//TODO
+		//orderControl.heightProperty().addListener((ChangeListener<? super Number>)((observable,oldValue,newValue) -> handleOrderControlHeightChanged(newValue)));
 		
 	}
 	
@@ -75,7 +77,7 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 
 		accountLabel.setText(account.getName());
 
-		orderScrollPane.setContent(orderControl);
+		orderScrollPane.setContent(billControl);
 		
 		productGridPane.setProductSelectionObserver(this);
 		productScrollPane.setContent(productGridPane);
