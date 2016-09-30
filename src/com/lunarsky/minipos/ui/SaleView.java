@@ -99,25 +99,13 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		final List<SaleOrderDTO> saleOrders = appData.getServerConnector().getSaleOrders(account.getId().getDTO());
 		for(SaleOrderDTO orderDTO: saleOrders) {
 			final SaleOrder order = new SaleOrder(orderDTO);
-			orders.add(order);
-			
-			if(null == totalBinding) {
-				totalBinding = order.totalProperty().add(0.0);
-			} else {
-				totalBinding = totalBinding.add(order.totalProperty());
-			}
-			
-			totalProperty.bind(totalBinding);
-			
-			final SaleOrderControl orderControl = new SaleOrderControl(order);
-			billControl.getChildren().add(orderControl);
+			addOrder(order);
 		}
 		
-		final SaleOrderControl orderControl = new SaleOrderControl(activeOrder);
-		orders.add(activeOrder);
-		billControl.getChildren().add(orderControl);
+		addOrder(activeOrder);
 		
 	}
+	
 	
 	//Implement ProductSelectionObserver
 	public void handleProductSelected(final Product product) {
@@ -131,6 +119,23 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 			activeOrder.addSale(sale);
 		}
 	}
+
+	final void addOrder(final SaleOrder order) {
+		
+		orders.add(order);
+		
+		if(null == totalBinding) {
+			totalBinding = order.totalProperty().add(0.0);
+		} else {
+			totalBinding = totalBinding.add(order.totalProperty());
+		}
+		
+		totalProperty.bind(totalBinding);
+		
+		final SaleOrderControl orderControl = new SaleOrderControl(order);
+		billControl.getChildren().add(orderControl);
+	}
+
 	
 	private void handleOrderControlHeightChanged(final Number number) {
 		orderScrollPane.setVvalue(orderScrollPane.getVmax());
