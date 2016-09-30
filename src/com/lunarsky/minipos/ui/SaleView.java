@@ -1,6 +1,5 @@
 package com.lunarsky.minipos.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,10 +10,12 @@ import com.lunarsky.minipos.model.dto.SaleOrderDTO;
 import com.lunarsky.minipos.model.ui.Account;
 import com.lunarsky.minipos.model.ui.Product;
 import com.lunarsky.minipos.model.ui.ProductSale;
-import com.lunarsky.minipos.model.ui.Sale;
 import com.lunarsky.minipos.model.ui.SaleOrder;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.NumberBinding;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -28,7 +29,13 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 
 	private final AppData appData;
 	private final Account account;
+
+	//These are a bill
 	private final ObservableList<SaleOrder> orders;
+	private final DoubleProperty totalProperty;
+	private NumberBinding totalBinding;
+	//
+	
 	private SaleOrder activeOrder;
 
 	@FXML
@@ -49,6 +56,7 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		this.account = account;
 		this.appData = AppData.getInstance();
 		this.orders = FXCollections.observableArrayList();
+		this.totalProperty = new SimpleDoubleProperty();
        
         UiUtil.loadRootConstructNode(this,"SaleView.fxml");
 
@@ -63,7 +71,7 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	
 	private void initializeMembers() {
 
-		order = new SaleOrder();
+		activeOrder = new SaleOrder();
 		
 		productGridPane = new ProductButtonGridPane(false);
 		billControl = new BillControl();
@@ -83,7 +91,7 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		productScrollPane.setContent(productGridPane);
 
 		final CurrencyStringConverter currencyConverter = new CurrencyStringConverter();
-		Bindings.bindBidirectional(totalLabel.textProperty(),order.totalProperty(),currencyConverter);	
+		Bindings.bindBidirectional(totalLabel.textProperty(),totalProperty,currencyConverter);	
 	}
 	
 	private void initializeAsync() {
@@ -91,11 +99,23 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		final List<SaleOrderDTO> saleOrders = appData.getServerConnector().getSaleOrders(account.getId().getDTO());
 		for(SaleOrderDTO orderDTO: saleOrders) {
 			final SaleOrder order = new SaleOrder(orderDTO);
-			//TODO this should be a bill
-			for(Sale sale: order.getSales()) {
-				this.order.addSale(sale);				
+			orders.add(order);
+			
+			if(null == totalBinding) {
+				totalBinding = order.totalProperty().add(0.0);
+			} else {
+				totalBinding = totalBinding.add(order.totalProperty());
 			}
+			
+			totalProperty.bind(totalBinding);
+			
+			final SaleOrderControl orderControl = new SaleOrderControl(order);
+			billControl.getChildren().add(orderControl);
 		}
+		
+		final SaleOrderControl orderControl = new SaleOrderControl(activeOrder);
+		orders.add(activeOrder);
+		billControl.getChildren().add(orderControl);
 		
 	}
 	
@@ -103,12 +123,12 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	public void handleProductSelected(final Product product) {
 		log.debug("handleProductSelected() {}",product);
 
-		ProductSale sale = order.getProductSale(product);
+		ProductSale sale = activeOrder.getProductSale(product);
 		if(null != sale) {
 			sale.increaseCount(1);
 		} else {
 			sale = new ProductSale(product,1);
-			order.addSale(sale);
+			activeOrder.addSale(sale);
 		}
 	}
 	
@@ -132,9 +152,9 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	}
 	
 	private void saveOrder() {
-		if(!order.getSales().isEmpty()) {
+		if(!activeOrder.getSales().isEmpty()) {
 			//TODO Async
-			final SaleOrderDTO orderDTO = order.getDTO();
+			final SaleOrderDTO orderDTO = activeOrder.getDTO();
 			appData.getServerConnector().addSaleOrder(account.getId().getDTO(),orderDTO);
 		}
 		close();

@@ -41,6 +41,10 @@ public class SaleOrderControl extends VBox {
 		
 		dateTimeLabel = new Label(DateFormat.getInstance().format(saleOrder.getCreationDate()));
 		getChildren().add(dateTimeLabel);
+		
+		for(Sale sale: saleOrder.getSales()) {
+			addSale(sale);
+		}
 
 	}
 	
@@ -50,11 +54,17 @@ public class SaleOrderControl extends VBox {
 		while(change.next()) {
 			if(change.wasAdded()) {
 				final Sale sale = order.getSales().get(change.getFrom());
-				if(sale instanceof ProductSale) {
-					final SaleControl saleControl = new ProductSaleControl((ProductSale)sale);
-					getChildren().add(saleControl);
-				}
+				addSale(sale);
 			}
+		}
+	}
+	
+	private void addSale(final Sale sale) {
+		if(sale instanceof ProductSale) {
+			final SaleControl saleControl = new ProductSaleControl((ProductSale)sale);
+			getChildren().add(saleControl);
+		} else {
+			throw new IllegalArgumentException();
 		}
 	}
 	
