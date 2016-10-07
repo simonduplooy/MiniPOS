@@ -74,7 +74,7 @@ public class AccountDAO extends HibernateDAO {
 	}
 	
 	public AccountDTO getDTO() {
-		final AccountDTO account = new AccountDTO(getId(),getName());
+		final AccountDTO account = new AccountDTO(getId(),getCreated(),getName());
 		return account;
 	}
 

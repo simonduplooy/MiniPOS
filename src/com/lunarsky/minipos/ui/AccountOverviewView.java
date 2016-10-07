@@ -1,5 +1,6 @@
 package com.lunarsky.minipos.ui;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -73,6 +74,9 @@ public class AccountOverviewView extends BorderPane {
 	}
 	
 	private void setAccounts(final List<AccountDTO> accounts) {
+		
+		Collections.sort(accounts,(a,b)-> a.getCreated().compareTo(b.getCreated()));
+		
 		for(AccountDTO accountDTO: accounts) {
 			log.debug("Adding Account {}",accountDTO);
 			final AccountButton button = new AccountButton(new Account(accountDTO));

@@ -1,5 +1,7 @@
 package com.lunarsky.minipos.model.ui;
 
+import java.util.Date;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,20 +13,17 @@ import javafx.beans.property.StringProperty;
 public class Account extends PersistenceObject {
 	private static final Logger log = LogManager.getLogger();
 	
+	private Date created;
 	private final StringProperty nameProperty;
 	
 	public Account() {
 		nameProperty = new SimpleStringProperty();
 	}
 	
-	public Account(final String name) {
-		this();
-		setName(name);
-	}
-	
 	public Account(final PersistenceId id, final String name) {
-		this(name);
+		this();
 		setId(id);
+		setName(name);
 	}
 	
 	public Account(final Account account) {
@@ -37,13 +36,22 @@ public class Account extends PersistenceObject {
 	}
 	
 	public AccountDTO getDTO() {
-		final AccountDTO accountDTO = new AccountDTO(getId().getDTO(),getName());
+		final AccountDTO accountDTO = new AccountDTO(getId().getDTO(),getCreated(),getName());
 		return accountDTO;
 	}
 	
 	public void setDTO(final AccountDTO accountDTO) {
 		setId(new PersistenceId(accountDTO.getId()));
+		setCreated(accountDTO.getCreated());
 		setName(accountDTO.getName());
+	}
+	
+	public Date getCreated() {
+		return created;
+	}
+	
+	public void setCreated(final Date created) {
+		this.created = created;
 	}
 	
 	public StringProperty nameProperty() {
@@ -58,9 +66,11 @@ public class Account extends PersistenceObject {
 		nameProperty.setValue(name);
 	}
 	
+	
+	
 	@Override
 	public String toString() {
-		return String.format("name:[%s] id:[%s]",getName(),getId());
+		return String.format("name:[%s] id:[%s] created:[%s]",getName(),getId(),getCreated());
 	}
 
 }
