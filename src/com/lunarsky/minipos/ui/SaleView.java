@@ -16,6 +16,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -75,8 +76,6 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		
 		productGridPane = new ProductButtonGridPane(false);
 		billControl = new BillControl();
-		//TODO
-		//orderControl.heightProperty().addListener((ChangeListener<? super Number>)((observable,oldValue,newValue) -> handleOrderControlHeightChanged(newValue)));
 		
 	}
 	
@@ -91,7 +90,10 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		productScrollPane.setContent(productGridPane);
 
 		final CurrencyStringConverter currencyConverter = new CurrencyStringConverter();
-		Bindings.bindBidirectional(totalLabel.textProperty(),totalProperty,currencyConverter);	
+		Bindings.bindBidirectional(totalLabel.textProperty(),totalProperty,currencyConverter);
+		
+		billControl.heightProperty().addListener((ChangeListener<? super Number>)((observable,oldValue,newValue) -> handleOrderControlHeightChanged(newValue)));
+
 	}
 	
 	private void initializeAsync() {
@@ -132,13 +134,17 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		
 		totalProperty.bind(totalBinding);
 		
-		final SaleOrderControl orderControl = new SaleOrderControl(order);
-		billControl.getChildren().add(orderControl);
+		billControl.addOrder(order);
 	}
 
 	
 	private void handleOrderControlHeightChanged(final Number number) {
 		orderScrollPane.setVvalue(orderScrollPane.getVmax());
+	}
+	
+	@FXML
+	private void handlePay() {
+		log.debug("handlePay()");
 	}
 	
 	@FXML

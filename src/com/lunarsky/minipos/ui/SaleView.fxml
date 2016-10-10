@@ -16,13 +16,16 @@
          <bottom>
             <VBox alignment="BOTTOM_LEFT" BorderPane.alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" onAction="#handleDone" prefHeight="100.0" prefWidth="200.0" text="Done" />
-                  <Button defaultButton="true" mnemonicParsing="false" onAction="#handleBack" prefHeight="100.0" prefWidth="200.0" text="Back" />
+                  <Button mnemonicParsing="false" onAction="#handlePay" prefHeight="100.0" prefWidth="200.0" text="Pay" />
                </children>
             </VBox>
          </bottom>
          <top>
-            <VBox BorderPane.alignment="CENTER" />
+            <VBox BorderPane.alignment="CENTER">
+               <children>
+                  <Button defaultButton="true" mnemonicParsing="false" onAction="#handleBack" prefHeight="100.0" prefWidth="200.0" text="Back" />
+                  <Button mnemonicParsing="false" onAction="#handleDone" prefHeight="100.0" prefWidth="200.0" text="Done" />
+               </children></VBox>
          </top>
       </BorderPane>
    </right>
