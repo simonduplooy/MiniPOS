@@ -31,7 +31,7 @@ public class ViewManager {
 	}
 		
 	public void initialize() {
-		
+				
 		//TODO Add customizable external stylesheet
 		Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
 		StyleManager.getInstance().addUserAgentStylesheet(STYLESHEET_RESOURCE);
@@ -58,6 +58,7 @@ public class ViewManager {
 			@Override
 			protected void succeeded() {
 				log.debug("CreatePersistenceConnection() Succeeded");
+				
 				splashView.setInitializing(false);
 				//showLoginDialog();
 			}
@@ -71,7 +72,7 @@ public class ViewManager {
 
 		Thread thread = new Thread(task);
 		log.debug("Starting CreatePersistenceConnection() Task {}",thread);
-		thread.start();	
+		thread.start();
 	}
 	
 	public void close () {
