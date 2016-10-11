@@ -23,6 +23,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import javafx.util.converter.CurrencyStringConverter;
 
 public class SaleView extends BorderPane implements ProductButtonGridPane.Observer {
@@ -108,6 +109,9 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 		
 	}
 	
+	private Stage getStage() {
+		return (Stage)getScene().getWindow();
+	}
 	
 	//Implement ProductSelectionObserver
 	public void handleProductSelected(final Product product) {
@@ -145,6 +149,9 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	@FXML
 	private void handlePay() {
 		log.debug("handlePay()");
+		
+		final PayDialog payDialog = new PayDialog(getStage());
+		payDialog.getStage().showAndWait();
 	}
 	
 	@FXML
