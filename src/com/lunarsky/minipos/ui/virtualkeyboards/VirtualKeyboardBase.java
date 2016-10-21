@@ -98,6 +98,7 @@ public abstract class VirtualKeyboardBase extends VBox {
 				}
         
 				if (targetNode != null) {
+					
 					  final String character;
 					  if (text.get().length() == 1) {
 						  character = text.get();

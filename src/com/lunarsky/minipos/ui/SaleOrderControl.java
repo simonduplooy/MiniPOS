@@ -15,6 +15,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -24,7 +25,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.CurrencyStringConverter;
-import javafx.util.converter.LocalDateTimeStringConverter;
 
 public class SaleOrderControl extends VBox {
 	private static final Logger log = LogManager.getLogger();
@@ -35,6 +35,7 @@ public class SaleOrderControl extends VBox {
 	public SaleOrderControl(final SaleOrder saleOrder) {
 
 		getStyleClass().add("sale-order-control");
+		//setPadding(new Insets(20,0,0,0));
 		
 		order = saleOrder;
 		order.getSales().addListener((ListChangeListener.Change<? extends Sale> change) -> { handleOrderChanged(change);} );
