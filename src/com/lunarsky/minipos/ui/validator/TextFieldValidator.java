@@ -68,7 +68,7 @@ public class TextFieldValidator {
 	private void validate(final String previousText, final String newText) {
 		
 		if(!contentValid(newText)) {
-			log.debug("Invalid Content: [{}] Replace with: [{}}",newText,previousText);
+			log.debug("Invalid Content: [{}] Replace with: [{}]",newText,previousText);
 			textField.setText(previousText);
 		}
 		

@@ -6,14 +6,13 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.BorderPane?>
 
-
-<fx:root type="BorderPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<fx:root type="BorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <bottom>
-      <HBox alignment="TOP_RIGHT" BorderPane.alignment="CENTER">
+      <HBox alignment="TOP_RIGHT" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="handleCash" mnemonicParsing="false" text="Cash" />
-            <Button fx:id="handleCard" mnemonicParsing="false" text="Card" />
-            <Button fx:id="handleCancel" mnemonicParsing="false" text="Cancel" />
+            <Button mnemonicParsing="false" onAction="#handleCash" text="Cash" />
+            <Button mnemonicParsing="false" onAction="#handleCard" text="Card" />
+            <Button mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
          </children>
          <padding>
             <Insets top="5.0" />
@@ -23,7 +22,7 @@
    <left>
       <VBox BorderPane.alignment="CENTER">
          <children>
-            <GridPane fx:id="changeLabel" hgap="5.0" vgap="5.0">
+            <GridPane hgap="5.0" vgap="5.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" />
                 <ColumnConstraints hgrow="SOMETIMES" />
@@ -37,9 +36,9 @@
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Change" GridPane.rowIndex="2" />
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Tender" GridPane.rowIndex="1" />
                   <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Total" />
-                  <Label fx:id="totalLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Total" GridPane.columnIndex="1" />
-                  <TextField fx:id="tenderTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Change" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="totalLabel" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Total" GridPane.columnIndex="1" />
+                  <TextField fx:id="tenderTextField" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="changeLabel" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" text="Change" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
                <padding>
                   <Insets bottom="5.0" />

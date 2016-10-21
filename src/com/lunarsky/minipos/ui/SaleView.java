@@ -150,7 +150,7 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	private void handlePay() {
 		log.debug("handlePay()");
 		
-		final PayDialog payDialog = new PayDialog(getStage());
+		final PayDialog payDialog = new PayDialog(getStage(),totalProperty.getValue());
 		payDialog.getStage().showAndWait();
 	}
 	
