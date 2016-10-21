@@ -100,6 +100,7 @@ public abstract class VirtualKeyboardBase extends VBox {
 				if (targetNode != null) {
 					
 					  final String character;
+					  //TODO "<" Button with KeyCode.BACK_SPACE generates an unwanted extra "<" character
 					  if (text.get().length() == 1) {
 						  character = text.get();
 					  } else {
