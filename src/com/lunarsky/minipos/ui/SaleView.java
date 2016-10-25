@@ -1,5 +1,6 @@
 package com.lunarsky.minipos.ui;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -100,13 +101,15 @@ public class SaleView extends BorderPane implements ProductButtonGridPane.Observ
 	private void initializeAsync() {
 		//TODO Async
 		final List<SaleOrderDTO> saleOrders = appData.getServerConnector().getSaleOrders(account.getId().getDTO());
+		
+		Collections.sort(saleOrders,(a,b)-> a.getCreationDate().compareTo(b.getCreationDate()));
+		
 		for(SaleOrderDTO orderDTO: saleOrders) {
 			final SaleOrder order = new SaleOrder(orderDTO);
 			addOrder(order);
 		}
 		
 		addOrder(activeOrder);
-		
 	}
 	
 	private Stage getStage() {
